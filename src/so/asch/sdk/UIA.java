@@ -4,7 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 
 /**
  * Asch UIA接口
- * @author eagle.asch
+ * @author eagle
  */
 public interface UIA extends AschInterface {
     //获取全网所有发行商

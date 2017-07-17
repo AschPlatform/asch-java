@@ -23,12 +23,12 @@ import java.util.Map;
 
 /**
  * 简单的REST服务访问类
- * @author eagle.asch
+ * @author eagle
  */
-public class REST {
+public final class REST {
 
         private static Logger logger = LoggerFactory.getLogger(REST.class);
-        private static final Map<String, String> magicHeaders = new HashMap<String, String>();
+        private static final Map<String, String> magicHeaders = new HashMap<>();
 
         static {
             magicHeaders.put("magic","594fe0f3");
@@ -82,7 +82,7 @@ public class REST {
                 return getJSONObject(response);
             }
             catch (IOException ex){
-                String errorInfo = String.format("Exception when post,url:s%,data:%s", url, parameters);
+                String errorInfo = String.format("Exception when post,url:%s,data:%s", url, parameters);
                 logger.error(errorInfo, ex);
                 throw ex;
             }
@@ -103,7 +103,6 @@ public class REST {
 
             String query = "";
             if (null != parameters) {
-                int i;
                 List<String> parameterList = new ArrayList<>();
                 parameters.forEach((key, value) -> parameterList.add(key +"="+ (value == null ? "" : value.toString())));
                 query = "?"+ String.join("&", parameterList);

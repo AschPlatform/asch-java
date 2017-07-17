@@ -2,7 +2,7 @@ package so.asch.sdk;
 
 import com.alibaba.fastjson.JSONObject;
 import so.asch.sdk.impl.AschFactory;
-import so.asch.sdk.impl.SDKConfig;
+import so.asch.sdk.impl.AschSDKConfig;
 
 
 public class Main {
@@ -13,7 +13,7 @@ public class Main {
             String secret = "nice gold mountain garden actual kick utility talk glass image install flat";
             String address = "AN9rQVu4o8vDbmz2xcsogPHxoTwZSpj5RK";
 
-            SDKConfig.getInstance().setRoot(url);
+            AschSDKConfig.getInstance().setRoot(url);
             Account account = AschFactory.getInstance().getService(Account.class);
             JSONObject json = account.getAccount(address);
 

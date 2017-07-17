@@ -5,7 +5,7 @@ import so.asch.sdk.dto.query.TransactionQueryParameters;
 
 /**
  * Asch交易接口
- * @author eagle.asch
+ * @author eagle
  * 参见 https://github.com/AschPlatform/asch-docs/blob/master/asch_http_interface.md#22-%E4%BA%A4%E6%98%93transactions
  */
 public interface Transaction extends AschInterface{

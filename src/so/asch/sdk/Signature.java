@@ -6,7 +6,7 @@ import java.util.List;
 
 /**
  * Asch签名接口
- * @author eagle.asch
+ * @author eagle
  * 参见 https://github.com/AschPlatform/asch-docs/blob/master/asch_http_interface.md#27-%E4%BA%8C%E7%BA%A7%E5%AF%86%E7%A0%81signatures
  *     https://github.com/AschPlatform/asch-docs/blob/master/asch_http_interface.md#28-%E5%A4%9A%E9%87%8D%E7%AD%BE%E5%90%8Dmultisignatures
  */

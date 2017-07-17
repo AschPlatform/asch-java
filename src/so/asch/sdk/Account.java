@@ -7,7 +7,7 @@ import java.util.List;
 
 /**
  * Asch账户接口
- * @author eagle.asch
+ * @author eagle
  * 参见 https://github.com/AschPlatform/asch-docs/blob/master/asch_http_interface.md#21-%E8%B4%A6%E6%88%B7accounts
  */
 public interface Account extends AschInterface {

@@ -5,11 +5,11 @@ import so.asch.sdk.AschInterface;
 
 /**
  * Asch服务基类
- * @author eagle.asch
+ * @author eagle
  */
 public abstract class AschRESTService implements AschInterface{
 
-    private static final SDKConfig config = SDKConfig.getInstance();
+    private static final AschSDKConfig config = AschSDKConfig.getInstance();
 
     protected String getFullUrl(String relativeUrl){
         return config.getRoot() + relativeUrl;

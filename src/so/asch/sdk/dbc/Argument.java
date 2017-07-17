@@ -3,7 +3,7 @@ package so.asch.sdk.dbc;
 
 /**
  * DBC前置条件
- * @author eagle.asch
+ * @author eagle
  *
  */
 public class Argument {

@@ -9,7 +9,7 @@ import java.util.List;
 
 /**
  * {@link Account}服务实现
- * @author eagle.asch
+ * @author eagle
  */
 public class AccountService extends so.asch.sdk.impl.AschRESTService implements Account  {
     //本地不加密直接登陆（不推荐使用）

@@ -5,7 +5,7 @@ import so.asch.sdk.dto.query.PeerQueryParameters;
 
 /**
  * Asch节点接口
- * @author eagle.asch
+ * @author eagle
  * 参见 https://github.com/AschPlatform/asch-docs/blob/master/asch_http_interface.md#25-%E8%8A%82%E7%82%B9peers
  */
 public interface Peer extends AschInterface {

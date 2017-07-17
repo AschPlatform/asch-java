@@ -2,7 +2,7 @@ package so.asch.sdk.security;
 
 /**
  * 加解密签名异常类
- * @author eagle.asch
+ * @author eagle
  *
  */
 public class CryptoException extends Exception {

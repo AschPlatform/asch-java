@@ -4,7 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 
 /**
  * Asch受托人接口
- * @author eagle.asch
+ * @author eagle
  * 参见 https://github.com/AschPlatform/asch-docs/blob/master/asch_http_interface.md#24-%E5%8F%97%E6%89%98%E4%BA%BAdelegates
  */
 public interface Delegate extends AschInterface {

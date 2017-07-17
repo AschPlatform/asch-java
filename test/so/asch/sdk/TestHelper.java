@@ -1,7 +1,7 @@
 package so.asch.sdk;
 
 import com.alibaba.fastjson.JSONObject;
-import so.asch.sdk.impl.SDKConfig;
+import so.asch.sdk.impl.AschSDKConfig;
 import so.asch.sdk.impl.AschFactory;
 
 import java.util.Arrays;
@@ -35,7 +35,7 @@ public class TestHelper {
     static
     {
         try {
-            SDKConfig.getInstance().setRoot(root);
+            AschSDKConfig.getInstance().setRoot(root);
 
             account = AschFactory.getInstance().getService(Account.class);
             block = AschFactory.getInstance().getService(Block.class);

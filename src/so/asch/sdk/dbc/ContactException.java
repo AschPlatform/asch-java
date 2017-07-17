@@ -2,7 +2,7 @@ package so.asch.sdk.dbc;
 
 /**
  * DBC异常类
- * @author eagle.asch
+ * @author eagle
  *
  */
 public class ContactException extends Exception {

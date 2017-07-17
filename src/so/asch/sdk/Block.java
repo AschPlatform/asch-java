@@ -5,7 +5,7 @@ import so.asch.sdk.dto.query.BlockQueryParameters;
 
 /**
  * Asch区块接口
- * @author eagle.asch
+ * @author eagle
  * 参见 https://github.com/AschPlatform/asch-docs/blob/master/asch_http_interface.md#23-%E5%8C%BA%E5%9D%97blocks
  */
 public interface Block extends AschInterface {

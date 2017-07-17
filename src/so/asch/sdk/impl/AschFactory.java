@@ -8,7 +8,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * 简单的Asch服务对象工厂，可替换成DI工具管理
- * @author eagle.asch
+ * @author eagle
   */
 public final class AschFactory {
     private final static AschFactory instance = new AschFactory();

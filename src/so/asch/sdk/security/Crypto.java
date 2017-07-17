@@ -18,7 +18,7 @@ import java.security.Signature;
 
 /**
  * asch兼容加密及签名功能
- * @author eagle.asch
+ * @author eagle
  *
  */
 public class Crypto {

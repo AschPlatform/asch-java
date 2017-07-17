@@ -5,7 +5,7 @@ import org.apache.commons.codec.binary.Hex;
 
 /**
  * 解码辅助类
- * @author eagle.asch
+ * @author eagle
  *
  */
 public class Decoding {
