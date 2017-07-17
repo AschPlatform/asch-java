@@ -6,7 +6,7 @@
 
     <groupId>groupId</groupId>
     <artifactId>asch-java</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>0.1.0-SNAPSHOT</version>
 
     <!--https://github.com/alibaba/fastjson-->
     <dependencies>
