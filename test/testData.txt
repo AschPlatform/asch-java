@@ -1,0 +1,22 @@
+
+test server
+========================================
+http://testnet.asch.so:4096
+=========================================
+
+test account
+============================================
+    address = "AN9rQVu4o8vDbmz2xcsogPHxoTwZSpj5RK";
+    secret = "nice gold mountain garden actual kick utility talk glass image install flat";
+    secondSecret = "asch123456";
+
+    //asch_g46	11311532344948918824,
+    //asch_g5	12131151007585128653,
+    //sportshark	A3etGK19j3K9X9x4LpMJf9aDkwhKwiEwuy
+    votedPublicKeys = Arrays.asList("11311532344948918824","12131151007585128653","A3etGK19j3K9X9x4LpMJf9aDkwhKwiEwuy");
+
+    //wanglu	A5pcftQKeNZmGa7disXZGarfnycRx6iT6C
+    //asch_g54	14552564717140225834
+    cancelVotedPublicKeys = Arrays.asList("A5pcftQKeNZmGa7disXZGarfnycRx6iT6C","14552564717140225834");
+
+============================================
