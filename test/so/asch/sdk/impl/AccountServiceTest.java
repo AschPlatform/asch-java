@@ -4,7 +4,6 @@ import com.alibaba.fastjson.JSONObject;
 import org.junit.Test;
 import so.asch.sdk.TestHelper;
 import so.asch.sdk.dto.query.QueryParameters;
-import so.asch.sdk.security.Crypto;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
@@ -59,7 +58,7 @@ public class AccountServiceTest {
     public void testVote() throws Exception {
         JSONObject json = TestHelper.accountService().vote(
                 TestHelper.secret,
-                Crypto.getHexPublicKey(TestHelper.secret),
+                TestHelper.security().generatePublicKey(TestHelper.secret),
                 TestHelper.secondSecret,
                 TestHelper.votedPublicKeys,
                 TestHelper.cancelVotedPublicKeys

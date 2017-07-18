@@ -9,7 +9,6 @@ import org.apache.commons.codec.binary.Hex;
  *
  */
 public class Decoding {
-
     public static byte[] hex(String hexString) throws DecodingException{
         try {
             return Hex.decodeHex(hexString.toCharArray());

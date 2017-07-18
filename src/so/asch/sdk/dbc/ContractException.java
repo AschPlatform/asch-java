@@ -5,18 +5,18 @@ package so.asch.sdk.dbc;
  * @author eagle
  *
  */
-public class ContactException extends Exception {
+public class ContractException extends Exception {
     private static final long serialVersionUID = 1L;
 
-    public ContactException(String message, Throwable parent) {
+    public ContractException(String message, Throwable parent) {
         super(message, parent);
     }
 
-    public ContactException(String message) {
+    public ContractException(String message) {
         super(message);
     }
 
-    public ContactException(Throwable t) {
+    public ContractException(Throwable t) {
         super(t);
     }
 }

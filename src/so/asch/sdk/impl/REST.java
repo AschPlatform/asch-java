@@ -46,6 +46,11 @@ public final class REST {
         protected static StringEntity createEntity(JSONObject parameters, String charset) throws UnsupportedEncodingException
         {
             String parameterString = parameters == null ? "" : parameters.toString();
+            return createEntity(parameterString, charset);
+        }
+
+        protected static StringEntity createEntity(String parameterString, String charset) throws UnsupportedEncodingException
+        {
             StringEntity  entity = new StringEntity(parameterString, charset);
             entity.setContentEncoding(charset);
             entity.setContentType("application/json");
@@ -54,11 +59,16 @@ public final class REST {
         }
 
         protected static HttpResponse rawPost(String url, JSONObject parameters, Map<String,String> customeHeads, String charset ) throws IOException{
+            String parameterString = parameters == null ? "" : parameters.toString();
+            return rawPost(url, parameterString, customeHeads, charset);
+        }
+
+        protected static HttpResponse rawPost(String url, String parameterString, Map<String,String> customeHeads, String charset ) throws IOException{
             CloseableHttpClient httpClient = HttpClients.createDefault();
             HttpPost post = new HttpPost(url);
 
             addCustomeHeads(customeHeads, post);
-            StringEntity entity = createEntity(parameters, charset);
+            StringEntity entity = createEntity(parameterString, charset);
             post.setEntity(entity);
 
             return httpClient.execute(post);
@@ -75,7 +85,7 @@ public final class REST {
             return JSONObject.parseObject(json);
         }
 
-        public static JSONObject post(String url, JSONObject parameters, boolean withMagic, String charset) throws IOException{
+        public static JSONObject post(String url, String parameters, boolean withMagic, String charset) throws IOException{
             try {
                 Map<String, String> headers = withMagic ? magicHeaders : null;
                 HttpResponse response = rawPost(url, parameters, headers, null);
@@ -88,28 +98,48 @@ public final class REST {
             }
         }
 
-        public static JSONObject post(String url, JSONObject parameters ) throws IOException {
+        public static JSONObject post(String url, JSONObject parameters, boolean withMagic, String charset) throws IOException {
+            String parametersString = parameters == null ? "" : parameters.toJSONString();
+            return post(url, parametersString, withMagic, charset);
+        }
+
+        public static JSONObject post(String url, String parameters ) throws IOException {
             return post(url, parameters, false, null);
         }
 
-        public static JSONObject postWithMagic(String url, JSONObject parameters ) throws IOException {
+        public static JSONObject post(String url, JSONObject parameters ) throws IOException {
+            String parametersString = parameters == null ? "" : parameters.toJSONString();
+            return post(url, parametersString, false, null);
+        }
+
+        public static JSONObject postWithMagic(String url, String parameters ) throws IOException {
             return post(url, parameters, true, null);
         }
 
+        public static JSONObject postWithMagic(String url, JSONObject parameters ) throws IOException {
+            String parametersString = parameters == null ? "" : parameters.toJSONString();
+            return post(url, parametersString, true, null);
+        }
 
-
-        public static HttpResponse rawGet(String url, JSONObject parameters) throws IOException{
+        public static HttpResponse rawGet(String url, String queryString) throws IOException{
             CloseableHttpClient httpClient = HttpClients.createDefault();
 
-            String query = "";
-            if (null != parameters) {
-                List<String> parameterList = new ArrayList<>();
-                parameters.forEach((key, value) -> parameterList.add(key +"="+ (value == null ? "" : value.toString())));
-                query = "?"+ String.join("&", parameterList);
-            }
-
-            HttpGet get = new HttpGet(url + query);
+            String fullUrl = queryString == null ? url : url + "?" + queryString;
+            HttpGet get = new HttpGet(fullUrl);
             return httpClient.execute(get);
+        }
+
+        public static HttpResponse rawGet(String url, JSONObject parameters) throws IOException{
+            return rawGet(url, getQueryString(parameters));
+        }
+
+        protected static String getQueryString(JSONObject parameters) {
+            if (null == parameters)
+                return "";
+
+            List<String> parameterList = new ArrayList<>();
+            parameters.forEach((key, value) -> parameterList.add(key + "=" + (value == null ? "" : value.toString())));
+            return  String.join("&", parameterList);
         }
 
         public static JSONObject get(String url, JSONObject parameters) throws IOException {

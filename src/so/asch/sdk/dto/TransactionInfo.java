@@ -1,18 +1,11 @@
 package so.asch.sdk.dto;
 
+import so.asch.sdk.TransactionType;
+
 /**
  * Created by eagle on 17-7-16.
  */
 public class TransactionInfo {
-    /*
-    public String getBlockId() {
-        return blockId;
-    }
-
-    public TransactionInfo setBlockId(String blockId) {
-        this.blockId = blockId;
-        return this;
-    }
 
     public Integer getType() {
         return transactionType == null ? null : transactionType.getCode();
@@ -32,30 +25,12 @@ public class TransactionInfo {
         return this;
     }
 
-    public String getOwnerPublicKey() {
-        return ownerPublicKey;
+    public String getRequesterPublicKey() {
+        return requesterPublicKey;
     }
 
-    public TransactionInfo setOwnerPublicKey(String ownerPublicKey) {
-        this.ownerPublicKey = ownerPublicKey;
-        return this;
-    }
-
-    public String getOwnerAddress() {
-        return ownerAddress;
-    }
-
-    public TransactionInfo setOwnerAddress(String ownerAddress) {
-        this.ownerAddress = ownerAddress;
-        return this;
-    }
-
-    public String getSenderId() {
-        return senderId;
-    }
-
-    public TransactionInfo setSenderId(String senderId) {
-        this.senderId = senderId;
+    public TransactionInfo setRequesterPublicKey(String requesterPublicKey) {
+        this.requesterPublicKey = requesterPublicKey;
         return this;
     }
 
@@ -68,11 +43,11 @@ public class TransactionInfo {
         return this;
     }
 
-    public Integer getAmount() {
+    public Long getAmount() {
         return amount;
     }
 
-    public TransactionInfo setAmount(Integer amount) {
+    public TransactionInfo setAmount(Long amount) {
         this.amount = amount;
         return this;
     }
@@ -86,14 +61,68 @@ public class TransactionInfo {
         return this;
     }
 
-    private String blockId = null;
+
+    public String getTransactionId() {
+        return transactionId;
+    }
+
+    public TransactionInfo setTransactionId(String transactionId) {
+        this.transactionId = transactionId;
+        return this;
+    }
+
+    public TransactionType getTransactionType() {
+        return transactionType;
+    }
+
+    public String getSignature() {
+        return signature;
+    }
+
+    public TransactionInfo setSignature(String signature) {
+        this.signature = signature;
+        return this;
+    }
+
+    public String getSignSignature() {
+        return signSignature;
+    }
+
+    public TransactionInfo setSignSignature(String signSignature) {
+        this.signSignature = signSignature;
+        return this;
+    }
+
+    public Integer getTimestamp() {
+        return timestamp;
+    }
+
+    public TransactionInfo setTimestamp(Integer timestamp) {
+        this.timestamp = timestamp;
+        return this;
+    }
+
+    public AssetInfo getAsset() {
+        return assetInfo;
+    }
+
+    public TransactionInfo setAsset(AssetInfo assertInfo) {
+        this.assetInfo = assertInfo;
+        return this;
+    }
+
+    private String transactionId = null;
     private TransactionType transactionType = null;
-    private String senderPublicKey = null;
-    private String ownerPublicKey = null;
-    private String ownerAddress = null;
-    private String senderId = null;
     private String recipientId = null;
-    private Integer amount = null;
+
+    private String requesterPublicKey = null;
+    private String senderPublicKey = null;
+    private Integer timestamp = null;
+    private Long amount = null;
     private Integer fee = null;
-    */
+
+    private String signature = null;
+    private String signSignature = null;
+
+    private AssetInfo assetInfo = null;
 }

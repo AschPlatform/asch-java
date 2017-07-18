@@ -2,6 +2,8 @@ package so.asch.sdk.impl;
 
 import so.asch.sdk.Account;
 import so.asch.sdk.AschInterface;
+import so.asch.sdk.security.DefaultSecurityStrategy;
+import so.asch.sdk.security.SecurityStrategy;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -18,6 +20,8 @@ public final class AschFactory {
     public static AschFactory getInstance(){
         return instance;
     }
+
+    private final SecurityStrategy securityStrategy = new DefaultSecurityStrategy();
 
     private static Map<Class<? extends AschInterface> , Class<? extends AschRESTService>> implMap = new ConcurrentHashMap<>();
 
@@ -40,6 +44,8 @@ public final class AschFactory {
     public <AschInterface> AschInterface getService(Class<? extends AschInterface> interfaceType)throws Exception{
         return (AschInterface) implMap.get(interfaceType).newInstance();
     }
+
+    public SecurityStrategy getSecurity(){ return securityStrategy; }
 
     static {
         getInstance().register(Account.class, AccountService.class);

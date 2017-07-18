@@ -3,8 +3,6 @@ package so.asch.sdk;
 import com.alibaba.fastjson.JSONObject;
 import so.asch.sdk.dto.query.QueryParameters;
 
-import java.util.List;
-
 /**
  * Asch账户接口
  * @author eagle
@@ -110,7 +108,7 @@ public interface Account extends AschInterface {
     //success	boole	是否成功获得response数据
     //transaction	json	投票交易详情
     JSONObject vote(String secret, String publicKey, String secondSecret,
-                         List<String> votedPublicKeys, List<String> cancelVotedPublicKeys);
+                         String[] votedPublicKeys, String[] cancelVotedPublicKeys);
 
     //接口地址：/api/accounts/top
     //请求方式：get

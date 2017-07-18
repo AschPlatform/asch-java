@@ -2,10 +2,11 @@ package so.asch.sdk.impl;
 
 import com.alibaba.fastjson.JSONObject;
 import so.asch.sdk.Account;
+import so.asch.sdk.TransactionType;
+import so.asch.sdk.dbc.Argument;
+import so.asch.sdk.dto.AssetInfo;
+import so.asch.sdk.dto.TransactionInfo;
 import so.asch.sdk.dto.query.QueryParameters;
-import so.asch.sdk.security.Crypto;
-
-import java.util.List;
 
 /**
  * {@link Account}服务实现
@@ -38,8 +39,11 @@ public class AccountService extends so.asch.sdk.impl.AschRESTService implements 
     //account	json	账户信息
     public JSONObject secureLogin(String secret){
         try{
-            String publicKey = Crypto.getHexPublicKey(secret);
+            Argument.require(Validation.isValidSecure(secret), "invalid secret");
+
+            String publicKey = getSecurity().generatePublicKey(secret);
             JSONObject parameters = new JSONObject().fluentPut("secret", publicKey);
+
             return post("/api/accounts/open/", parameters);
         }
         catch (Exception ex){
@@ -58,8 +62,15 @@ public class AccountService extends so.asch.sdk.impl.AschRESTService implements 
     //latestBlock	json	最新的区块信息
     //version	json	版本相关信息
     public JSONObject getAccount(String address){
-        JSONObject parameters = new JSONObject().fluentPut("address", address);
-        return get("/api/accounts", parameters);
+        try {
+            Argument.require(Validation.isValidAddress(address), "invalid address");
+
+            JSONObject parameters = new JSONObject().fluentPut("address", address);
+            return get("/api/accounts", parameters);
+        }
+        catch (Exception ex){
+            return fail(ex);
+        }
     }
 
     //接口地址：/api/accounts/getBalance
@@ -72,8 +83,15 @@ public class AccountService extends so.asch.sdk.impl.AschRESTService implements 
     //balance	integer	余额
     //unconfirmedBalance	integer	未确认和已确认的余额之和，该值大于等于balance
     public JSONObject getBalance(String address){
-        JSONObject parameters = new JSONObject().fluentPut("address", address);
-        return get("/api/accounts/getBalance", parameters);
+        try {
+            Argument.require(Validation.isValidAddress(address), "invalid address");
+
+            JSONObject parameters = new JSONObject().fluentPut("address", address);
+            return get("/api/accounts/getBalance", parameters);
+        }
+        catch (Exception ex){
+            return fail(ex);
+        }
     }
 
     //接口地址：/api/accounts/getPublickey
@@ -85,8 +103,15 @@ public class AccountService extends so.asch.sdk.impl.AschRESTService implements 
     //success	boole	是否成功获得response数据
     //publicKey	string	公钥*/
     public JSONObject getPublicKey(String address){
-        JSONObject parameters = new JSONObject().fluentPut("address", address);
-        return get("/api/accounts/getPublickey", parameters);
+        try {
+            Argument.require(Validation.isValidAddress(address), "invalid address");
+
+            JSONObject parameters = new JSONObject().fluentPut("address", address);
+            return get("/api/accounts/getPublickey", parameters);
+        }
+        catch (Exception ex){
+            return fail(ex);
+        }
     }
 
     //接口地址：/api/accounts/generatePublickey
@@ -98,8 +123,15 @@ public class AccountService extends so.asch.sdk.impl.AschRESTService implements 
     //success	boole	是否成功获得response数据
     //publicKey	string	公钥
     public JSONObject generatePublicKey(String secret){
-        JSONObject parameters = new JSONObject().fluentPut("secret", secret);
-        return post("/api/accounts/generatePublicKey", parameters);
+        try {
+            Argument.require(Validation.isValidSecure(secret), "invalid secret");
+
+            JSONObject parameters = new JSONObject().fluentPut("secret", secret);
+            return post("/api/accounts/generatePublicKey", parameters);
+        }
+        catch (Exception ex){
+            return fail(ex);
+        }
     }
 
     //接口地址：/api/accounts/delegates
@@ -111,8 +143,15 @@ public class AccountService extends so.asch.sdk.impl.AschRESTService implements 
     //success	boole	是否成功获得response数据
     //delegates	Array	已投票的受托人详情数组
     public JSONObject getVotedDelegates(String address){
-        JSONObject parameters = new JSONObject().fluentPut("address", address);
-        return get("/api/accounts/delegates", parameters);
+        try {
+            Argument.require(Validation.isValidAddress(address), "invalid address");
+
+            JSONObject parameters = new JSONObject().fluentPut("address", address);
+            return get("/api/accounts/delegates", parameters);
+        }
+        catch (Exception ex){
+            return fail(ex);
+        }
     }
 
     //接口地址：/api/accounts/delegates/fee
@@ -139,8 +178,16 @@ public class AccountService extends so.asch.sdk.impl.AschRESTService implements 
     //success	boole	是否成功获得response数据
     //transaction	json	投票交易详情
     public JSONObject vote(String secret, String publicKey, String secondSecret,
-                    List<String> votedPublicKeys, List<String> cancelVotedPublicKeys){
-        return null;
+                           String[] votedPublicKeys, String[] cancelVotedPublicKeys){
+        TransactionInfo transaction = new TransactionInfo()
+                .setTransactionType(TransactionType.Vote)
+                .setAmount(0L)
+                .setFee((int)(0.1 * AschConst.COIN))
+                .setSenderPublicKey(publicKey)
+                .setAsset(new AssetInfo().setVote(
+                        new AssetInfo.VoteInfo(votedPublicKeys, cancelVotedPublicKeys)));
+
+        return postMagic("", JSONObject.toJSONString(transaction));
     }
 
     //接口地址：/api/accounts/top

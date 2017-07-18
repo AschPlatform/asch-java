@@ -1,6 +1,7 @@
 package so.asch.sdk;
 
 import so.asch.sdk.dbc.Argument;
+import so.asch.sdk.dbc.ContractException;
 
 import java.util.Arrays;
 import java.util.Comparator;
@@ -46,7 +47,7 @@ public enum TransactionType {
         this.name = name;
     }
 
-    public static TransactionType FromCode(int code) throws IllegalArgumentException {
+    public static TransactionType FromCode(int code) throws ContractException {
         Argument.require(code >=Transfer.getCode() && code<= UIATransfer.getCode(),
                 String.format("invalid code %d", code));
 
