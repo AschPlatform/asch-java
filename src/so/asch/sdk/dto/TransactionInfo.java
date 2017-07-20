@@ -2,6 +2,8 @@ package so.asch.sdk.dto;
 
 import so.asch.sdk.TransactionType;
 
+import java.beans.Transient;
+
 /**
  * Created by eagle on 17-7-16.
  */
@@ -52,17 +54,17 @@ public class TransactionInfo {
         return this;
     }
 
-    public Integer getFee() {
+    public Long getFee() {
         return fee;
     }
 
-    public TransactionInfo setFee(Integer fee) {
+    public TransactionInfo setFee(Long fee) {
         this.fee = fee;
         return this;
     }
 
 
-    public String getTransactionId() {
+    public String getId() {
         return transactionId;
     }
 
@@ -71,6 +73,7 @@ public class TransactionInfo {
         return this;
     }
 
+    @Transient
     public TransactionType getTransactionType() {
         return transactionType;
     }
@@ -119,10 +122,9 @@ public class TransactionInfo {
     private String senderPublicKey = null;
     private Integer timestamp = null;
     private Long amount = null;
-    private Integer fee = null;
+    private Long fee = null;
 
     private String signature = null;
     private String signSignature = null;
-
     private AssetInfo assetInfo = null;
 }

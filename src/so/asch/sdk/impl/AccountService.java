@@ -2,11 +2,11 @@ package so.asch.sdk.impl;
 
 import com.alibaba.fastjson.JSONObject;
 import so.asch.sdk.Account;
-import so.asch.sdk.TransactionType;
 import so.asch.sdk.dbc.Argument;
-import so.asch.sdk.dto.AssetInfo;
 import so.asch.sdk.dto.TransactionInfo;
 import so.asch.sdk.dto.query.QueryParameters;
+
+import java.security.KeyPair;
 
 /**
  * {@link Account}服务实现
@@ -41,7 +41,8 @@ public class AccountService extends so.asch.sdk.impl.AschRESTService implements 
         try{
             Argument.require(Validation.isValidSecure(secret), "invalid secret");
 
-            String publicKey = getSecurity().generatePublicKey(secret);
+            KeyPair keyPair = getSecurity().generateKeyPair(secret);
+            String publicKey = getSecurity().encodePublicKey(keyPair.getPublic());
             JSONObject parameters = new JSONObject().fluentPut("secret", publicKey);
 
             return post("/api/accounts/open/", parameters);
@@ -177,17 +178,15 @@ public class AccountService extends so.asch.sdk.impl.AschRESTService implements 
     //名称	类型	说明
     //success	boole	是否成功获得response数据
     //transaction	json	投票交易详情
-    public JSONObject vote(String secret, String publicKey, String secondSecret,
+    public JSONObject vote(String secret, String secondSecret,
                            String[] votedPublicKeys, String[] cancelVotedPublicKeys){
-        TransactionInfo transaction = new TransactionInfo()
-                .setTransactionType(TransactionType.Vote)
-                .setAmount(0L)
-                .setFee((int)(0.1 * AschConst.COIN))
-                .setSenderPublicKey(publicKey)
-                .setAsset(new AssetInfo().setVote(
-                        new AssetInfo.VoteInfo(votedPublicKeys, cancelVotedPublicKeys)));
-
-        return postMagic("", JSONObject.toJSONString(transaction));
+        try {
+            TransactionInfo transaction = getTransactionBuilder().buildVote(secret, secondSecret, votedPublicKeys, cancelVotedPublicKeys);
+            return broadcastTransaction(transaction);
+        }
+        catch (Exception ex){
+            return fail(ex);
+        }
     }
 
     //接口地址：/api/accounts/top

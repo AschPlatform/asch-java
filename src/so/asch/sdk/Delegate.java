@@ -1,6 +1,7 @@
 package so.asch.sdk;
 
 import com.alibaba.fastjson.JSONObject;
+import so.asch.sdk.dto.query.DelegateQueryParameters;
 
 /**
  * Asch受托人接口
@@ -26,7 +27,7 @@ public interface Delegate extends AschInterface {
     //返回参数说明：
     //success	boole	是否成功获得response数据
     //accounts	Array	账户json串组成的数组
-    JSONObject getVoters();
+    JSONObject getVoters(String publicKey);
 
     //接口地址： /api/delegates/get/
     //请求方式：get
@@ -38,9 +39,11 @@ public interface Delegate extends AschInterface {
     //返回参数说明：
     //success	boole	是否成功获得response数据
     //delegate	json	委托人详情
-    JSONObject getDelegate(String publicKey, String userName);
+    JSONObject getDelegateByPublicKey(String publicKey);
 
-    //接口地址：/api/delegates
+    JSONObject getDelegateByName(String userName);
+
+    //接口地址：/api/delegatesupublicKey
     //请求方式：get
     //支持格式：urlencoded
     //接口说明：如果不加参数则会返回全网受托人列表
@@ -52,7 +55,7 @@ public interface Delegate extends AschInterface {
     //返回参数说明：
     //success	boole	是否成功获得response数据
     //delegates	Array	受托人详情列表
-    JSONObject getDelegates(String address, int limit, int offset, String orderBy);
+    JSONObject getDelegates(DelegateQueryParameters parameters);
 
     //接口地址：/api/delegates/fee
     //请求方式：get
@@ -81,13 +84,12 @@ public interface Delegate extends AschInterface {
     //支持格式：urlencoded
     //请求参数说明：
     //secret	string	Y	asch账户密码
-    //publicKey	string	N	公钥
     //secondSecret	string	N	asch账户二级密码，最小长度：1，最大长度：100
     //username	string	N	受托人名字
     //返回参数说明：
     //success	boole	是否成功获得response数据
     //transaction	json	注册受托人交易详情
-    JSONObject registerDelegate(String secret, String publicKey, String secondSecret, String userName);
+    JSONObject registerDelegate(String userName, String secret, String secondSecret);
 
     //接口地址：/api/delegates/forging/enable
     //请求方式：post

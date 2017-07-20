@@ -100,14 +100,13 @@ public interface Account extends AschInterface {
     //支持格式：json
     //请求参数说明：
     //secret	string	Y	asch账户密码
-    //publicKey	string	N	公钥
     //secondSecret	string	N	asch账户二级密码，最小长度：1，最大长度：100
     //delegates	Array	受托人公钥数组，每个公钥前需要加上+或者-号，代表增加/取消对其的投票
     //返回参数说明：
     //名称	类型	说明
     //success	boole	是否成功获得response数据
     //transaction	json	投票交易详情
-    JSONObject vote(String secret, String publicKey, String secondSecret,
+    JSONObject vote(String secret, String secondSecret,
                          String[] votedPublicKeys, String[] cancelVotedPublicKeys);
 
     //接口地址：/api/accounts/top

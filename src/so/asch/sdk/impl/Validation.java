@@ -37,8 +37,9 @@ public class Validation {
     public static boolean isValidAddress(String address){
         return address != null &&
                 ( address.length() >= MIN_ADDRESS_LENGTH && address.length() <= MAX_ADDRESS_LENGTH) &&
-                ( address.matches(NUMBER_PATTERN) || address.matches(BASE58_PATTERN) ) &&
-                address.charAt(0) == AschConst.BASE58_ADDRESS_PREFIX;
+                ( address.matches(NUMBER_PATTERN) ||
+                        ( address.matches(BASE58_PATTERN) && address.charAt(0) == AschConst.BASE58_ADDRESS_PREFIX )
+                );
     }
 
     public static <T> boolean all(Predicate<T> predicate, T... list){

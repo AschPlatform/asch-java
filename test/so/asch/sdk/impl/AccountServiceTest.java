@@ -1,13 +1,11 @@
 package so.asch.sdk.impl;
 
 import com.alibaba.fastjson.JSONObject;
-import org.junit.Test;
+import org.testng.Assert;
+import org.testng.annotations.Test;
 import so.asch.sdk.TestHelper;
 import so.asch.sdk.dto.query.QueryParameters;
 
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
 /**
  * AccountService Tester.
  *
@@ -16,67 +14,66 @@ import static org.junit.Assert.assertThat;
  * @version 1.0
  */
 public class AccountServiceTest {
-
-
     @Test
     public void testLogin() throws Exception {
         JSONObject json = TestHelper.accountService().login(TestHelper.secret);
-        assertThat(TestHelper.isSuccess(json), is(equalTo(true)));
+        Assert.assertTrue(TestHelper.isSuccess(json));
     }
 
     @Test
     public void testSecureLogin() throws Exception {
         JSONObject json = TestHelper.accountService().secureLogin(TestHelper.secret);
-        assertThat(TestHelper.isSuccess(json), is(equalTo(true)));
+        Assert.assertTrue(TestHelper.isSuccess(json));
     }
 
     @Test
     public void testGetAccount() throws Exception {
         JSONObject json = TestHelper.accountService().getAccount(TestHelper.address);
-        assertThat(TestHelper.isSuccess(json), is(equalTo(true)));
+        Assert.assertTrue(TestHelper.isSuccess(json));
     }
 
     @Test
     public void testGetBalance() throws Exception {
         JSONObject json = TestHelper.accountService().getBalance(TestHelper.address);
-        assertThat(TestHelper.isSuccess(json), is(equalTo(true)));
+        Assert.assertTrue(TestHelper.isSuccess(json));
     }
 
     @Test
     public void testGetPublicKey() throws Exception {
         JSONObject json = TestHelper.accountService().getPublicKey(TestHelper.address);
-        assertThat(TestHelper.isSuccess(json), is(equalTo(true)));
+        Assert.assertTrue(TestHelper.isSuccess(json));
     }
 
     @Test
     public void testGeneratePublicKey() throws Exception {
         JSONObject json = TestHelper.accountService().generatePublicKey(TestHelper.secret);
-        assertThat(TestHelper.isSuccess(json), is(equalTo(true)));
+        Assert.assertTrue(TestHelper.isSuccess(json));
     }
 
     @Test
     public void testVote() throws Exception {
         JSONObject json = TestHelper.accountService().vote(
                 TestHelper.secret,
-                TestHelper.security().generatePublicKey(TestHelper.secret),
                 TestHelper.secondSecret,
-                TestHelper.votedPublicKeys,
-                TestHelper.cancelVotedPublicKeys
+                TestHelper.voted,
+                TestHelper.canceled
         );
 
-        assertThat(TestHelper.isSuccess(json), is(equalTo(true)));
+        Assert.assertTrue(TestHelper.isSuccess(json) ||
+                "account has already voted for this delegate".equals(json.getString("error"))||
+                "Failed to remove vote, account has not voted for this delegate".equals(json.getString("error")));
     }
 
     @Test
     public void testGetDelegatesFee() throws Exception {
         JSONObject json = TestHelper.accountService().getDelegatesFee();
-        assertThat(TestHelper.isSuccess(json), is(equalTo(true)));
+        Assert.assertTrue(TestHelper.isSuccess(json));
     }
 
     @Test
     public void testGetVotedDelegates() throws Exception {
         JSONObject json = TestHelper.accountService().getVotedDelegates(TestHelper.address);
-        assertThat(TestHelper.isSuccess(json), is(equalTo(true)));
+        Assert.assertTrue(TestHelper.isSuccess(json));
     }
 
     @Test
@@ -86,6 +83,6 @@ public class AccountServiceTest {
                 .setOffset(0);
 
         JSONObject json = TestHelper.accountService().getTopAccounts(parameters);
-        assertThat(TestHelper.isSuccess(json), is(equalTo(true)));
+        Assert.assertTrue(TestHelper.isSuccess(json));
     }
 }

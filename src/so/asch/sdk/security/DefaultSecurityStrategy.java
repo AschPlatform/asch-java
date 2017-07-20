@@ -8,13 +8,20 @@ import so.asch.sdk.dbc.ContractException;
 import so.asch.sdk.dto.AssetInfo;
 import so.asch.sdk.dto.TransactionInfo;
 import so.asch.sdk.impl.AschConst;
+import so.asch.sdk.impl.AschSDKConfig;
 import so.asch.sdk.impl.Validation;
 import so.asch.sdk.security.ripemd.RipeMD160;
 
+import java.math.BigInteger;
 import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.security.KeyPair;
 import java.security.MessageDigest;
 import java.security.PrivateKey;
+import java.security.PublicKey;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.TimeZone;
 
 /**
  * Created by eagle on 17-7-18.
@@ -22,10 +29,11 @@ import java.security.PrivateKey;
 public class DefaultSecurityStrategy implements SecurityStrategy{
 
     private static final int MAX_BUFFER_LENGTH = 1024;
-    private static final byte[] EMPTY_BUFFER = new byte[0];
-
-
     private static final String SHA256_DIGEST_ALGORITHM = "SHA-256";
+    private static final byte[] EMPTY_BUFFER = new byte[0];
+    private static  Date beginEpoch = new Date();
+
+    private static AschSDKConfig config = AschSDKConfig.getInstance();
 
     private static MessageDigest sha256Digest;
     private static RipeMD160 ripemd160Digest;
@@ -35,11 +43,18 @@ public class DefaultSecurityStrategy implements SecurityStrategy{
         try {
             sha256Digest = MessageDigest.getInstance(SHA256_DIGEST_ALGORITHM);
             ripemd160Digest = new RipeMD160();
+
+            SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+            df.setTimeZone(TimeZone.getTimeZone("UTC"));
+
+            beginEpoch = df.parse("2016-06-27T20:00:00Z");
         }
         catch (Exception ex) {
             //
         }
     }
+
+
 
     @Override
     public KeyPair generateKeyPair(String secure) throws SecurityException {
@@ -54,9 +69,15 @@ public class DefaultSecurityStrategy implements SecurityStrategy{
     }
 
     @Override
-    public String generatePublicKey(String secure)throws SecurityException {
-        EdDSAPublicKey publicKey = (EdDSAPublicKey)generateKeyPair(secure).getPublic();
-        return Encoding.hex(publicKey.getAbyte());
+    public String encodePublicKey(PublicKey publicKey)throws SecurityException {
+        try {
+            Argument.notNull(publicKey, "publicKey");
+
+            return Encoding.hex(((EdDSAPublicKey) publicKey).getAbyte());
+        }
+        catch (Exception ex){
+            throw new SecurityException("encode public key failed", ex);
+        }
     }
 
     @Override
@@ -74,9 +95,24 @@ public class DefaultSecurityStrategy implements SecurityStrategy{
     }
 
     @Override
-    public String generateTransactionId(TransactionInfo transaction, PrivateKey privateKey)throws SecurityException {
-        //todo:generateTransactionId;
-        return "";
+    public String generateTransactionId(TransactionInfo transaction)throws SecurityException {
+        try {
+            byte[] transactionBytes = getTransactionBytes(transaction, false, false);
+            byte[] hash = sha256Hash(transactionBytes);
+
+            if (config.isLongTransactionIdEnabled())
+                return Encoding.hex(hash);
+
+            byte[] transactionIdBytes = new byte[8];
+            for (int i = 0; i < 7; i++) {
+                transactionIdBytes[i] = hash[7 - 1];
+            }
+
+            return new BigInteger(transactionIdBytes).toString();
+
+        } catch (Exception ex) {
+            throw new SecurityException("generate transaction id failed", ex);
+        }
     }
 
     @Override
@@ -85,7 +121,7 @@ public class DefaultSecurityStrategy implements SecurityStrategy{
             Argument.require(transaction != null, "transaction can not be null");
             Argument.require(privateKey != null, "private key can not be null");
 
-            byte[] transactionBytes = getTransactionBytes(transaction, false, false);
+            byte[] transactionBytes = getTransactionBytes(transaction, true, true);
             byte[] hash = sha256Hash(transactionBytes);
             return Encoding.hex(Ed25519.signature(hash, privateKey));
         }
@@ -100,7 +136,7 @@ public class DefaultSecurityStrategy implements SecurityStrategy{
             Argument.require(transaction != null, "transaction can not be null");
             Argument.require(privateKey != null, "private key can not be null");
 
-            byte[] transactionBytes = getTransactionBytes(transaction, true, false);
+            byte[] transactionBytes = getTransactionBytes(transaction, false, true);
             byte[] hash = sha256Hash(transactionBytes);
             return Encoding.hex(Ed25519.signature(hash, privateKey));
         }
@@ -110,8 +146,9 @@ public class DefaultSecurityStrategy implements SecurityStrategy{
     }
 
     @Override
-    public long getTimestamp() {
-        return System.currentTimeMillis()/1000 - AschConst.CLIENT_DRIFT_SECONDS;
+    public int getTimestamp() {
+        //calendar.add(Calendar.MILLISECOND, (zoneOffset+dstOffset));
+        return (int)((new Date().getTime() - beginEpoch.getTime())/1000 - AschConst.CLIENT_DRIFT_SECONDS);
     }
 
     private byte[] sha256Hash(byte[] message){
@@ -124,19 +161,16 @@ public class DefaultSecurityStrategy implements SecurityStrategy{
         return ripemd160Digest.digest();
     }
 
-    private byte[] getSignatueBytes(TransactionInfo transaction){
-        return EMPTY_BUFFER;
-    }
-
-    private byte[] getTransactionBytes(TransactionInfo transaction, boolean containsSignature,
-                                       boolean containsSignSignature) throws ContractException{
+    private byte[] getTransactionBytes(TransactionInfo transaction, boolean skipSignature,
+                                       boolean skipSignSignature) throws ContractException{
         Argument.notNull(transaction, "transaction");
         Argument.notNull(transaction.getTransactionType(), "transaction.transactionType");
 
-        //type(1)|timestamp(4)|senderPublicKey(32)|requesterPublicKey(32)|recipientId(32)|amount(8)|
-        //asset(?)|signature(32)|signSignature(32)
+        //1 + 4 + 32 + 32 + 8 + 8 + 64 + 64
+        //type(1)|timestamp(4)|senderPublicKey(32)|requesterPublicKey(32)|recipientId(8)|amount(8)|
+        //asset(?)|signature(64)|signSignature(64)
 
-        ByteBuffer buffer = ByteBuffer.allocate(MAX_BUFFER_LENGTH)
+        ByteBuffer buffer = ByteBuffer.allocate(MAX_BUFFER_LENGTH).order(ByteOrder.LITTLE_ENDIAN)
                 .put(transaction.getType().byteValue())
                 .putInt(transaction.getTimestamp())
                 .put(unsafeDecodeHex(transaction.getSenderPublicKey()))
@@ -145,26 +179,28 @@ public class DefaultSecurityStrategy implements SecurityStrategy{
                 .putLong(transaction.getAmount())
                 .put(getAssetBuffer(transaction));
 
-        if (containsSignature){
+        if (!skipSignature){
             buffer.put(unsafeDecodeHex(transaction.getSignature()));
         }
 
-        if (containsSignSignature){
+        if (!skipSignSignature){
             buffer.put(unsafeDecodeHex(transaction.getSignSignature()));
         }
 
-        return buffer.array();
+        return getBufferData(buffer);
     }
 
     private byte[] getRecipientIdBuffer(String recipientId){
-        //todo:getRecipientIdBuffer
-        return EMPTY_BUFFER;
+        byte[] recipientIdBuffer = new byte[8];
+
+        return recipientIdBuffer;
     }
 
     private byte[] getAssetBuffer(TransactionInfo transaction){
-        ByteBuffer buffer = ByteBuffer.allocate(MAX_BUFFER_LENGTH);
-        AssetInfo asset = transaction.getAsset();
+        ByteBuffer buffer = ByteBuffer.allocate(MAX_BUFFER_LENGTH)
+                .order(ByteOrder.LITTLE_ENDIAN);
 
+        AssetInfo asset = transaction.getAsset();
         switch (transaction.getTransactionType()){
             case Signature:
                 //todo:getSignatureBytes
@@ -176,7 +212,8 @@ public class DefaultSecurityStrategy implements SecurityStrategy{
                 break;
 
             case Vote:
-                buffer.put(unsafeDecodeUTF8(asset.getVote().getVote()));
+                String votes = String.join("", asset.getVote().getVotes());
+                buffer.put(unsafeDecodeUTF8(votes));
                 break;
 
             case MultiSignature:
@@ -205,7 +242,15 @@ public class DefaultSecurityStrategy implements SecurityStrategy{
             default:
                 break;
         }
-        return buffer.array();
+
+        return getBufferData(buffer);
+    }
+
+    private byte[] getBufferData(ByteBuffer buffer){
+        buffer.flip();
+        byte[] result = new byte[buffer.remaining()];
+        buffer.get(result);
+        return result;
     }
 
     private byte[] getDappBytes(AssetInfo.DappInfo dapp){

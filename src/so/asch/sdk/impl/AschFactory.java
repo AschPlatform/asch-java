@@ -2,6 +2,7 @@ package so.asch.sdk.impl;
 
 import so.asch.sdk.Account;
 import so.asch.sdk.AschInterface;
+import so.asch.sdk.Delegate;
 import so.asch.sdk.security.DefaultSecurityStrategy;
 import so.asch.sdk.security.SecurityStrategy;
 
@@ -15,7 +16,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public final class AschFactory {
     private final static AschFactory instance = new AschFactory();
 
-    private AschFactory(){}
+    private AschFactory(){ }
 
     public static AschFactory getInstance(){
         return instance;
@@ -41,14 +42,21 @@ public final class AschFactory {
      * @param interfaceType 接口类型
      * @return 服务对象实例
      * */
-    public <AschInterface> AschInterface getService(Class<? extends AschInterface> interfaceType)throws Exception{
-        return (AschInterface) implMap.get(interfaceType).newInstance();
+    public <AschInterface> AschInterface getService(Class<? extends AschInterface> interfaceType){
+        try {
+            return (AschInterface) implMap.get(interfaceType).newInstance();
+        }
+        catch (Exception ex){
+            return null;
+        }
     }
 
     public SecurityStrategy getSecurity(){ return securityStrategy; }
 
     static {
-        getInstance().register(Account.class, AccountService.class);
+        getInstance()
+                .register(Account.class, AccountService.class)
+                .register(Delegate.class, DelegateService.class);
     }
 
 }

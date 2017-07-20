@@ -85,10 +85,9 @@ public final class REST {
             return JSONObject.parseObject(json);
         }
 
-        public static JSONObject post(String url, String parameters, boolean withMagic, String charset) throws IOException{
+        public static JSONObject post(String url, String parameters,  Map<String, String> customeHeaders, String charset) throws IOException{
             try {
-                Map<String, String> headers = withMagic ? magicHeaders : null;
-                HttpResponse response = rawPost(url, parameters, headers, null);
+                HttpResponse response = rawPost(url, parameters, customeHeaders, charset);
                 return getJSONObject(response);
             }
             catch (IOException ex){
@@ -98,27 +97,26 @@ public final class REST {
             }
         }
 
-        public static JSONObject post(String url, JSONObject parameters, boolean withMagic, String charset) throws IOException {
+        public static JSONObject post(String url, JSONObject parameters, Map<String,String> customeHeads, String charset) throws IOException {
             String parametersString = parameters == null ? "" : parameters.toJSONString();
-            return post(url, parametersString, withMagic, charset);
+            return post(url, parametersString, customeHeads, charset);
+        }
+
+        public static JSONObject post(String url, String parameters, Map<String,String> customeHeads ) throws IOException {
+            return post(url, parameters, customeHeads, null);
+        }
+
+        public static JSONObject post(String url, JSONObject parameters, Map<String,String> customeHeads ) throws IOException {
+            return post(url, parameters, customeHeads, null);
         }
 
         public static JSONObject post(String url, String parameters ) throws IOException {
-            return post(url, parameters, false, null);
+            return post(url, parameters, null, null);
         }
 
         public static JSONObject post(String url, JSONObject parameters ) throws IOException {
             String parametersString = parameters == null ? "" : parameters.toJSONString();
-            return post(url, parametersString, false, null);
-        }
-
-        public static JSONObject postWithMagic(String url, String parameters ) throws IOException {
-            return post(url, parameters, true, null);
-        }
-
-        public static JSONObject postWithMagic(String url, JSONObject parameters ) throws IOException {
-            String parametersString = parameters == null ? "" : parameters.toJSONString();
-            return post(url, parametersString, true, null);
+            return post(url, parametersString, null, null);
         }
 
         public static HttpResponse rawGet(String url, String queryString) throws IOException{

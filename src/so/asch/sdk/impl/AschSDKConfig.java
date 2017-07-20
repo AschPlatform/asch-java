@@ -1,5 +1,8 @@
 package so.asch.sdk.impl;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * SDK配置类，包括接口版本号、服务地址等信息
  * @author eagle
@@ -10,8 +13,18 @@ public class AschSDKConfig {
     private AschSDKConfig(){}
 
 
-    private final static String version = "1.2.9";
+    private final static String version = "1.3";
+    private final static Map<String,String> magicHeaders = new HashMap<>();
+    static {
+        magicHeaders.put("magic", "aabbccdd");  //localnet
+        magicHeaders.put("version", "");
+    }
 
+    public String getVersion(){ return version; }
+
+    public Map<String, String> getMagicHeaders(){
+        return magicHeaders;
+    }
 
     public String getRoot() {
         return root;
@@ -21,8 +34,23 @@ public class AschSDKConfig {
         this.root = root;
     }
 
-    public String getVersion(){ return version; }
+    public boolean isDebugMode() {
+        return debugMode;
+    }
 
-    private String root;
+    public void setDebugMode(boolean debugMode) {
+        this.debugMode = debugMode;
+    }
 
+    public boolean isLongTransactionIdEnabled() {
+        return longTransactionIdEnabled;
+    }
+
+    public void setLongTransactionIdEnabled(boolean longTransactionIdEnabled) {
+        this.longTransactionIdEnabled = longTransactionIdEnabled;
+    }
+
+    private String root ="127.0.0.1:4096";
+    private boolean longTransactionIdEnabled = true;
+    private boolean debugMode = true;
 }

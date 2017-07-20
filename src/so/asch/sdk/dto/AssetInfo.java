@@ -1,5 +1,7 @@
 package so.asch.sdk.dto;
 
+import com.alibaba.fastjson.annotation.JSONField;
+
 import java.beans.Transient;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +20,6 @@ public class AssetInfo {
 
             for (String key : keys) {
                 votedKeys.add(key);
-                canceledKeys.remove(key);
             }
         }
 
@@ -27,7 +28,6 @@ public class AssetInfo {
 
             for (String key : keys) {
                 canceledKeys.add(key);
-                votedKeys.remove(key);
             }
         }
 
@@ -46,15 +46,15 @@ public class AssetInfo {
             this.cancelVoted(canceledKeys);
         }
 
-        public String getVote() {
+        public String[] getVotes() {
             if (votedKeys.isEmpty() && canceledKeys.isEmpty())
                 return null;
 
-            StringBuilder sb = new StringBuilder();
-            votedKeys.forEach(key -> sb.append("+" + key));
-            canceledKeys.forEach(key -> sb.append("-" + key));
+            ArrayList<String> votes = new ArrayList<>();
+            votedKeys.forEach(key -> votes.add("+" + key));
+            canceledKeys.forEach(key -> votes.add("-" + key));
 
-            return sb.toString();
+            return votes.toArray(new String[0]);
         }
     }
 
@@ -81,9 +81,7 @@ public class AssetInfo {
         private Integer amount = null;
 
         private TransferInfo() {
-        }
-
-        ;
+        };
 
         public static TransferInfo createInTransfer(String dappId, String currency) {
             TransferInfo in = new TransferInfo();
@@ -159,6 +157,7 @@ public class AssetInfo {
         private String userName = null;
         private String publicKey = null;
 
+        @JSONField(name="username")
         public String getUserName() {
             return userName;
         }
