@@ -31,7 +31,7 @@ public interface Transaction extends AschInterface{
     //success	boole	是否成功获得response数据
     //transactions	列表	多个交易详情json构成的列表
     //count	int	获取到的交易总个数
-    JSONObject getTransactions(TransactionQueryParameters parameters);
+    JSONObject queryTransactions(TransactionQueryParameters parameters);
 
     //接口地址：/api/transactions/get
     //请求方式：get
@@ -41,7 +41,7 @@ public interface Transaction extends AschInterface{
     //返回参数说明：
     //success	boole	是否成功获得response数据
     //transactions	json	交易详情
-    JSONObject getTranscation(String transactionId);
+    JSONObject getTransaction(String transactionId);
 
     //接口地址：/api/transactions/unconfirmed/get
     //请求方式：get
@@ -78,8 +78,8 @@ public interface Transaction extends AschInterface{
     //返回参数说明：
     //success	boole	是否成功获得response数据
     //transactionId	string	交易id
-    JSONObject createTransaction(String secret, int amount, String recipientId,
-                                      String senderPublicKey, String secondSecret, String multiSignAccountPublicKey);
+    JSONObject addTransaction(String secret, int amount, String recipientId,
+                              String senderPublicKey, String secondSecret, String multiSignAccountPublicKey);
 
 
 }

@@ -2,8 +2,6 @@ package so.asch.sdk;
 
 import com.alibaba.fastjson.JSONObject;
 
-import java.util.List;
-
 /**
  * Asch签名接口
  * @author eagle
@@ -24,7 +22,7 @@ public interface Signature extends AschInterface{
     //返回参数说明：
     //success	boole	是否成功获得response数据
     //transaction	json	设置二级密码产生的交易详情
-    JSONObject signature(String secret, String publicKey, String secondSecret, String multiSignAccountPublicKey);
+    JSONObject setSignature(String secret, String secondSecret, String publicKey, String multiSignAccountPublicKey);
 
     //获取二级密码设置费
     //接口地址：/api/signatures/fee
@@ -54,9 +52,8 @@ public interface Signature extends AschInterface{
     //返回参数说明：
     //success	boole	是否成功获得response数据
     //transactionId	string	多重签名交易的id
-    JSONObject multiSignature(String secret, String publicKey, String secondSecret, int minAccount, int lifetime,
-                                   List<String>addKeys, List<String>removeKeys);
-
+    JSONObject setMultiSignature(int minAccount, int lifetime, String[] addKeys, String[] removeKeys,
+                                  String secret, String secondSecret, String publicKey);
 
     //非交易发起人对交易进行多重签名
     //接口地址：/api/multisignatures/sign
@@ -70,7 +67,7 @@ public interface Signature extends AschInterface{
     //返回参数说明：
     //success	boole	是否成功获得response数据
     //transactionId	string	多重签名交易id
-    JSONObject multiSignature(String secret, String secondSecret, String publicKey, String transactionId);
+    JSONObject multiSignature(String transactionId, String secret, String secondSecret, String publicKey );
 
     //获取挂起的多重签名交易详情
     //接口地址：/api/multisignatures/pending

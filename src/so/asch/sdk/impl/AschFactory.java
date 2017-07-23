@@ -1,8 +1,6 @@
 package so.asch.sdk.impl;
 
-import so.asch.sdk.Account;
-import so.asch.sdk.AschInterface;
-import so.asch.sdk.Delegate;
+import so.asch.sdk.*;
 import so.asch.sdk.security.DefaultSecurityStrategy;
 import so.asch.sdk.security.SecurityStrategy;
 
@@ -24,7 +22,7 @@ public final class AschFactory {
 
     private final SecurityStrategy securityStrategy = new DefaultSecurityStrategy();
 
-    private static Map<Class<? extends AschInterface> , Class<? extends AschRESTService>> implMap = new ConcurrentHashMap<>();
+    private static Map<Class<? extends AschInterface> , AschInterface> serviceContainer = new ConcurrentHashMap<>();
 
     /**
      * 注册服务类
@@ -32,8 +30,14 @@ public final class AschFactory {
      * @param serviceType Asch接口实现类
      * @return 工厂对象本身，实现链式访问
      * */
-    protected AschFactory register(Class<? extends AschInterface> interfaceType, Class<? extends AschRESTService> serviceType){
-        implMap.put(interfaceType, serviceType);
+    protected AschFactory register(Class<? extends AschInterface> interfaceType, Class<? extends AschInterface> serviceType){
+        try{
+            serviceContainer.put(interfaceType, serviceType.newInstance());
+        }
+        catch (Exception ex){
+            //do nothing;
+        }
+
         return this;
     }
 
@@ -42,9 +46,9 @@ public final class AschFactory {
      * @param interfaceType 接口类型
      * @return 服务对象实例
      * */
-    public <AschInterface> AschInterface getService(Class<? extends AschInterface> interfaceType){
+    public <AI> AI getService(Class<? extends AschInterface> interfaceType){
         try {
-            return (AschInterface) implMap.get(interfaceType).newInstance();
+            return (AI) serviceContainer.get(interfaceType);
         }
         catch (Exception ex){
             return null;
@@ -56,7 +60,9 @@ public final class AschFactory {
     static {
         getInstance()
                 .register(Account.class, AccountService.class)
-                .register(Delegate.class, DelegateService.class);
+                .register(Delegate.class, DelegateService.class)
+                .register(Block.class, BlockService.class)
+                .register(Transaction.class, TransactionService.class);
     }
 
 }

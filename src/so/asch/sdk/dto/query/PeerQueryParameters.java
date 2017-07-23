@@ -1,5 +1,7 @@
 package so.asch.sdk.dto.query;
 
+import so.asch.sdk.PeerState;
+
 /**
  * Created by eagle on 17-7-16.
  */
@@ -13,10 +15,10 @@ public class PeerQueryParameters extends QueryParameters {
     //port	integer	N	端口，1~65535
 
     public Integer getState() {
-        return state;
+        return state == null ? null : state.getCode();
     }
 
-    public PeerQueryParameters setState(Integer state) {
+    public PeerQueryParameters setState(PeerState state) {
         this.state = state;
         return this;
     }
@@ -48,7 +50,7 @@ public class PeerQueryParameters extends QueryParameters {
         return this;
     }
 
-    private Integer state = null;
+    private PeerState state = null;
     private String os = null;
     private String version = null;
     private Integer port = null;

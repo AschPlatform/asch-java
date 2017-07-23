@@ -10,7 +10,7 @@ public  class DelegateServiceTest {
     @org.testng.annotations.Test
     public void testGetCount() throws Exception {
         Assert.assertNotNull(TestHelper.delegateService());
-        JSONObject json = TestHelper.delegateService().getCount();
+        JSONObject json = TestHelper.delegateService().getDelegatesCount();
         Assert.assertTrue(TestHelper.isSuccess(json));
     }
 
@@ -36,7 +36,7 @@ public  class DelegateServiceTest {
     public void testGetDelegates() throws Exception {
         DelegateQueryParameters query = new DelegateQueryParameters()
                 .setLimit(10);
-        JSONObject json = TestHelper.delegateService().getDelegates(query);
+        JSONObject json = TestHelper.delegateService().queryDelegates(query);
         Assert.assertTrue(TestHelper.isSuccess(json));
     }
 
@@ -66,6 +66,6 @@ public  class DelegateServiceTest {
     }
 
     @org.testng.annotations.Test
-    public void testGetForgingStatu1() throws Exception {
+    public void testGetForgingStatu() throws Exception {
     }
 }

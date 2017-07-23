@@ -3,7 +3,7 @@ package so.asch.sdk.dto.query;
 /**
  * Created by eagle on 17-7-16.
  */
-public class TransactionQueryParameters {
+public class TransactionQueryParameters extends QueryParameters {
     //blockId	string	N	区块id
     //limit	integer	N	限制结果集个数，最小值：0,最大值：100
     //type	integer	N	交易类型,0:普通转账，1:设置二级密码，2:注册受托人，3:投票，4:多重签名，5:DAPP，6:IN_TRANSFER，7:OUT_TRANSFER

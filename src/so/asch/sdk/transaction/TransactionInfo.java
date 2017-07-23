@@ -1,13 +1,20 @@
-package so.asch.sdk.dto;
+package so.asch.sdk.transaction;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import so.asch.sdk.TransactionType;
+import so.asch.sdk.codec.Decoding;
+import so.asch.sdk.transaction.asset.AssetInfo;
 
 import java.beans.Transient;
+import java.math.BigInteger;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 
 /**
  * Created by eagle on 17-7-16.
  */
 public class TransactionInfo {
+    private static final int MAX_BUFFER_SIZE = 1024 * 5;
 
     public Integer getType() {
         return transactionType == null ? null : transactionType.getCode();
@@ -45,6 +52,13 @@ public class TransactionInfo {
         return this;
     }
 
+    public String getMessage() { return message; }
+
+    public TransactionInfo setMessage(String message) {
+        this.message = message;
+        return this;
+    }
+
     public Long getAmount() {
         return amount;
     }
@@ -62,7 +76,6 @@ public class TransactionInfo {
         this.fee = fee;
         return this;
     }
-
 
     public String getId() {
         return transactionId;
@@ -105,6 +118,7 @@ public class TransactionInfo {
         return this;
     }
 
+    @JSONField
     public AssetInfo getAsset() {
         return assetInfo;
     }
@@ -120,6 +134,7 @@ public class TransactionInfo {
 
     private String requesterPublicKey = null;
     private String senderPublicKey = null;
+    private String message = null;
     private Integer timestamp = null;
     private Long amount = null;
     private Long fee = null;
@@ -127,4 +142,54 @@ public class TransactionInfo {
     private String signature = null;
     private String signSignature = null;
     private AssetInfo assetInfo = null;
+
+    public byte[] getBytes(boolean skipSignature , boolean skipSignSignature){
+        //1 + 4 + 32 + 32 + 8 + 8 + 64 + 64
+        //type(1)|timestamp(4)|senderPublicKey(32)|requesterPublicKey(32)|recipientId(8)|amount(8)|
+        //message(?)|asset(?)|setSignature(64)|signSignature(64)
+
+        ByteBuffer buffer = ByteBuffer.allocate(MAX_BUFFER_SIZE).order(ByteOrder.LITTLE_ENDIAN)
+                .put(getType().byteValue())
+                .putInt(getTimestamp())
+                .put(Decoding.unsafeDecodeHex(getSenderPublicKey()))
+                .put(Decoding.unsafeDecodeHex(getRequesterPublicKey()))
+                .put(getRecipientIdBuffer())
+                .putLong(getAmount())
+                .put(getMessageBuffer())
+                .put(getAsset().getAssetBytes());
+
+        if (!skipSignature){
+            buffer.put(Decoding.unsafeDecodeHex(getSignature()));
+        }
+
+        if (!skipSignSignature){
+            buffer.put(Decoding.unsafeDecodeHex(getSignSignature()));
+        }
+
+        buffer.flip();
+        byte[] result = new byte[buffer.remaining()];
+        buffer.get(result);
+
+        return result;
+    }
+
+    private byte[] getRecipientIdBuffer(){
+        if (null == recipientId)  return new byte[8];
+        //数字地址
+        if (recipientId.matches("^\\d+")){
+            byte[] idBuffer = new BigInteger(recipientId).toByteArray();
+            int length = Math.min(8 ,idBuffer.length);
+            int fromIndex = idBuffer.length > 8 ? idBuffer.length - 8 : 0;
+            byte[] result = new byte[8];
+            System.arraycopy(idBuffer, fromIndex, result, 0, length);
+            return result;
+        }
+
+        //A+Base58地址
+        return Decoding.unsafeDecodeUTF8(recipientId);
+    }
+
+    private byte[] getMessageBuffer(){
+        return message == null ? new byte[0] : message.getBytes();
+    }
 }

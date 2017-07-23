@@ -16,64 +16,76 @@ import so.asch.sdk.dto.query.QueryParameters;
 public class AccountServiceTest {
     @Test
     public void testLogin() throws Exception {
-        JSONObject json = TestHelper.accountService().login(TestHelper.secret);
-        Assert.assertTrue(TestHelper.isSuccess(json));
+        JSONObject result = TestHelper.accountService().login(TestHelper.secret);
+        Assert.assertTrue(TestHelper.isSuccess(result));
     }
 
     @Test
     public void testSecureLogin() throws Exception {
-        JSONObject json = TestHelper.accountService().secureLogin(TestHelper.secret);
-        Assert.assertTrue(TestHelper.isSuccess(json));
+        JSONObject result = TestHelper.accountService().secureLogin(TestHelper.secret);
+        Assert.assertTrue(TestHelper.isSuccess(result));
     }
 
     @Test
     public void testGetAccount() throws Exception {
-        JSONObject json = TestHelper.accountService().getAccount(TestHelper.address);
-        Assert.assertTrue(TestHelper.isSuccess(json));
+        JSONObject result = TestHelper.accountService().getAccount(TestHelper.address);
+        Assert.assertTrue(TestHelper.isSuccess(result));
     }
 
     @Test
     public void testGetBalance() throws Exception {
-        JSONObject json = TestHelper.accountService().getBalance(TestHelper.address);
-        Assert.assertTrue(TestHelper.isSuccess(json));
+        JSONObject result = TestHelper.accountService().getBalance(TestHelper.address);
+        Assert.assertTrue(TestHelper.isSuccess(result));
     }
 
     @Test
     public void testGetPublicKey() throws Exception {
-        JSONObject json = TestHelper.accountService().getPublicKey(TestHelper.address);
-        Assert.assertTrue(TestHelper.isSuccess(json));
+        JSONObject result = TestHelper.accountService().getPublicKey(TestHelper.address);
+        Assert.assertTrue(TestHelper.isSuccess(result));
     }
 
     @Test
     public void testGeneratePublicKey() throws Exception {
-        JSONObject json = TestHelper.accountService().generatePublicKey(TestHelper.secret);
-        Assert.assertTrue(TestHelper.isSuccess(json));
+        JSONObject result = TestHelper.accountService().generatePublicKey(TestHelper.secret);
+        Assert.assertTrue(TestHelper.isSuccess(result));
     }
 
     @Test
     public void testVote() throws Exception {
-        JSONObject json = TestHelper.accountService().vote(
-                TestHelper.secret,
-                TestHelper.secondSecret,
+        JSONObject result = TestHelper.accountService().vote(
                 TestHelper.voted,
-                TestHelper.canceled
+                TestHelper.canceled,
+                TestHelper.secret,
+                TestHelper.secondSecret
         );
 
-        Assert.assertTrue(TestHelper.isSuccess(json) ||
-                "account has already voted for this delegate".equals(json.getString("error"))||
-                "Failed to remove vote, account has not voted for this delegate".equals(json.getString("error")));
+        Assert.assertTrue(TestHelper.isSuccess(result) ||
+                "account has already voted for this delegate".equals(result.getString("error"))||
+                "Failed to remove vote, account has not voted for this delegate".equals(result.getString("error")));
+    }
+
+    @Test
+    public void testTransfer() throws Exception {
+        JSONObject result = TestHelper.accountService().transfer(
+                TestHelper.targetAddress,
+                1* 100000000,
+                "Transfer by Test",
+                TestHelper.secret,
+                TestHelper.secondSecret);
+
+        Assert.assertTrue(TestHelper.isSuccess(result) && result.containsKey("transactionId"));
     }
 
     @Test
     public void testGetDelegatesFee() throws Exception {
-        JSONObject json = TestHelper.accountService().getDelegatesFee();
-        Assert.assertTrue(TestHelper.isSuccess(json));
+        JSONObject result = TestHelper.accountService().getDelegatesFee();
+        Assert.assertTrue(TestHelper.isSuccess(result));
     }
 
     @Test
     public void testGetVotedDelegates() throws Exception {
-        JSONObject json = TestHelper.accountService().getVotedDelegates(TestHelper.address);
-        Assert.assertTrue(TestHelper.isSuccess(json));
+        JSONObject result = TestHelper.accountService().getVotedDelegates(TestHelper.address);
+        Assert.assertTrue(TestHelper.isSuccess(result));
     }
 
     @Test
@@ -82,7 +94,7 @@ public class AccountServiceTest {
                 .setLimit(50)
                 .setOffset(0);
 
-        JSONObject json = TestHelper.accountService().getTopAccounts(parameters);
-        Assert.assertTrue(TestHelper.isSuccess(json));
+        JSONObject result = TestHelper.accountService().getTopAccounts(parameters);
+        Assert.assertTrue(TestHelper.isSuccess(result));
     }
 }

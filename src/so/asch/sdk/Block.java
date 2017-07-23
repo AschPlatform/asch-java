@@ -19,7 +19,10 @@ public interface Block extends AschInterface {
     //返回参数说明：
     //success	boole	是否成功获得response数据
     //block	json	区块详情
-    JSONObject getBlock(String blockId, String height, String hash);
+    JSONObject getBlockById(String id, boolean fullBlockInfo);
+    JSONObject getBlockByHeight(long height, boolean fullBlockInfo);
+    JSONObject getBlockByHash(String hash, boolean fullBlockInfo);
+
 
     //接口地址：/api/blocks
     //请求方式：get
@@ -39,7 +42,7 @@ public interface Block extends AschInterface {
     //success	boole	是否成功获得response数据
     //blocks	Array	由区块详情json串构成的数组
     //count	integer	区块链高度
-    JSONObject getBlocks(BlockQueryParameters parameters);
+    JSONObject queryBlocks(BlockQueryParameters parameters);
 
     //接口地址：/api/blocks/getHeight
     //请求方式：get
@@ -49,42 +52,6 @@ public interface Block extends AschInterface {
     //success	boole	是否成功获得response数据
     //height	integer	区块链高度
     JSONObject getHeight();
-
-    //接口地址：/api/blocks/getFee
-    //请求方式：get
-    //支持格式：无
-    //请求参数说明：无
-    //返回参数说明：
-    //success	boole	是否成功获得response数据
-    //fee	integer	交易手续费
-    JSONObject getTransactionFee();
-
-    //接口地址：/api/blocks/getMilestone
-    //请求方式：get
-    //支持格式：无
-    //请求参数说明：无
-    //返回参数说明：
-    //success	boole	是否成功获得response数据
-    //milestone	integer
-    JSONObject getMilestone();
-
-    //接口地址：/api/blocks/getReward
-    //请求方式：get
-    //支持格式：无
-    //请求参数说明：无
-    //返回参数说明：
-    //success	boole	是否成功获得response数据
-    //reward	integer	区块奖励
-    JSONObject getReword();
-
-    //接口地址：/api/blocks/getSupply
-    //请求方式：get
-    //支持格式：无
-    //请求参数说明：无
-    //返回参数说明：
-    //success	boole	是否成功获得response数据
-    //supply	integer	全网XAS个数
-    JSONObject getSupply();
 
     //接口地址：/api/blocks/getStatus
     //请求方式：get
@@ -98,6 +65,5 @@ public interface Block extends AschInterface {
     //reward	integer	区块奖励
     //supply	integer	全网XAS个数
     JSONObject getStauts();
-
 
 }

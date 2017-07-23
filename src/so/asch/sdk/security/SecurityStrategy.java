@@ -1,6 +1,6 @@
 package so.asch.sdk.security;
 
-import so.asch.sdk.dto.TransactionInfo;
+import so.asch.sdk.transaction.TransactionInfo;
 
 import java.security.KeyPair;
 import java.security.PrivateKey;

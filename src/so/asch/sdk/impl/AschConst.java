@@ -16,4 +16,9 @@ public final class AschConst {
         public static final long DELEGATE = 10000000000L;
         public static final long DAPP = 10000000000L;
     }
+
+    public class AccountFields{
+        public static final String NAME = "name";
+
+    }
 }

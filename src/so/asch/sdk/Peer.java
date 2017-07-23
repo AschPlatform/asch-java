@@ -24,7 +24,7 @@ public interface Peer extends AschInterface {
     //success	boole	是否成功获得response数据
     //peers	Array	节点信息json构成的数组
     //totalCount	integer	当前正在运行的节点个数
-    JSONObject getPeers(PeerQueryParameters parameters);
+    JSONObject queryPeers(PeerQueryParameters parameters);
 
     //接口地址：/api/peers/version
     //请求方式：get

@@ -17,7 +17,7 @@ public interface Delegate extends AschInterface {
     //返回参数说明：
     //success	boole	是否成功获得response数据
     //count	integer	受托人总个数
-    JSONObject getCount();
+    JSONObject getDelegatesCount();
 
     //接口地址：/api/delegates/voters
     //请求方式：get
@@ -55,7 +55,7 @@ public interface Delegate extends AschInterface {
     //返回参数说明：
     //success	boole	是否成功获得response数据
     //delegates	Array	受托人详情列表
-    JSONObject getDelegates(DelegateQueryParameters parameters);
+    JSONObject queryDelegates(DelegateQueryParameters parameters);
 
     //接口地址：/api/delegates/fee
     //请求方式：get
@@ -100,7 +100,7 @@ public interface Delegate extends AschInterface {
     //返回参数说明：
     //success	boole	是否成功获得response数据
     //address	string	受托人地址
-    JSONObject enableForge(String secret, String publicKey);
+    JSONObject enableForge(String publicKey, String secret );
 
     //接口地址：/api/delegates/forging/disable
     //请求方式：post
@@ -111,7 +111,7 @@ public interface Delegate extends AschInterface {
     //返回参数说明：
     //success	boole	是否成功获得response数据
     //address	string	受托人地址
-    JSONObject disableForge(String secret, String publicKey);
+    JSONObject disableForge(String publicKey, String secret);
 
     //接口地址：/api/delegates/forging/status
     //请求方式：get

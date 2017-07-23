@@ -40,7 +40,7 @@ public interface Misc {
     //返回参数说明：
     //success	boole	是否成功获得response数据。
     //transactionId	string	交易id
-    JSONObject storeData(String secret, String content, String encode, int wait, String secondSecret);
+    JSONObject storeData(String content, ContentEncoding encoding, int wait, String secret, String secondSecret);
 
     //查询存储的数据
     //接口地址：/api/storages

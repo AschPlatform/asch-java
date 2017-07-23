@@ -2,8 +2,9 @@ package so.asch.sdk.impl;
 
 import com.alibaba.fastjson.JSONObject;
 import so.asch.sdk.AschInterface;
-import so.asch.sdk.dto.TransactionBuilder;
-import so.asch.sdk.dto.TransactionInfo;
+import so.asch.sdk.dbc.Argument;
+import so.asch.sdk.transaction.TransactionBuilder;
+import so.asch.sdk.transaction.TransactionInfo;
 import so.asch.sdk.security.SecurityStrategy;
 
 /**
@@ -82,7 +83,7 @@ public abstract class AschRESTService implements AschInterface{
     }
 
     protected JSONObject broadcastTransaction(TransactionInfo transaction){
-        return postMagic("/peer/transactions", new JSONObject().fluentPut("transaction", transaction));
+        return postMagic(AschServiceUrls.Peer.BROADCAST_TRANSACTION, new JSONObject().fluentPut("transaction", transaction));
     }
 
     protected JSONObject fail(Exception ex){
@@ -93,6 +94,30 @@ public abstract class AschRESTService implements AschInterface{
 
     protected JSONObject jsonWithPublicKeyField(String publicKey){
         return new JSONObject().fluentPut("publicKey", publicKey);
+    }
+
+    protected JSONObject getByPublicKey(String relativeUrl, String publicKey){
+        try {
+            Argument.require(Validation.isValidPublicKey(publicKey), "invalid public key");
+
+            JSONObject parameters = jsonWithPublicKeyField(publicKey);
+            return get(relativeUrl, parameters);
+        }
+        catch (Exception ex){
+            return fail(ex);
+        }
+    }
+
+    protected JSONObject getByAddress(String relativeUrl, String address){
+        try {
+            Argument.require(Validation.isValidAddress(address), "invalid public address");
+
+            JSONObject parameters = new JSONObject().fluentPut("address", address);
+            return get(relativeUrl, parameters);
+        }
+        catch (Exception ex){
+            return fail(ex);
+        }
     }
 
     protected JSONObject jsonFromObject(Object object){

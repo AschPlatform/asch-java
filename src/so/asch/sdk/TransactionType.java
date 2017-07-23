@@ -12,25 +12,17 @@ import java.util.Map;
 public enum TransactionType {
     //named SEND in asch
     Transfer(0,"transfer"),
-
-    Signature(1, "signature"),
-
+    Signature(1, "setSignature"),
     Delegate(2, "delegate"),
-
     Vote(3, "vote"),
-
-    MultiSignature(4, "multiSignature"),
-
+    MultiSignature(4, "setMultiSignature"),
     Dapp(5, "dapp"),
-
     InTransfer(6,"inTransfer"),
-
     OutTransfer(7,"outTransfer"),
-
     Store(8, "store"),
 
     UIAIssuer(9, "UIA_ISSUER"),
-    UIAAssert(10, "UIA_ASSET"),
+    UIAAsset(10, "UIA_ASSET"),
     UIAFlags(11, "UIA_FLAGS"),
     UIA_ACL(12, "UIA_ACL"),
     UIAIssue(13, "UIA_ISSUE"),

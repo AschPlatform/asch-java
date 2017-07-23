@@ -95,9 +95,7 @@ public interface Account extends AschInterface {
     //fee	integer	手续费设置
     JSONObject getDelegatesFee();
 
-    //接口地址：/api/accounts/delegates
-    //请求方式：put
-    //支持格式：json
+    //投票[transaction]
     //请求参数说明：
     //secret	string	Y	asch账户密码
     //secondSecret	string	N	asch账户二级密码，最小长度：1，最大长度：100
@@ -106,8 +104,19 @@ public interface Account extends AschInterface {
     //名称	类型	说明
     //success	boole	是否成功获得response数据
     //transaction	json	投票交易详情
-    JSONObject vote(String secret, String secondSecret,
-                         String[] votedPublicKeys, String[] cancelVotedPublicKeys);
+    JSONObject vote( String[] upvotePublicKeys, String[] downvotePublicKeys, String secret, String secondSecret);
+
+
+    //转账[transaction]
+    //请求参数说明：
+    //targetAddress string Y    目标地址
+    //amount    long    Y   转账金额
+    //secret	string	Y	asch账户密码
+    //secondSecret	string	N	asch账户二级密码，最小长度：1，最大长度：100
+    //返回参数说明：
+    //名称	类型	说明
+    //success	boole	是否成功获得response数据
+    JSONObject transfer(String targetAddress, long amount, String message, String secret, String secondSecret);
 
     //接口地址：/api/accounts/top
     //请求方式：get

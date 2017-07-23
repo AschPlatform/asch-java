@@ -30,20 +30,24 @@ public class Main {
             Account account = AschFactory.getInstance().getService(Account.class);
             Delegate delegate = AschFactory.getInstance().getService(Delegate.class);
 
-            JSONObject json = delegate.registerDelegate(userName, secret, secondSecret);
-            System.out.println(json.toString());
-
-            json = account.vote(secret, secondSecret, new String[0], voted);
-            System.out.println(json.toString());
-
-            json = delegate.getDelegateByPublicKey(publicKey);
-            System.out.println(json.toString());
-
-            json = delegate.getDelegateByName(userName);
-            System.out.println(json.toString());
-
-//            json = delegate.getCount();
+//            JSONObject json = delegate.registerDelegate(userName, secret, secondSecret);
 //            System.out.println(json.toString());
+//
+//            json = account.vote(secret, secondSecret, new String[0], voted);
+//            System.out.println(json.toString());
+//
+//            json = delegate.getDelegateByPublicKey(publicKey);
+//            System.out.println(json.toString());
+//
+//            json = delegate.getDelegateByName(userName);
+//            System.out.println(json.toString());
+
+//            json = delegate.getDelegatesCount();
+//            System.out.println(json.toString());
+
+            JSONObject json = account.transfer("11705168753296944226", 1* 100000000,
+                    "Transfer by Test", secret, secondSecret);
+            System.out.println(json);
         }
         catch (Exception ex){
             System.out.println(ex.getMessage());

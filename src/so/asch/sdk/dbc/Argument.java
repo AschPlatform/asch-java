@@ -1,6 +1,8 @@
 package so.asch.sdk.dbc;
 
 
+import java.util.function.Predicate;
+
 /**
  * DBC前置条件
  * @author eagle
@@ -9,6 +11,11 @@ package so.asch.sdk.dbc;
 public class Argument {
     public static void require(boolean condition, String errorInfo) throws ContractException {
         if (!condition)
+            throw new ContractException(errorInfo);
+    }
+
+    public static <T>void optional(T object, Predicate<T> validation, String errorInfo) throws ContractException {
+        if (object == null || !validation.test(object))
             throw new ContractException(errorInfo);
     }
 
