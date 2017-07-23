@@ -11,12 +11,12 @@ public class Main {
     public static void main(String[] args) {
         try {
             String url = "http://127.0.0.1:4096";
-            //String secret = "early sugar cannon mansion expose tunnel piece manual destroy exhaust helmet rather";
+            String secret = "early sugar cannon mansion expose tunnel piece manual destroy exhaust helmet rather";
             String address = "7286541193277597873";
             String secondSecret = "asch111111";
             String userName = "asch_g2";
 
-            String secret = "raise cloud royal wonder cradle job gate wife depth device bitter hope";
+            //String secret2 = "raise cloud royal wonder cradle job gate wife depth device bitter hope";
             //asch_g101	11705168753296944226 00dd0e70fe22e9b580ba0ccf696f1d108a6475bb303b8689947ba346b0b02ad9
             //asch_g96	16093201530526106149 0225c340addf24211f4b51ea24cb0565c67f09600f57bad89af350b38b08a366
             //asch_g32	4354832300657989346 0ae2e3bcd8c959bccc34445a9473eab1bece60300f3aa00d89612923470dee75
@@ -34,8 +34,8 @@ public class Main {
 //            JSONObject json = delegate.registerDelegate(userName, secret, secondSecret);
 //            System.out.println(json.toString());
 //
-//            json = account.vote(secret, secondSecret, new String[0], voted);
-//            System.out.println(json.toString());
+            JSONObject json = account.vote(voted, canceled, secret, secondSecret);
+            System.out.println(json.toString());
 //
 //            json = delegate.getDelegateByPublicKey(publicKey);
 //            System.out.println(json.toString());
@@ -46,9 +46,9 @@ public class Main {
 //            json = delegate.getDelegatesCount();
 //            System.out.println(json.toString());
 
-            JSONObject json = account.transfer("11705168753296944226", 1* 100000000,
-                    "Transfer by Test", secret,null);// secondSecret);
-            System.out.println(json);
+//            JSONObject json = account.transfer("11705168753296944226", 1* 100000000,
+//                    "Transfer by Test", secret, secondSecret);
+//            System.out.println(json);
         }
         catch (Exception ex){
             System.out.println(ex.getMessage());

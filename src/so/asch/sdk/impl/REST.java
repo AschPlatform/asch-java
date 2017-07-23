@@ -16,7 +16,6 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -28,12 +27,6 @@ import java.util.Map;
 public final class REST {
 
         private static Logger logger = LoggerFactory.getLogger(REST.class);
-        private static final Map<String, String> magicHeaders = new HashMap<>();
-
-        static {
-            magicHeaders.put("magic","594fe0f3");
-            magicHeaders.put("version","");
-        }
 
         protected static void addCustomeHeads(Map<String, String> heads, HttpEntityEnclosingRequest request) {
             if (null == heads ) return;
@@ -124,6 +117,7 @@ public final class REST {
 
             String fullUrl = queryString == null ? url : url + "?" + queryString;
             HttpGet get = new HttpGet(fullUrl);
+
             return httpClient.execute(get);
         }
 

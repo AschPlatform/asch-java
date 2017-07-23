@@ -41,9 +41,7 @@ public class SignatureServices extends AschRESTService implements Signature {
                                         String secret, String secondSecret, String publicKey ) {
         try {
             Argument.require(Validation.isValidMultiSignatureMinAccount(minAccount), "invalid minAccount");
-            Argument.require(Validation.any(keys-> keys!= null && keys.length > 0, addKeys, removeKeys ), "no keys in addKeys and removeKeys");
-            Argument.optional(addKeys, keys->Validation.all(Validation::isValidPublicKey, keys), "invalid addKeys");
-            Argument.optional(removeKeys, keys->Validation.all(Validation::isValidPublicKey, keys), "invalid removeKeys");
+            Argument.require(Validation.isValidMultiSignatureKeys(addKeys, removeKeys), "invalid addKeys or removeKeys");
             Argument.require(Validation.isValidMultiSignatureLifetime(lifetime), "invalid lifetime");
             Argument.require(Validation.isValidSecure(secret), "invalid secret");
             Argument.optional(publicKey, Validation::isValidSecure, "invalid publicKey");

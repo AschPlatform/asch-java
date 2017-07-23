@@ -6,17 +6,22 @@ http://testnet.asch.so:4096
 
 test account
 ============================================
-    address = "AN9rQVu4o8vDbmz2xcsogPHxoTwZSpj5RK";
-    secret = "nice gold mountain garden actual kick utility talk glass image install flat";
-    secondSecret = "asch123456";
 
-    //asch_g46	11311532344948918824,
-    //asch_g5	12131151007585128653,
-    //sportshark	A3etGK19j3K9X9x4LpMJf9aDkwhKwiEwuy
-    votedPublicKeys = Arrays.asList("11311532344948918824","12131151007585128653","A3etGK19j3K9X9x4LpMJf9aDkwhKwiEwuy");
+    public static final String secret = "early sugar cannon mansion expose tunnel piece manual destroy exhaust helmet rather";
+    public static final String address = "7286541193277597873";
+    public static final String secondSecret = "asch111111";
+    public static final String userName = "asch_g2";
 
-    //wanglu	A5pcftQKeNZmGa7disXZGarfnycRx6iT6C
-    //asch_g54	14552564717140225834
-    cancelVotedPublicKeys = Arrays.asList("A5pcftQKeNZmGa7disXZGarfnycRx6iT6C","14552564717140225834");
+    //asch_g101 11705168753296944226 00dd0e70fe22e9b580ba0ccf696f1d108a6475bb303b8689947ba346b0b02ad9
+    public static final String targetAddress = "11705168753296944226";
+
+    //asch_g101	11705168753296944226 00dd0e70fe22e9b580ba0ccf696f1d108a6475bb303b8689947ba346b0b02ad9
+    //asch_g96	16093201530526106149 0225c340addf24211f4b51ea24cb0565c67f09600f57bad89af350b38b08a366
+    //asch_g32	4354832300657989346 0ae2e3bcd8c959bccc34445a9473eab1bece60300f3aa00d89612923470dee75
+    public static final String[] voted = "00dd0e70fe22e9b580ba0ccf696f1d108a6475bb303b8689947ba346b0b02ad9,0225c340addf24211f4b51ea24cb0565c67f09600f57bad89af350b38b08a366,0ae2e3bcd8c959bccc34445a9473eab1bece60300f3aa00d89612923470dee75".split(",");
+
+    //asch_g23	4752137788839516181 486179424b4bcfaf7960a4a121277d73e4a7c9e0c27b254edf978762d5a6dfe6
+    //asch_g40	16494449392359591122 49b369ff2635e2ac083d62a6c59baf872fbdef6990297f296c95e1830118aba1
+    public static final String[] canceled = "486179424b4bcfaf7960a4a121277d73e4a7c9e0c27b254edf978762d5a6dfe6,49b369ff2635e2ac083d62a6c59baf872fbdef6990297f296c95e1830118aba1".split(",");
 
 ============================================

@@ -74,11 +74,13 @@ public class AccountService extends so.asch.sdk.impl.AschRESTService implements 
         return get(AschServiceUrls.Account.GET_DELEGATE_FEE);
     }
 
+    //todo:验证投票和取消投票的数组都符合规则
     @Override
     public JSONObject vote(String[] upvotePublicKeys, String[] downvotePublicKeys, String secret, String secondSecret){
         try {
             Argument.require(Validation.isValidSecure(secret), "invalid secret");
-            Argument.optional(secondSecret, ss->Validation.isValidSecure(ss), "invalid secondSecret");
+            Argument.optional(secondSecret, Validation::isValidSecure, "invalid secondSecret");
+            Argument.require(Validation.isValidVoteKeys(upvotePublicKeys, downvotePublicKeys), "invalid upvoteKeys or downvoteKeys");
 
             TransactionInfo transaction = getTransactionBuilder()
                     .buildVote( upvotePublicKeys, downvotePublicKeys,secret, secondSecret);

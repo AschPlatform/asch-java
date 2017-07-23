@@ -3,6 +3,7 @@ package so.asch.sdk.impl;
 import so.asch.sdk.ContentEncoding;
 import so.asch.sdk.dto.query.*;
 
+import java.util.HashSet;
 import java.util.function.Predicate;
 
 /**
@@ -86,6 +87,25 @@ public class Validation {
         return wait >= 0 && wait<= 6;
     }
 
+    public static boolean isValidVoteKeys(String[] upvote, String[] downvote){
+        return  (upvote != null || downvote != null) &&
+                (!isIntersected(upvote, downvote)) &&
+                (!(isDuplicate(upvote) || isDuplicate(downvote)))&&
+                ((upvote == null ? 0 : upvote.length) + (downvote == null ? 0 : downvote.length) <= 33)&&
+                (all(Validation::isValidPublicKey, upvote)) &&
+                (all(Validation::isValidPublicKey, downvote));
+    }
+
+    public static boolean isValidMultiSignatureKeys(String[] addKyes, String[]removeKeys){
+        return  (addKyes != null || removeKeys != null) &&
+                (!isIntersected(addKyes, removeKeys)) &&
+                (!(isDuplicate(addKyes) || isDuplicate(removeKeys)))&&
+                ((addKyes == null ? 0 : addKyes.length) + (removeKeys == null ? 0 : removeKeys.length) <= 10)&&
+                (all(Validation::isValidPublicKey, addKyes)) &&
+                (all(Validation::isValidPublicKey, removeKeys));
+
+    }
+
     public static boolean isValidContent(String content, ContentEncoding encoding){
         if (null == content )  return false;
         switch (encoding){
@@ -129,6 +149,8 @@ public class Validation {
         return isValidQueryParameters(queryParameters);
     }
 
+
+
     public static <T> boolean all(Predicate<T> predicate, T... list){
         if (list == null)
             return false;
@@ -148,6 +170,37 @@ public class Validation {
             if (predicate.test(o))
                 return true;
         }
+        return false;
+    }
+
+    private static <T>boolean isIntersected(T[] array1, T[] array2){
+        if (array1 == null || array2 == null)
+            return false;
+
+        HashSet<T> set = new HashSet<>();
+        for (T item: array1) {
+            if (!set.contains(item)) set.add(item);
+        }
+
+        for(T item : array2){
+            if (set.contains(item)) return true;
+        }
+
+        return false;
+    }
+
+    private static <T> boolean isDuplicate(T[] array){
+        if (array == null)
+            return false;
+
+        HashSet<T> set = new HashSet<>();
+        for (T item: array) {
+            if (!set.contains(item))
+                set.add(item);
+            else
+                return true;
+        }
+
         return false;
     }
 }
