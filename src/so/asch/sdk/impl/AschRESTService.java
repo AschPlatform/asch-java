@@ -83,7 +83,9 @@ public abstract class AschRESTService implements AschInterface{
     }
 
     protected JSONObject broadcastTransaction(TransactionInfo transaction){
-        return postMagic(AschServiceUrls.Peer.BROADCAST_TRANSACTION, new JSONObject().fluentPut("transaction", transaction));
+        JSONObject transactionJson = new JSONObject().fluentPut("transaction", transaction);
+        System.out.println(transactionJson.toString());
+        return postMagic(AschServiceUrls.Peer.BROADCAST_TRANSACTION, transactionJson );
     }
 
     protected JSONObject fail(Exception ex){

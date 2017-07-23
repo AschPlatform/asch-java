@@ -13,7 +13,7 @@ public abstract class AssetInfo {
     private static final byte[] EMPTY_BUFFER = new byte[0];
 
     @Transient
-    public byte[] getAssetBytes(){
+    public byte[] assetBytes(){
         ByteBuffer buffer = ByteBuffer.allocate(MAX_BUFFER_SIZE)
                 .order(ByteOrder.LITTLE_ENDIAN);
 
@@ -27,5 +27,4 @@ public abstract class AssetInfo {
     }
 
     public abstract void addBytes(ByteBuffer buffer);
-
 }

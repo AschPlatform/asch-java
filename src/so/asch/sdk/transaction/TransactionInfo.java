@@ -156,7 +156,7 @@ public class TransactionInfo {
                 .put(getRecipientIdBuffer())
                 .putLong(getAmount())
                 .put(getMessageBuffer())
-                .put(getAsset().getAssetBytes());
+                .put(getAsset().assetBytes());
 
         if (!skipSignature){
             buffer.put(Decoding.unsafeDecodeHex(getSignature()));

@@ -94,7 +94,7 @@ public class AccountService extends so.asch.sdk.impl.AschRESTService implements 
         try {
             Argument.require(Validation.isValidAddress(targetAddress), "invalid target address");
             Argument.require(Validation.isValidSecure(secret), "invalid secret");
-            Argument.optional(secondSecret, ss->Validation.isValidSecure(ss), "invalid second secret");
+            Argument.optional(secondSecret, Validation::isValidSecure, "invalid second secret");
 
             TransactionInfo transaction = getTransactionBuilder()
                     .buildTransfer(targetAddress, amount, message, secret, secondSecret);
