@@ -49,7 +49,7 @@ public class BlockService extends AschRESTService implements Block {
     @Override
     public JSONObject queryBlocks(BlockQueryParameters parameters) {
         try {
-            Argument.require(Validation.isValidBlockQueryParameters(parameters), "invalid parameters");
+            //Argument.require(Validation.isValidBlockQueryParameters(parameters), "invalid parameters");
 
             JSONObject query = jsonFromObject(parameters);
             return get(AschServiceUrls.Block.QUERY_BLOCKS,  query);
@@ -62,6 +62,26 @@ public class BlockService extends AschRESTService implements Block {
     @Override
     public JSONObject getHeight() {
         return get(AschServiceUrls.Block.GET_HEIGHT);
+    }
+
+    @Override
+    public JSONObject getFree() {
+        return get(AschServiceUrls.Block.GET_FREE);
+    }
+
+    @Override
+    public JSONObject getMilestone() {
+        return get(AschServiceUrls.Block.GET_MILESTONE);
+    }
+
+    @Override
+    public JSONObject getReward() {
+        return get(AschServiceUrls.Block.GET_REWARD);
+    }
+
+    @Override
+    public JSONObject getSupply() {
+        return get(AschServiceUrls.Block.GET_SUPPLY);
     }
 
 

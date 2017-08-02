@@ -79,6 +79,7 @@ public class DelegateService extends AschRESTService implements Delegate {
     * */
     @Override
     public JSONObject enableForge( String publicKey, String secret ) {
+
         return null;
     }
 

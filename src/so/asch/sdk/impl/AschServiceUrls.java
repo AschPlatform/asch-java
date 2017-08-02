@@ -20,8 +20,8 @@ public final class AschServiceUrls {
         static final String QUERY_DELEGATES ="/api/delegates";
         static final String GET_DELEGATE_FEE ="/api/delegates/fee";
         static final String GET_FORGING = "/api/delegates/forging/getForgedByAccount";
-        static final String ENABLE_FORGE = "/api/forging/enable";
-        static final String DISABLE_FORGE = "/api/forging/disable";
+        static final String ENABLE_FORGE = "/api/delegates/forging/enable";
+        static final String DISABLE_FORGE = "/api/delegates/forging/disable";
         static final String GET_FORGING_STATUS ="/api/delegates/forging/status";
     }
 
@@ -30,6 +30,10 @@ public final class AschServiceUrls {
         static final String GET_FULL_BLOCK_INFO = "/api/blocks/full";
         static final String QUERY_BLOCKS = "/api/blocks/";
         static final String GET_HEIGHT = "/api/blocks/getHeight";
+        static final String GET_FREE="/api/blocks/getFee";
+        static final String GET_MILESTONE = "/api/blocks/getMilestone";
+        static final String GET_REWARD = "/api/blocks/getReward";
+        static final String GET_SUPPLY = "/api/blocks/getSupply";
         static final String GET_STATUS = "/api/blocks/getStatus";
 
     }
