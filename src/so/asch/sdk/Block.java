@@ -53,6 +53,47 @@ public interface Block extends AschInterface {
     //height	integer	区块链高度
     JSONObject getHeight();
 
+    //接口地址：/api/blocks/getFee
+    //接口说明： 获取交易手续费
+    //请求方式：get
+    //支持格式：无
+    //请求参数说明：无
+    //返回参数说明：
+    //success	boole	是否成功获得response数据
+    //milestone	integer	交易手续费
+    JSONObject getFree();
+
+    //接口地址：/api/blocks/getMilestone
+    //接口说明：获取里程碑
+    //请求方式：get
+    //支持格式：无
+    //请求参数说明：无
+    //返回参数说明：
+    //success	boole	是否成功获得response数据
+    //milestone	integer	里程碑
+    JSONObject getMilestone();
+
+    //接口地址：/api/blocks/getReward
+    //接口说明：获取单个区块奖励
+    //请求方式：get
+    //支持格式：无
+    //请求参数说明：无
+    //返回参数说明：
+    //success	boole	是否成功获得response数据
+    //reward	integer	区块奖励
+    JSONObject getReward();
+
+    //接口地址：/api/blocks/getSupply
+    //接口说明：获取区块链当前最大供应值
+    //请求方式：get
+    //支持格式：无
+    //请求参数说明：无
+    //返回参数说明：
+    //success	boole	是否成功获得response数据
+    //supply	integer	全网XAS个数
+    JSONObject getSupply();
+
+
     //接口地址：/api/blocks/getStatus
     //请求方式：get
     //支持格式：无
@@ -65,5 +106,7 @@ public interface Block extends AschInterface {
     //reward	integer	区块奖励
     //supply	integer	全网XAS个数
     JSONObject getStauts();
+
+
 
 }

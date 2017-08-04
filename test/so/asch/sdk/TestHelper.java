@@ -28,6 +28,13 @@ public class TestHelper {
     //asch_g40	16494449392359591122 49b369ff2635e2ac083d62a6c59baf872fbdef6990297f296c95e1830118aba1
     public static final String[] canceled = "486179424b4bcfaf7960a4a121277d73e4a7c9e0c27b254edf978762d5a6dfe6,49b369ff2635e2ac083d62a6c59baf872fbdef6990297f296c95e1830118aba1".split(",");
 
+
+    public static final String blockId = "a9a4d8263b68a238bd934943624a2a59f13525b32b0957ea2328d4ff346de174";
+
+    public static final long blockHeight = 6900;
+
+    public static final String blockHash = "979fa5571901256bb10e42d5ae88e5f5108b6f684938beaf4281bf9cfa2041850409eee45cc5f2a37aa93717f6079da9a549496c53ee9ff510c97c2e0c0b6c0a";
+
     static {
 
         AschSDKConfig.getInstance().setRoot(root);

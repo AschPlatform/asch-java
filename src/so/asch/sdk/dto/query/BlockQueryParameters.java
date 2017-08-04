@@ -59,8 +59,12 @@ public class BlockQueryParameters extends QueryParameters {
         return this;
     }
 
-    public Integer getHeight() {
+    public long getHeight() {
         return height;
+    }
+
+    public void setHeight(long height) {
+        this.height = height;
     }
 
     public BlockQueryParameters setHeight(Integer height) {
@@ -73,5 +77,5 @@ public class BlockQueryParameters extends QueryParameters {
     private Integer totalFee = null;
     private Integer reward = null;
     private String previousBlock = null;
-    private Integer height = null;
+    private long height = 0;
 }
