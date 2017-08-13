@@ -1,20 +1,20 @@
 package so.asch.sdk.impl;
 
-import com.alibaba.fastjson.JSONObject;
+import so.asch.sdk.AschResult;
 import so.asch.sdk.Signature;
 import so.asch.sdk.dbc.Argument;
 import so.asch.sdk.transaction.TransactionInfo;
 
-public class SignatureServices extends AschRESTService implements Signature {
+public class SignatureService extends AschRESTService implements Signature {
     @Override
-    public JSONObject setSignature(String secret, String secondSecret, String publicKey, String multiSignAccountPublicKey) {
+    public AschResult setSignature(String secret, String secondSecret, String publicKey, String multiSignAccountPublicKey) {
         try{
-            Argument.require(Validation.isValidSecure(secret), "invalid secret");
-            Argument.optional(publicKey, Validation::isValidSecure, "invalid publicKey");
-            Argument.require(Validation.isValidSecure(secondSecret), "invalid secondSecret");
-            Argument.optional(multiSignAccountPublicKey, Validation::isValidSecure, "invalid multiSignAccountPublicKey");
+            Argument.require(Validation.isValidSecret(secret), "invalid secret");
+            Argument.optional(publicKey, Validation::isValidPublicKey, "invalid publicKey");
+            Argument.require(Validation.isValidSecondSecret(secondSecret), "invalid secondSecret");
+            Argument.optional(multiSignAccountPublicKey, Validation::isValidPublicKey, "invalid multiSignAccountPublicKey");
 
-//            JSONObject parameters = new JSONObject()
+//            AschResult parameters = new AschResult()
 //                    .fluentPut("secret", secret)
 //                    .fluentPut("publicKey", publicKey)
 //                    .fluentPut("secondSecret", secondSecret)
@@ -31,21 +31,21 @@ public class SignatureServices extends AschRESTService implements Signature {
     }
 
     @Override
-    public JSONObject getSignatureFee() {
+    public AschResult getSignatureFee() {
         return get(AschServiceUrls.Signature.GET_SIGNATURE_FEE);
     }
 
     //TODO:此接口实现有疑问
     @Override
-    public JSONObject setMultiSignature(int minAccount, int lifetime, String[] addKeys, String[] removeKeys,
+    public AschResult setMultiSignature(int minAccount, int lifetime, String[] addKeys, String[] removeKeys,
                                         String secret, String secondSecret, String publicKey ) {
         try {
             Argument.require(Validation.isValidMultiSignatureMinAccount(minAccount), "invalid minAccount");
             Argument.require(Validation.isValidMultiSignatureKeys(addKeys, removeKeys), "invalid addKeys or removeKeys");
             Argument.require(Validation.isValidMultiSignatureLifetime(lifetime), "invalid lifetime");
-            Argument.require(Validation.isValidSecure(secret), "invalid secret");
-            Argument.optional(publicKey, Validation::isValidSecure, "invalid publicKey");
-            Argument.optional(secondSecret, Validation::isValidSecure, "invalid secondSecret");
+            Argument.require(Validation.isValidSecret(secret), "invalid secret");
+            Argument.optional(publicKey, Validation::isValidPublicKey, "invalid publicKey");
+            Argument.optional(secondSecret, Validation::isValidSecondSecret, "invalid secondSecret");
 
 //            List<String> keysGroup = new ArrayList<>();
 //            if (addKeys != null)
@@ -53,7 +53,7 @@ public class SignatureServices extends AschRESTService implements Signature {
 //            if (removeKeys != null)
 //                Arrays.asList(removeKeys).forEach(key-> keysGroup.add("-"+key));
 //
-//            JSONObject parameters = new JSONObject()
+//            AschResult parameters = new AschResult()
 //                    .fluentPut("secret", secret)
 //                    .fluentPut("publicKey", publicKey)
 //                    .fluentPut("secondSecret", secondSecret)
@@ -74,18 +74,18 @@ public class SignatureServices extends AschRESTService implements Signature {
 
     //TODO:此接口实现有疑问
     @Override
-    public JSONObject multiSignature(String transactionId, String secret, String secondSecret, String publicKey ) {
+    public AschResult multiSignature(String transactionId, String secret, String secondSecret, String publicKey ) {
         try {
             Argument.require(Validation.isValidTransactionId(transactionId), "invalid transactionId");
-            Argument.require(Validation.isValidSecure(secret), "invalid secret");
-            Argument.optional(secondSecret, Validation::isValidSecure, "invalid secondSecret");
-            Argument.optional(publicKey, Validation::isValidSecure, "invalid publicKey");
+            Argument.require(Validation.isValidSecret(secret), "invalid secret");
+            Argument.optional(secondSecret, Validation::isValidSecondSecret, "invalid secondSecret");
+            Argument.optional(publicKey, Validation::isValidPublicKey, "invalid publicKey");
 
-            JSONObject parameters = new JSONObject()
-                    .fluentPut("secret", secret)
-                    .fluentPut("publicKey", publicKey)
-                    .fluentPut("secondSecret", secondSecret)
-                    .fluentPut("transactionId", transactionId);
+            ParameterMap parameters = new ParameterMap()
+                    .put("secret", secret)
+                    .put("publicKey", publicKey)
+                    .put("secondSecret", secondSecret)
+                    .put("transactionId", transactionId);
 
             return post(AschServiceUrls.Signature.MULTI_SIGNATURE, parameters);
         }
@@ -95,12 +95,12 @@ public class SignatureServices extends AschRESTService implements Signature {
     }
 
     @Override
-    public JSONObject getPendingTransactions(String publicKey) {
+    public AschResult getPendingTransactions(String publicKey) {
         return getByPublicKey(AschServiceUrls.Signature.GET_PENDING_TRANSACTIONS, publicKey);
     }
 
     @Override
-    public JSONObject getMultiSignatureAccounts(String publicKey) {
+    public AschResult getMultiSignatureAccounts(String publicKey) {
         return getByPublicKey(AschServiceUrls.Signature.GET_MULTI_SIGNATURE_ACCOUNTS, publicKey);
     }
 }

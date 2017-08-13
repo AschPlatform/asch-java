@@ -1,15 +1,17 @@
 package so.asch.sdk;
 
-import com.alibaba.fastjson.JSONObject;
-import so.asch.sdk.impl.AschFactory;
-import so.asch.sdk.impl.AschSDKConfig;
-import so.asch.sdk.security.SecurityStrategy;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.core.LoggerContext;
+import so.asch.sdk.dto.query.TransactionQueryParameters;
 
 
 public class Main {
 
     public static void main(String[] args) {
         try {
+            initLog();
+
             String url = "http://127.0.0.1:4096";
             String secret = "early sugar cannon mansion expose tunnel piece manual destroy exhaust helmet rather";
             String address = "7286541193277597873";
@@ -25,34 +27,51 @@ public class Main {
             //asch_g23	4752137788839516181 486179424b4bcfaf7960a4a121277d73e4a7c9e0c27b254edf978762d5a6dfe6
             //asch_g40	16494449392359591122 49b369ff2635e2ac083d62a6c59baf872fbdef6990297f296c95e1830118aba1
             String[] canceled = "486179424b4bcfaf7960a4a121277d73e4a7c9e0c27b254edf978762d5a6dfe6,49b369ff2635e2ac083d62a6c59baf872fbdef6990297f296c95e1830118aba1".split(",");
-            SecurityStrategy security = AschFactory.getInstance().getSecurity();
-            String publicKey = security.encodePublicKey(security.generateKeyPair(secret).getPublic());
-            AschSDKConfig.getInstance().setRoot(url);
-            Account account = AschFactory.getInstance().getService(Account.class);
-            Delegate delegate = AschFactory.getInstance().getService(Delegate.class);
+            String publicKey = AschSDK.Helper.getPublicKey(secret);
 
-//            JSONObject json = delegate.registerDelegate(userName, secret, secondSecret);
-//            System.out.println(json.toString());
-//
-            JSONObject json = account.vote(voted, canceled, secret, secondSecret);
-            System.out.println(json.toString());
-//
-//            json = delegate.getDelegateByPublicKey(publicKey);
-//            System.out.println(json.toString());
-//
-//            json = delegate.getDelegateByName(userName);
-//            System.out.println(json.toString());
+            AschSDK.Config.setAschServer(url);
 
-//            json = delegate.getDelegatesCount();
-//            System.out.println(json.toString());
 
-//            JSONObject json = account.transfer("11705168753296944226", 1* 100000000,
-//                    "Transfer by Test", secret, secondSecret);
-//            System.out.println(json);
+            AschResult result = AschSDK.Delegate.registerDelegate(userName, secret, secondSecret);
+            System.out.println(result.toString());
+
+            result = AschSDK.Account.vote(voted, canceled, secret, secondSecret);
+            TransactionQueryParameters parameters = new TransactionQueryParameters()
+       //             .setRecipientId("XXX")
+                    .setType(3)
+                    .setLimit(10);
+            System.out.println(result.toString());
+
+            result = AschSDK.Transaction.queryTransactions(parameters);
+            System.out.println(result.toString());
+
+
+            for( int i=0; i<10; i++) {
+                String newSecret = AschSDK.Helper.generateSecret();
+                System.out.println(newSecret);
+            }
+
+            result = AschSDK.Account.transfer("11705168753296944226",
+                    AschSDK.Helper.amountForCoins(1),
+                    "Transfer by Test", secret, secondSecret);
+            System.out.println(result.getRawJson());
+
+            result = AschSDK.Block.getMilestone();
+            System.out.println(result.toString());
         }
         catch (Exception ex){
             System.out.println(ex.getMessage());
         }
 
     }
+
+    protected static void initLog(){
+        if (AschSDK.Config.isDebugMode()) {
+            final LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
+            ctx.getConfiguration()
+                    .getRootLogger()
+                    .setLevel(Level.ALL);
+        }
+    }
+
 }

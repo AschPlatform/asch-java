@@ -1,7 +1,9 @@
 package so.asch.sdk.impl;
 
+
 import so.asch.sdk.ContentEncoding;
 import so.asch.sdk.dto.query.*;
+import so.asch.sdk.security.Bip39;
 
 import java.util.HashSet;
 import java.util.function.Predicate;
@@ -30,7 +32,12 @@ public class Validation {
         return  (null != hexString) && hexString.matches(HEX_PATTERN);
     }
 
-    public static boolean isValidSecure(String secure) {
+    public static boolean isValidSecret(String secret) {
+        return secret != null &&
+                Bip39.isValidMnemonicCode(secret);
+    }
+
+    public static boolean isValidSecondSecret(String secure) {
         return secure != null &&
                 (secure.length() >= MIN_SECURE_LENGTH && secure.length()<= MAX_SECURE_LENGTH) ;
     }
@@ -59,8 +66,8 @@ public class Validation {
         return transactionId != null;
     }
 
-    public static boolean isValidLimit(int limit){
-        return limit >= 1 && limit <=100;
+    public static boolean isValidLimit(Integer limit){
+        return limit == null || (limit >= 1 && limit <=100);
     }
 
     public static boolean isValidOffset(int offset){
@@ -87,22 +94,22 @@ public class Validation {
         return wait >= 0 && wait<= 6;
     }
 
-    public static boolean isValidVoteKeys(String[] upvote, String[] downvote){
-        return  (upvote != null || downvote != null) &&
-                (!isIntersected(upvote, downvote)) &&
-                (!(isDuplicate(upvote) || isDuplicate(downvote)))&&
-                ((upvote == null ? 0 : upvote.length) + (downvote == null ? 0 : downvote.length) <= 33)&&
-                (all(Validation::isValidPublicKey, upvote)) &&
-                (all(Validation::isValidPublicKey, downvote));
+    public static boolean isValidVoteKeys(String[] upvotes, String[] downvotes){
+        return  (upvotes != null || downvotes != null) &&
+                (!isIntersected(upvotes, downvotes)) &&
+                (!(isDuplicate(upvotes) || isDuplicate(downvotes)))&&
+                ((upvotes == null ? 0 : upvotes.length) + (downvotes == null ? 0 : downvotes.length) <= 33)&&
+                (all(upvotes, Validation::isValidPublicKey)) &&
+                (all(downvotes, Validation::isValidPublicKey));
     }
 
-    public static boolean isValidMultiSignatureKeys(String[] addKyes, String[]removeKeys){
-        return  (addKyes != null || removeKeys != null) &&
-                (!isIntersected(addKyes, removeKeys)) &&
-                (!(isDuplicate(addKyes) || isDuplicate(removeKeys)))&&
-                ((addKyes == null ? 0 : addKyes.length) + (removeKeys == null ? 0 : removeKeys.length) <= 10)&&
-                (all(Validation::isValidPublicKey, addKyes)) &&
-                (all(Validation::isValidPublicKey, removeKeys));
+    public static boolean isValidMultiSignatureKeys(String[] addKeys, String[]removeKeys){
+        return  (addKeys != null || removeKeys != null) &&
+                (!isIntersected(addKeys, removeKeys)) &&
+                (!(isDuplicate(addKeys) || isDuplicate(removeKeys)))&&
+                ((addKeys == null ? 0 : addKeys.length) + (removeKeys == null ? 0 : removeKeys.length) <= 10)&&
+                (all(addKeys, Validation::isValidPublicKey)) &&
+                (all(removeKeys,Validation::isValidPublicKey));
 
     }
 
@@ -151,22 +158,22 @@ public class Validation {
 
 
 
-    public static <T> boolean all(Predicate<T> predicate, T... list){
-        if (list == null)
-            return false;
+    public static <T> boolean all(T[] items, Predicate<T> predicate){
+        if (items == null || items.length ==0)
+            throw new IllegalArgumentException("items must not null or empty");
 
-        for(T o : list){
+        for(T o : items){
             if (!predicate.test(o))
                 return false;
         }
         return true;
     }
 
-    public static <T> boolean any(Predicate<T> predicate, T... list){
-        if (list == null)
-            return false;
+    public static <T> boolean any(T[] items, Predicate<T> predicate){
+        if (items == null || items.length ==0)
+            throw new IllegalArgumentException("items must not null or empty");
 
-        for(T o : list){
+        for(T o : items){
             if (predicate.test(o))
                 return true;
         }

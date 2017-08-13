@@ -1,6 +1,5 @@
 package so.asch.sdk;
 
-import com.alibaba.fastjson.JSONObject;
 import so.asch.sdk.dto.query.TransactionQueryParameters;
 
 /**
@@ -31,7 +30,7 @@ public interface Transaction extends AschInterface{
     //success	boole	是否成功获得response数据
     //transactions	列表	多个交易详情json构成的列表
     //count	int	获取到的交易总个数
-    JSONObject queryTransactions(TransactionQueryParameters parameters);
+    AschResult queryTransactions(TransactionQueryParameters parameters);
 
     //接口地址：/api/transactions/get
     //请求方式：get
@@ -41,7 +40,7 @@ public interface Transaction extends AschInterface{
     //返回参数说明：
     //success	boole	是否成功获得response数据
     //transactions	json	交易详情
-    JSONObject getTransaction(String transactionId);
+    AschResult getTransaction(String transactionId);
 
     //接口地址：/api/transactions/unconfirmed/get
     //请求方式：get
@@ -51,7 +50,7 @@ public interface Transaction extends AschInterface{
     //返回参数说明：
     //success	boole	是否成功获得response数据
     //transaction	json	未确认交易详情
-    JSONObject getUnconfirmedTransaction(String unconfirmedTransactionId);
+    AschResult getUnconfirmedTransaction(String unconfirmedTransactionId);
 
     //接口地址：/api/transactions/unconfirmed
     //请求方式：get
@@ -62,7 +61,7 @@ public interface Transaction extends AschInterface{
     //返回参数说明：
     //success	boole	是否成功获得response数据
     //transactions	Array	未确认交易列表
-    JSONObject getUnconfirmedTransactions(String senderPublicKey, String address);
+    AschResult getUnconfirmedTransactions(String senderPublicKey, String address);
 
     //接口地址：/api/transactions
     //请求方式：PUT
@@ -78,7 +77,7 @@ public interface Transaction extends AschInterface{
     //返回参数说明：
     //success	boole	是否成功获得response数据
     //transactionId	string	交易id
-    JSONObject addTransaction(String secret, int amount, String recipientId,
+    AschResult addTransaction(String secret, int amount, String recipientId,
                               String senderPublicKey, String secondSecret, String multiSignAccountPublicKey);
 
 

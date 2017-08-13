@@ -1,6 +1,6 @@
 package so.asch.sdk.impl;
 
-import com.alibaba.fastjson.JSONObject;
+import so.asch.sdk.AschResult;
 import so.asch.sdk.ContentEncoding;
 import so.asch.sdk.Misc;
 import so.asch.sdk.codec.Decoding;
@@ -9,24 +9,24 @@ import so.asch.sdk.transaction.TransactionInfo;
 
 public class MiscService extends AschRESTService implements Misc {
     @Override
-    public JSONObject getLoadStatus() {
+    public AschResult getLoadStatus() {
         return get(AschServiceUrls.Misc.GET_LOAD_STATUS);
     }
 
     @Override
-    public JSONObject getSyncStatus() {
+    public AschResult getSyncStatus() {
         return get(AschServiceUrls.Misc.GET_SYNC_STATUS);
     }
 
     @Override
-    public JSONObject storeData(String content, ContentEncoding encoding, int wait, String secret, String secondSecret) {
+    public AschResult storeData(String content, ContentEncoding encoding, int wait, String secret, String secondSecret) {
         try {
             Argument.notNullOrEmpty(content, "content");
             Argument.notNull(encoding, "encoding");
             Argument.require(Validation.isValidContent(content, encoding), "invalid content");
             Argument.require(Validation.isValidWait(wait), "invalid wait");
-            Argument.require(Validation.isValidSecure(secret), "invalid secret");
-            Argument.optional(secondSecret, Validation::isValidSecure, "invalid second secret");
+            Argument.require(Validation.isValidSecret(secret), "invalid secret");
+            Argument.optional(secondSecret, Validation::isValidSecondSecret, "invalid second secret");
 
             TransactionInfo transaction = getTransactionBuilder()
                     .buildStore(getContentBuffer(content, encoding), wait, secret, secondSecret);
@@ -56,11 +56,11 @@ public class MiscService extends AschRESTService implements Misc {
     }
 
     @Override
-    public JSONObject getStoredData(String transactionId) {
+    public AschResult getStoredData(String transactionId) {
         try {
             Argument.require(Validation.isValidTransactionId(transactionId), "invalid transactionId");
 
-            JSONObject parameters = new JSONObject().fluentPut("id", transactionId);
+            ParameterMap parameters = new ParameterMap().put("id", transactionId);
 
             return get(AschServiceUrls.Misc.GET_STORED_DATA, parameters);
         }

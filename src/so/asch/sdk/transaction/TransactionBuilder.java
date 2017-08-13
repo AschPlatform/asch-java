@@ -124,7 +124,7 @@ public class TransactionBuilder {
                 .setTransactionType(type)
                 .setAmount(amount)
                 .setFee(fee)
-                .setTimestamp(getSecurity().getTimestamp())
+                .setTimestamp(getSecurity().getTransactionTimestamp())
                 .setSenderPublicKey(getSecurity().encodePublicKey(publicKey));
     }
 

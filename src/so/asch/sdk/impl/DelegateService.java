@@ -1,34 +1,34 @@
 package so.asch.sdk.impl;
 
-import com.alibaba.fastjson.JSONObject;
+import so.asch.sdk.AschResult;
 import so.asch.sdk.Delegate;
 import so.asch.sdk.dbc.Argument;
-import so.asch.sdk.transaction.TransactionInfo;
 import so.asch.sdk.dto.query.DelegateQueryParameters;
+import so.asch.sdk.transaction.TransactionInfo;
 
 public class DelegateService extends AschRESTService implements Delegate {
 
     @Override
-    public JSONObject getDelegatesCount() {
+    public AschResult getDelegatesCount() {
         return get(AschServiceUrls.Delegate.GET_DELEGATES_COUNT);
     }
 
     @Override
-    public JSONObject getVoters(String publicKey) {
+    public AschResult getVoters(String publicKey) {
         return getByPublicKey(AschServiceUrls.Delegate.GET_VOTES, publicKey);
     }
 
     @Override
-    public JSONObject getDelegateByPublicKey(String publicKey) {
+    public AschResult getDelegateByPublicKey(String publicKey) {
         return getByPublicKey(AschServiceUrls.Delegate.GET_DELEGATE, publicKey);
     }
 
     @Override
-    public JSONObject getDelegateByName(String userName){
+    public AschResult getDelegateByName(String userName){
         try {
             Argument.notNull(userName, "invalid user name");
 
-            JSONObject parameters = new JSONObject().fluentPut("username", userName);
+            ParameterMap parameters = new ParameterMap().put("username", userName);
             return get(AschServiceUrls.Delegate.GET_DELEGATE, parameters);
         }
         catch (Exception ex){
@@ -37,11 +37,11 @@ public class DelegateService extends AschRESTService implements Delegate {
     }
 
     @Override
-    public JSONObject queryDelegates( DelegateQueryParameters parameters) {
+    public AschResult queryDelegates( DelegateQueryParameters parameters) {
         try {
             Argument.require(Validation.isValidDelegateQueryParameters(parameters), "invalid parameters");
 
-            JSONObject query = jsonFromObject(parameters);
+            ParameterMap query = parametersFromObject(parameters);
             return get(AschServiceUrls.Delegate.QUERY_DELEGATES,  query);
         }
         catch (Exception ex){
@@ -50,21 +50,21 @@ public class DelegateService extends AschRESTService implements Delegate {
     }
 
     @Override
-    public JSONObject getDelegateFee(String publicKey){
+    public AschResult getDelegateFee(String publicKey){
         return getByPublicKey(AschServiceUrls.Delegate.GET_DELEGATE_FEE, publicKey);
     }
 
     @Override
-    public JSONObject getForging(String publicKey) {
+    public AschResult getForging(String publicKey) {
         return getByPublicKey(AschServiceUrls.Delegate.GET_FORGING, publicKey);
     }
 
     @Override
-    public JSONObject registerDelegate(String userName, String secret, String secondSecret ) {
+    public AschResult registerDelegate(String userName, String secret, String secondSecret ) {
         try {
             Argument.notNull(userName, "invalid username");
-            Argument.require(Validation.isValidSecure(secret), "invalid secret");
-            Argument.optional(secondSecret, ss->Validation.isValidSecure(ss), "invalid secondSecret");
+            Argument.require(Validation.isValidSecret(secret), "invalid secret");
+            Argument.optional(secondSecret, Validation::isValidSecondSecret, "invalid secondSecret");
 
             TransactionInfo transaction = getTransactionBuilder().buildDelegate(userName, secret, secondSecret);
             return broadcastTransaction(transaction);
@@ -78,18 +78,18 @@ public class DelegateService extends AschRESTService implements Delegate {
     *    enableForge和disableForge接口不知接口地址，待确认
     * */
     @Override
-    public JSONObject enableForge( String publicKey, String secret ) {
+    public AschResult enableForge( String publicKey, String secret ) {
 
         return null;
     }
 
     @Override
-    public JSONObject disableForge(String publicKey, String secret ) {
+    public AschResult disableForge(String publicKey, String secret ) {
         return null;
     }
 
     @Override
-    public JSONObject getForgingStatus(String publicKey) {
+    public AschResult getForgingStatus(String publicKey) {
         return getByPublicKey(AschServiceUrls.Delegate.GET_FORGING_STATUS, publicKey);
     }
 }

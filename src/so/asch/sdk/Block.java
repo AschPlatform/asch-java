@@ -1,6 +1,5 @@
 package so.asch.sdk;
 
-import com.alibaba.fastjson.JSONObject;
 import so.asch.sdk.dto.query.BlockQueryParameters;
 
 /**
@@ -19,9 +18,9 @@ public interface Block extends AschInterface {
     //返回参数说明：
     //success	boole	是否成功获得response数据
     //block	json	区块详情
-    JSONObject getBlockById(String id, boolean fullBlockInfo);
-    JSONObject getBlockByHeight(long height, boolean fullBlockInfo);
-    JSONObject getBlockByHash(String hash, boolean fullBlockInfo);
+    AschResult getBlockById(String id, boolean fullBlockInfo);
+    AschResult getBlockByHeight(long height, boolean fullBlockInfo);
+    AschResult getBlockByHash(String hash, boolean fullBlockInfo);
 
 
     //接口地址：/api/blocks
@@ -42,7 +41,7 @@ public interface Block extends AschInterface {
     //success	boole	是否成功获得response数据
     //blocks	Array	由区块详情json串构成的数组
     //count	integer	区块链高度
-    JSONObject queryBlocks(BlockQueryParameters parameters);
+    AschResult queryBlocks(BlockQueryParameters parameters);
 
     //接口地址：/api/blocks/getHeight
     //请求方式：get
@@ -51,7 +50,7 @@ public interface Block extends AschInterface {
     //返回参数说明：
     //success	boole	是否成功获得response数据
     //height	integer	区块链高度
-    JSONObject getHeight();
+    AschResult getHeight();
 
     //接口地址：/api/blocks/getFee
     //接口说明： 获取交易手续费
@@ -61,7 +60,7 @@ public interface Block extends AschInterface {
     //返回参数说明：
     //success	boole	是否成功获得response数据
     //milestone	integer	交易手续费
-    JSONObject getFree();
+    AschResult getFree();
 
     //接口地址：/api/blocks/getMilestone
     //接口说明：获取里程碑
@@ -71,7 +70,7 @@ public interface Block extends AschInterface {
     //返回参数说明：
     //success	boole	是否成功获得response数据
     //milestone	integer	里程碑
-    JSONObject getMilestone();
+    AschResult getMilestone();
 
     //接口地址：/api/blocks/getReward
     //接口说明：获取单个区块奖励
@@ -81,7 +80,7 @@ public interface Block extends AschInterface {
     //返回参数说明：
     //success	boole	是否成功获得response数据
     //reward	integer	区块奖励
-    JSONObject getReward();
+    AschResult getReward();
 
     //接口地址：/api/blocks/getSupply
     //接口说明：获取区块链当前最大供应值
@@ -91,7 +90,7 @@ public interface Block extends AschInterface {
     //返回参数说明：
     //success	boole	是否成功获得response数据
     //supply	integer	全网XAS个数
-    JSONObject getSupply();
+    AschResult getSupply();
 
 
     //接口地址：/api/blocks/getStatus
@@ -105,8 +104,6 @@ public interface Block extends AschInterface {
     //milestone	integer
     //reward	integer	区块奖励
     //supply	integer	全网XAS个数
-    JSONObject getStauts();
-
-
+    AschResult getStauts();
 
 }

@@ -1,10 +1,10 @@
 package so.asch.sdk.impl;
 
-import com.alibaba.fastjson.JSONObject;
 import so.asch.sdk.Account;
+import so.asch.sdk.AschResult;
 import so.asch.sdk.dbc.Argument;
-import so.asch.sdk.transaction.TransactionInfo;
 import so.asch.sdk.dto.query.QueryParameters;
+import so.asch.sdk.transaction.TransactionInfo;
 
 import java.security.KeyPair;
 
@@ -15,19 +15,19 @@ import java.security.KeyPair;
 public class AccountService extends so.asch.sdk.impl.AschRESTService implements Account  {
 
     @Override
-    public JSONObject login(String secret){
-        JSONObject parameters = new JSONObject().fluentPut("secret", secret);
+    public AschResult login(String secret){
+        ParameterMap parameters = new ParameterMap().put("secret", secret);
         return post(AschServiceUrls.Account.LOGIN, parameters);
     }
 
     @Override
-    public JSONObject secureLogin(String secret){
+    public AschResult secureLogin(String secret){
         try{
-            Argument.require(Validation.isValidSecure(secret), "invalid secret");
+            Argument.require(Validation.isValidSecret(secret), "invalid secret");
 
             KeyPair keyPair = getSecurity().generateKeyPair(secret);
             String publicKey = getSecurity().encodePublicKey(keyPair.getPublic());
-            JSONObject parameters = jsonWithPublicKeyField(publicKey);
+            ParameterMap parameters = parametersWithPublicKeyField(publicKey);
 
             return post(AschServiceUrls.Account.SECURE_LOGIN, parameters);
         }
@@ -37,26 +37,26 @@ public class AccountService extends so.asch.sdk.impl.AschRESTService implements 
     }
 
     @Override
-    public JSONObject getAccount(String address){
+    public AschResult getAccount(String address){
             return getByAddress(AschServiceUrls.Account.GET_ACCOUNT, address);
     }
 
     @Override
-    public JSONObject getBalance(String address){
+    public AschResult getBalance(String address){
         return getByAddress(AschServiceUrls.Account.GET_BALANCE, address);
     }
 
     @Override
-    public JSONObject getPublicKey(String address){
+    public AschResult getPublicKey(String address){
         return  getByAddress(AschServiceUrls.Account.GET_PUBLIC_KEY, address);
     }
 
     @Override
-    public JSONObject generatePublicKey(String secret){
+    public AschResult generatePublicKey(String secret){
         try {
-            Argument.require(Validation.isValidSecure(secret), "invalid secret");
+            Argument.require(Validation.isValidSecret(secret), "invalid secret");
 
-            JSONObject parameters = new JSONObject().fluentPut("secret", secret);
+            ParameterMap parameters = new ParameterMap().put("secret", secret);
             return post(AschServiceUrls.Account.GENERATE_PUBLIC_KEY, parameters);
         }
         catch (Exception ex){
@@ -65,21 +65,21 @@ public class AccountService extends so.asch.sdk.impl.AschRESTService implements 
     }
 
     @Override
-    public JSONObject getVotedDelegates(String address){
+    public AschResult getVotedDelegates(String address){
         return getByAddress(AschServiceUrls.Account.GET_VOTED_DELEGATES, address);
     }
 
     @Override
-    public JSONObject getDelegatesFee(){
+    public AschResult getDelegatesFee(){
         return get(AschServiceUrls.Account.GET_DELEGATE_FEE);
     }
 
     //todo:验证投票和取消投票的数组都符合规则
     @Override
-    public JSONObject vote(String[] upvotePublicKeys, String[] downvotePublicKeys, String secret, String secondSecret){
+    public AschResult vote(String[] upvotePublicKeys, String[] downvotePublicKeys, String secret, String secondSecret){
         try {
-            Argument.require(Validation.isValidSecure(secret), "invalid secret");
-            Argument.optional(secondSecret, Validation::isValidSecure, "invalid secondSecret");
+            Argument.require(Validation.isValidSecret(secret), "invalid secret");
+            Argument.optional(secondSecret, Validation::isValidSecondSecret, "invalid secondSecret");
             Argument.require(Validation.isValidVoteKeys(upvotePublicKeys, downvotePublicKeys), "invalid upvoteKeys or downvoteKeys");
 
             TransactionInfo transaction = getTransactionBuilder()
@@ -92,11 +92,11 @@ public class AccountService extends so.asch.sdk.impl.AschRESTService implements 
     }
 
     @Override
-    public JSONObject transfer(String targetAddress, long amount, String message, String secret, String secondSecret){
+    public AschResult transfer(String targetAddress, long amount, String message, String secret, String secondSecret){
         try {
             Argument.require(Validation.isValidAddress(targetAddress), "invalid target address");
-            Argument.require(Validation.isValidSecure(secret), "invalid secret");
-            Argument.optional(secondSecret, Validation::isValidSecure, "invalid second secret");
+            Argument.require(Validation.isValidSecret(secret), "invalid secret");
+            Argument.optional(secondSecret, Validation::isValidSecondSecret, "invalid second secret");
 
             TransactionInfo transaction = getTransactionBuilder()
                     .buildTransfer(targetAddress, amount, message, secret, secondSecret);
@@ -108,12 +108,12 @@ public class AccountService extends so.asch.sdk.impl.AschRESTService implements 
     }
 
     @Override
-    public JSONObject getTopAccounts(QueryParameters parameters){
+    public AschResult getTopAccounts(QueryParameters parameters){
         try {
             Argument.require(Validation.isValidAccountQueryParameters(parameters), "invalid parameters");
 
-            JSONObject jsonParameters = jsonFromObject(parameters);
-            return get(AschServiceUrls.Account.GET_TOP_ACCOUNTS, jsonParameters);
+            ParameterMap getParameters = parametersFromObject(parameters);
+            return get(AschServiceUrls.Account.GET_TOP_ACCOUNTS, getParameters);
         }
         catch (Exception ex){
             return fail(ex);

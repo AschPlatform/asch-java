@@ -1,11 +1,9 @@
 package so.asch.sdk;
 
-import com.alibaba.fastjson.JSONObject;
-
 /**
  * Created by eagle on 17-7-10.
  */
-public interface Misc {
+public interface Misc extends AschInterface{
     //查看本地区块链加载状态
     //接口地址：/api/loader/status
     //请求方式：get
@@ -15,7 +13,7 @@ public interface Misc {
     //success	boole	是否成功获得response数据
     //loaded	boole
     //blocksCount	integer
-    JSONObject getLoadStatus();
+    AschResult getLoadStatus();
 
     //查看区块同步信息
     //接口地址：/api/loader/status/sync
@@ -25,7 +23,7 @@ public interface Misc {
     //返回参数说明：
     //success	boole	是否成功获得response数据
     //height	int	区块高度
-    JSONObject getSyncStatus();
+    AschResult getSyncStatus();
 
     //上传数据
     //接口地址：/api/storages
@@ -40,7 +38,7 @@ public interface Misc {
     //返回参数说明：
     //success	boole	是否成功获得response数据。
     //transactionId	string	交易id
-    JSONObject storeData(String content, ContentEncoding encoding, int wait, String secret, String secondSecret);
+    AschResult storeData(String content, ContentEncoding encoding, int wait, String secret, String secondSecret);
 
     //查询存储的数据
     //接口地址：/api/storages
@@ -51,6 +49,6 @@ public interface Misc {
     //返回参数说明：
     //success	boole	是否成功获得response数据。
     //id	string	交易id
-    JSONObject getStoredData(String transactionId);
+    AschResult getStoredData(String transactionId);
 
 }

@@ -1,6 +1,5 @@
 package so.asch.sdk;
 
-import com.alibaba.fastjson.JSONObject;
 import so.asch.sdk.dto.query.QueryParameters;
 
 /**
@@ -19,7 +18,7 @@ public interface Account extends AschInterface {
     //返回参数说明：
     //success	boole	是否登陆成功
     //account	json	账户信息
-    JSONObject login(String secret);
+    AschResult login(String secret);
 
     //本地加密后再登陆（推荐使用）
     //接口地址：/api/accounts/open2/
@@ -31,7 +30,7 @@ public interface Account extends AschInterface {
     //返回参数说明：
     //success	boole	是否登陆成功
     //account	json	账户信息
-    JSONObject secureLogin(String secret);
+    AschResult secureLogin(String secret);
 
     //通过地址取用户信息
     //接口地址：/api/accounts
@@ -43,7 +42,7 @@ public interface Account extends AschInterface {
     //account	json	账户信息
     //latestBlock	json	最新的区块信息
     //version	json	版本相关信息
-    JSONObject getAccount(String address);
+    AschResult getAccount(String address);
 
     //接口地址：/api/accounts/getBalance
     //请求方式：get
@@ -54,7 +53,7 @@ public interface Account extends AschInterface {
     //success	boole	是否成功获得response数据
     //balance	integer	余额
     //unconfirmedBalance	integer	未确认和已确认的余额之和，该值大于等于balance
-    JSONObject getBalance(String address);
+    AschResult getBalance(String address);
 
     //接口地址：/api/accounts/getPublickey
     //请求方式：get
@@ -64,7 +63,7 @@ public interface Account extends AschInterface {
     //返回参数说明：
     //success	boole	是否成功获得response数据
     //publicKey	string	公钥*/
-    JSONObject getPublicKey(String address);
+    AschResult getPublicKey(String address);
 
     //接口地址：/api/accounts/generatePublickey
     //请求方式：post
@@ -74,7 +73,7 @@ public interface Account extends AschInterface {
     //返回参数说明：
     //success	boole	是否成功获得response数据
     //publicKey	string	公钥
-    JSONObject generatePublicKey(String secret);
+    AschResult generatePublicKey(String secret);
 
     //接口地址：/api/accounts/delegates
     //请求方式：get
@@ -84,7 +83,7 @@ public interface Account extends AschInterface {
     //返回参数说明：
     //success	boole	是否成功获得response数据
     //delegates	Array	已投票的受托人详情数组
-    JSONObject getVotedDelegates(String address);
+    AschResult getVotedDelegates(String address);
 
     //接口地址：/api/accounts/delegates/fee
     //请求方式：get
@@ -93,7 +92,7 @@ public interface Account extends AschInterface {
     //返回参数说明：
     //success	boole	是否成功获得response数据
     //fee	integer	手续费设置
-    JSONObject getDelegatesFee();
+    AschResult getDelegatesFee();
 
     //投票[transaction]
     //请求参数说明：
@@ -104,7 +103,7 @@ public interface Account extends AschInterface {
     //名称	类型	说明
     //success	boole	是否成功获得response数据
     //transaction	json	投票交易详情
-    JSONObject vote( String[] upvotePublicKeys, String[] downvotePublicKeys, String secret, String secondSecret);
+    AschResult vote( String[] upvotePublicKeys, String[] downvotePublicKeys, String secret, String secondSecret);
 
 
     //转账[transaction]
@@ -116,7 +115,7 @@ public interface Account extends AschInterface {
     //返回参数说明：
     //名称	类型	说明
     //success	boole	是否成功获得response数据
-    JSONObject transfer(String targetAddress, long amount, String message, String secret, String secondSecret);
+    AschResult transfer(String targetAddress, long amount, String message, String secret, String secondSecret);
 
     //接口地址：/api/accounts/top
     //请求方式：get
@@ -127,6 +126,6 @@ public interface Account extends AschInterface {
     //返回参数说明：
     //success	boole	是否成功获得response数据
     //accounts	json	账户信息元组，每个元素包含地址、余额、公钥
-    JSONObject getTopAccounts(QueryParameters parameters);
+    AschResult getTopAccounts(QueryParameters parameters);
 
 }

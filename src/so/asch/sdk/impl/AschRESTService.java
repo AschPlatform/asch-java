@@ -1,11 +1,18 @@
 package so.asch.sdk.impl;
 
 import com.alibaba.fastjson.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import so.asch.sdk.AschInterface;
+import so.asch.sdk.AschResult;
+import so.asch.sdk.AschSDKConfig;
 import so.asch.sdk.dbc.Argument;
+import so.asch.sdk.security.SecurityStrategy;
 import so.asch.sdk.transaction.TransactionBuilder;
 import so.asch.sdk.transaction.TransactionInfo;
-import so.asch.sdk.security.SecurityStrategy;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Asch服务基类
@@ -13,7 +20,15 @@ import so.asch.sdk.security.SecurityStrategy;
  */
 public abstract class AschRESTService implements AschInterface{
 
-    private static final AschSDKConfig config = AschSDKConfig.getInstance();
+    protected static final  Logger logger = LoggerFactory.getLogger(AschRESTService.class);
+
+    protected static final AschSDKConfig config = AschSDKConfig.getInstance();
+    private static final Map<String, String> customeHeaders =  new HashMap<>();
+
+    static {
+        customeHeaders.put("magic", config.getMagic());
+        customeHeaders.put("version", "");
+    }
 
     protected TransactionBuilder getTransactionBuilder(){
         return new TransactionBuilder();
@@ -23,85 +38,97 @@ public abstract class AschRESTService implements AschInterface{
         return AschFactory.getInstance().getSecurity();
     }
 
+    protected Map<String, String> getCustomeHeaders(){
+        if (! config.getMagic().equals(customeHeaders.get("magic"))){
+            customeHeaders.put("magic", config.getMagic());
+        }
+        return customeHeaders;
+    }
+
     protected String getFullUrl(String relativeUrl){
-
-        return config.getRoot() + relativeUrl;
+        return config.getAschServer() + relativeUrl;
     }
 
-    protected JSONObject get(String relativeUrl){
+    protected AschResult get(String relativeUrl){
         try{
-            return REST.get(getFullUrl(relativeUrl), null);
+            String jsonString = REST.get(getFullUrl(relativeUrl), null);
+            return AschResult.FromJsonString(jsonString);
         }
         catch (Exception ex){
             return fail(ex);
         }
     }
 
-    protected JSONObject get(String relativeUrl, JSONObject parameters){
+    protected AschResult get(String relativeUrl, ParameterMap parameters){
         try{
-            return REST.get(getFullUrl(relativeUrl), parameters);
+            String jsonString =  REST.get(getFullUrl(relativeUrl), parameters);
+            return AschResult.FromJsonString(jsonString);
         }
         catch (Exception ex){
             return fail(ex);
         }
     }
 
-    protected JSONObject post(String relativeUrl, JSONObject parameters){
+    protected AschResult post(String relativeUrl, ParameterMap parameters){
         try{
-            return REST.post(getFullUrl(relativeUrl), parameters);
+            String jsonString =  REST.post(getFullUrl(relativeUrl), parameters);
+            return AschResult.FromJsonString(jsonString);
         }
         catch (Exception ex){
             return fail(ex);
         }
     }
 
-    protected JSONObject post(String relativeUrl, String parameters){
+    protected AschResult post(String relativeUrl, String parameters){
         try{
-            return REST.post(getFullUrl(relativeUrl), parameters);
+            String jsonString =  REST.post(getFullUrl(relativeUrl), parameters);
+            return AschResult.FromJsonString(jsonString);
         }
         catch (Exception ex){
             return fail(ex);
         }
     }
 
-    protected JSONObject postMagic(String relativeUrl, JSONObject parameters){
+    protected AschResult postMagic(String relativeUrl, ParameterMap parameters){
         try{
-            return REST.post(getFullUrl(relativeUrl), parameters, config.getMagicHeaders(), null);
+            String jsonString =  REST.post(getFullUrl(relativeUrl), parameters, getCustomeHeaders(), null);
+            return AschResult.FromJsonString(jsonString);
         }
         catch (Exception ex){
             return fail(ex);
         }
     }
 
-    protected JSONObject postMagic(String relativeUrl, String parameters){
+    protected AschResult postMagic(String relativeUrl, String parameters){
         try{
-            return REST.post(getFullUrl(relativeUrl), parameters, config.getMagicHeaders(), null);
+            String jsonString =  REST.post(getFullUrl(relativeUrl), parameters, getCustomeHeaders(), null);
+            return AschResult.FromJsonString(jsonString);
         }
         catch (Exception ex){
             return fail(ex);
         }
     }
 
-    protected JSONObject broadcastTransaction(TransactionInfo transaction){
-        JSONObject transactionJson = new JSONObject().fluentPut("transaction", transaction);
-        return postMagic(AschServiceUrls.Peer.BROADCAST_TRANSACTION, transactionJson );
+    protected AschResult broadcastTransaction(TransactionInfo transaction){
+        ParameterMap transactionParameter = new ParameterMap()
+                .put("transaction", transaction);
+        return postMagic(AschServiceUrls.Peer.BROADCAST_TRANSACTION, transactionParameter );
     }
 
-    protected JSONObject fail(Exception ex){
-        return config.isDebugMode() ?
-                new JSONObject().fluentPut("success", false).fluentPut("exception", ex) :
-                new JSONObject().fluentPut("success", false).fluentPut("exception", ex.getMessage());
+    protected AschResult fail(Exception ex){
+        logger.error("rest call failed", ex);
+        return AschResult.Failed(ex);
     }
 
-    protected JSONObject jsonWithPublicKeyField(String publicKey){
-        return new JSONObject().fluentPut("publicKey", publicKey);
+    protected ParameterMap parametersWithPublicKeyField(String publicKey){
+        return new ParameterMap().put("publicKey", publicKey);
     }
 
-    protected JSONObject getByPublicKey(String relativeUrl, String publicKey){
+    protected AschResult getByPublicKey(String relativeUrl, String publicKey){
         try {
             Argument.require(Validation.isValidPublicKey(publicKey), "invalid public key");
 
-            JSONObject parameters = jsonWithPublicKeyField(publicKey);
+            ParameterMap parameters = parametersWithPublicKeyField(publicKey);
             return get(relativeUrl, parameters);
         }
         catch (Exception ex){
@@ -109,11 +136,11 @@ public abstract class AschRESTService implements AschInterface{
         }
     }
 
-    protected JSONObject getByAddress(String relativeUrl, String address){
+    protected AschResult getByAddress(String relativeUrl, String address){
         try {
             Argument.require(Validation.isValidAddress(address), "invalid public address");
 
-            JSONObject parameters = new JSONObject().fluentPut("address", address);
+            ParameterMap parameters = new ParameterMap().put("address", address);
             return get(relativeUrl, parameters);
         }
         catch (Exception ex){
@@ -121,7 +148,10 @@ public abstract class AschRESTService implements AschInterface{
         }
     }
 
-    protected JSONObject jsonFromObject(Object object){
-        return JSONObject.parseObject(JSONObject.toJSONString(object));
+    protected ParameterMap parametersFromObject(Object object){
+        ParameterMap map = new ParameterMap();
+        map.putAll(JSONObject.parseObject( JSONObject.toJSONString(object) ));
+
+        return map;
     }
 }

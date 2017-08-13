@@ -1,11 +1,11 @@
 package so.asch.sdk.security;
 
 import net.i2p.crypto.eddsa.EdDSAPublicKey;
+import so.asch.sdk.AschSDKConfig;
 import so.asch.sdk.codec.Decoding;
 import so.asch.sdk.codec.Encoding;
 import so.asch.sdk.dbc.Argument;
 import so.asch.sdk.impl.AschConst;
-import so.asch.sdk.impl.AschSDKConfig;
 import so.asch.sdk.impl.Validation;
 import so.asch.sdk.security.ripemd.RipeMD160;
 import so.asch.sdk.transaction.TransactionInfo;
@@ -15,9 +15,9 @@ import java.security.KeyPair;
 import java.security.MessageDigest;
 import java.security.PrivateKey;
 import java.security.PublicKey;
-import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.TimeZone;
+import java.util.UUID;
+
 
 /**
  * Created by eagle on 17-7-18.
@@ -25,28 +25,25 @@ import java.util.TimeZone;
 public class DefaultSecurityStrategy implements SecurityStrategy{
 
     private static final String SHA256_DIGEST_ALGORITHM = "SHA-256";
-    private static final int MAX_BUFFER_SIZE = 1024;
-    private static  Date beginEpoch = new Date();
+    private static final AschSDKConfig config = AschSDKConfig.getInstance();
 
-    private static AschSDKConfig config = AschSDKConfig.getInstance();
+    private static final MessageDigest sha256Digest;
+    private static final RipeMD160 ripemd160Digest;
 
-    private static MessageDigest sha256Digest;
-    private static RipeMD160 ripemd160Digest;
+    static{
 
-    static
-    {
+        MessageDigest messageDigest = null;
+        RipeMD160 ripeMD160 = null;
         try {
-            sha256Digest = MessageDigest.getInstance(SHA256_DIGEST_ALGORITHM);
-            ripemd160Digest = new RipeMD160();
-
-            SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
-            df.setTimeZone(TimeZone.getTimeZone("UTC"));
-
-            beginEpoch = df.parse("2016-06-27T20:00:00Z");
+             messageDigest = MessageDigest.getInstance(SHA256_DIGEST_ALGORITHM);
+             ripeMD160 = new RipeMD160();
         }
         catch (Exception ex) {
             //
         }
+
+        sha256Digest = messageDigest;
+        ripemd160Digest = ripeMD160;
     }
 
 
@@ -111,6 +108,17 @@ public class DefaultSecurityStrategy implements SecurityStrategy{
     }
 
     @Override
+    public String generateSecret(){
+        String uuid = UUID.randomUUID().toString();
+        return Bip39.generateMnemonicCode(sha256Hash(uuid.getBytes()));
+    }
+
+    @Override
+    public boolean isValidSecret(String secret) {
+        return Bip39.isValidMnemonicCode(secret);
+    }
+
+    @Override
     public String Signature(TransactionInfo transaction, PrivateKey privateKey) throws SecurityException {
         try {
             Argument.require(transaction != null, "transaction can not be null");
@@ -141,9 +149,9 @@ public class DefaultSecurityStrategy implements SecurityStrategy{
     }
 
     @Override
-    public int getTimestamp() {
+    public int getTransactionTimestamp() {
         //calendar.add(Calendar.MILLISECOND, (zoneOffset+dstOffset));
-        return (int)((new Date().getTime() - beginEpoch.getTime())/1000 - AschConst.CLIENT_DRIFT_SECONDS);
+        return (int)((new Date().getTime() - AschConst.ASCH_BEGIN_EPOCH.getTime())/1000 - AschConst.CLIENT_DRIFT_SECONDS);
     }
 
     private byte[] sha256Hash(byte[] message){
@@ -155,7 +163,5 @@ public class DefaultSecurityStrategy implements SecurityStrategy{
         ripemd160Digest.update(message);
         return ripemd160Digest.digest();
     }
-
-
 
 }

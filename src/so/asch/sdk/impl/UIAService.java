@@ -1,13 +1,14 @@
 package so.asch.sdk.impl;
 
-import com.alibaba.fastjson.JSONObject;
+
+import so.asch.sdk.AschResult;
 import so.asch.sdk.UIA;
 import so.asch.sdk.dbc.Argument;
 import so.asch.sdk.transaction.TransactionInfo;
 
 public class UIAService extends AschRESTService implements UIA {
     @Override
-    public JSONObject getIssuers(int limit, int offset) {
+    public AschResult getIssuers(int limit, int offset) {
         try {
             Argument.require(Validation.isValidLimit(limit), "invalid limit");
             Argument.require(Validation.isValidOffset(offset), "invalid offset");
@@ -20,7 +21,7 @@ public class UIAService extends AschRESTService implements UIA {
     }
 
     @Override
-    public JSONObject getIssuer(String nameOrAddress) {
+    public AschResult getIssuer(String nameOrAddress) {
         try{
             Argument.notNullOrEmpty(nameOrAddress, "invalid nameOrAddress");
 
@@ -32,13 +33,13 @@ public class UIAService extends AschRESTService implements UIA {
     }
 
     @Override
-    public JSONObject queryIssuerAssets(String nameOrAddress, int limit, int offset) {
+    public AschResult queryIssuerAssets(String nameOrAddress, int limit, int offset) {
         try {
             Argument.require(Validation.isValidLimit(limit), "invalid limit");
             Argument.require(Validation.isValidOffset(offset), "invalid offset");
             Argument.notNullOrEmpty(nameOrAddress, "invalid nameOrAddress");
 
-            JSONObject parameters = createLimitAndOffsetParameters(limit, offset);
+            ParameterMap parameters = createLimitAndOffsetParameters(limit, offset);
 
             return get(issuerUrl(AschServiceUrls.UIA.QUERY_ISSUER_ASSETS, nameOrAddress), parameters);
         }
@@ -48,7 +49,7 @@ public class UIAService extends AschRESTService implements UIA {
     }
 
     @Override
-    public JSONObject getAssets(int limit, int offset) {
+    public AschResult getAssets(int limit, int offset) {
         try {
             Argument.require(Validation.isValidLimit(limit), "invalid limit");
             Argument.require(Validation.isValidOffset(offset), "invalid offset");
@@ -61,7 +62,7 @@ public class UIAService extends AschRESTService implements UIA {
     }
 
     @Override
-    public JSONObject getAsset(String assetName) {
+    public AschResult getAsset(String assetName) {
         try {
             Argument.notNullOrEmpty(assetName, "assetName");
 
@@ -73,15 +74,15 @@ public class UIAService extends AschRESTService implements UIA {
     }
 
     @Override
-    public JSONObject getAssetACL(String assetName, boolean whiteOrBlack, int limit, int offset) {
+    public AschResult getAssetACL(String assetName, boolean whiteOrBlack, int limit, int offset) {
         try {
             Argument.require(Validation.isValidLimit(limit), "invalid limit");
             Argument.require(Validation.isValidOffset(offset), "invalid offset");
             Argument.notNullOrEmpty(assetName, "invalid assetName");
 
-            JSONObject parameters = createLimitAndOffsetParameters(limit, offset)
-                    .fluentPut("name", assetName)
-                    .fluentPut("flag", whiteOrBlack);
+            ParameterMap parameters = createLimitAndOffsetParameters(limit, offset)
+                    .put("name", assetName)
+                    .put("flag", whiteOrBlack);
 
             return get(assetUrl(AschServiceUrls.UIA.GET＿ASSET＿ACL,assetName), parameters);
         }
@@ -91,14 +92,14 @@ public class UIAService extends AschRESTService implements UIA {
     }
 
     @Override
-    public JSONObject getAddressBalances(String address, int limit, int offset) {
+    public AschResult getAddressBalances(String address, int limit, int offset) {
         try {
             Argument.require(Validation.isValidLimit(limit), "invalid limit");
             Argument.require(Validation.isValidOffset(offset), "invalid offset");
             Argument.require(Validation.isValidAddress(address), "invalid address");
 
-            JSONObject parameters = createLimitAndOffsetParameters(limit, offset)
-                    .fluentPut("address", address);
+            ParameterMap parameters = createLimitAndOffsetParameters(limit, offset)
+                    .put("address", address);
 
             return get(AschServiceUrls.UIA.GET_ADDRESS_BALANCES + address, parameters);
         }
@@ -108,14 +109,14 @@ public class UIAService extends AschRESTService implements UIA {
     }
 
     @Override
-    public JSONObject getTransactions(String ownerPublicKey, int limit, int offset) {
+    public AschResult getTransactions(String ownerPublicKey, int limit, int offset) {
         try {
             Argument.require(Validation.isValidLimit(limit), "invalid limit");
             Argument.require(Validation.isValidOffset(offset), "invalid offset");
             Argument.notNullOrEmpty(ownerPublicKey, "invalid ownerPublicKey");
 
-            JSONObject parameters = createLimitAndOffsetParameters(limit, offset)
-                    .fluentPut("publicKey", ownerPublicKey);
+            ParameterMap parameters = createLimitAndOffsetParameters(limit, offset)
+                    .put("publicKey", ownerPublicKey);
 
             return get(AschServiceUrls.UIA.GET_TRANSACTIONS, parameters);
         }
@@ -125,32 +126,32 @@ public class UIAService extends AschRESTService implements UIA {
     }
 
     @Override
-    public JSONObject createIssuer(String name, String desc, String secret, String secondSecret) {
+    public AschResult createIssuer(String name, String desc, String secret, String secondSecret) {
         return null;
     }
 
     @Override
-    public JSONObject createAsset(String currency, String desc, long maximum, byte precision, String strategy, String secret, String secondSecret) {
+    public AschResult createAsset(String currency, String desc, long maximum, byte precision, String strategy, String secret, String secondSecret) {
         return null;
     }
 
     @Override
-    public JSONObject setAssetACL(String currency, int assertStatus, boolean whiteListMode, String secret, String secondSecret) {
+    public AschResult setAssetACL(String currency, int assertStatus, boolean whiteListMode, String secret, String secondSecret) {
         return null;
     }
 
     @Override
-    public JSONObject issue(String currency, long amount, String secret, String secondSecret) {
+    public AschResult issue(String currency, long amount, String secret, String secondSecret) {
         return null;
     }
 
     @Override
-    public JSONObject transfer(String currency, String recipientId, long amount, String message, String secret, String secondSecret) {
+    public AschResult transfer(String currency, String recipientId, long amount, String message, String secret, String secondSecret) {
         try {
             Argument.notNullOrEmpty(currency, "invalid currency");
             Argument.require(Validation.isValidAddress(recipientId), "invalid recipientId");
-            Argument.require(Validation.isValidSecure(secret), "invalid secret");
-            Argument.optional(secondSecret, Validation::isValidSecure, "invalid second secret");
+            Argument.require(Validation.isValidSecret(secret), "invalid secret");
+            Argument.optional(secondSecret, Validation::isValidSecret, "invalid second secret");
 
             TransactionInfo transaction = getTransactionBuilder()
                     .buildUIATransfer(currency, amount, recipientId, message, secret, secondSecret);
@@ -163,14 +164,14 @@ public class UIAService extends AschRESTService implements UIA {
     }
 
     @Override
-    public JSONObject setAssetStatus(String currency, int assertStatus, boolean whiteListMode, String secret, String secondSecret) {
+    public AschResult setAssetStatus(String currency, int assertStatus, boolean whiteListMode, String secret, String secondSecret) {
         return null;
     }
 
-    private  JSONObject createLimitAndOffsetParameters(int limit, int offset){
-        return new JSONObject()
-                .fluentPut("limit", limit)
-                .fluentPut("offset", offset);
+    private ParameterMap createLimitAndOffsetParameters(int limit, int offset){
+        return new ParameterMap()
+                .put("limit", limit)
+                .put("offset", offset);
     }
 
     private String assetUrl(String baseUrl, String assetName){

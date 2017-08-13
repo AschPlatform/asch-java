@@ -1,6 +1,5 @@
 package so.asch.sdk;
 
-import com.alibaba.fastjson.JSONObject;
 import so.asch.sdk.dto.query.PeerQueryParameters;
 
 /**
@@ -24,7 +23,7 @@ public interface Peer extends AschInterface {
     //success	boole	是否成功获得response数据
     //peers	Array	节点信息json构成的数组
     //totalCount	integer	当前正在运行的节点个数
-    JSONObject queryPeers(PeerQueryParameters parameters);
+    AschResult queryPeers(PeerQueryParameters parameters);
 
     //接口地址：/api/peers/version
     //请求方式：get
@@ -35,7 +34,7 @@ public interface Peer extends AschInterface {
     //version	string	版本号
     //build	timestamp	构建时间
     //net	string	主链或者测试链
-    JSONObject getVersion();
+    AschResult getVersion();
 
     //接口地址：/api/peers/get
     //请求方式：get
@@ -46,6 +45,6 @@ public interface Peer extends AschInterface {
     //返回参数说明：
     //success	boole	是否成功获得response数据
     //peer	json
-    JSONObject getPeer(String ip, int port);
+    AschResult getPeer(String ip, int port);
 
 }

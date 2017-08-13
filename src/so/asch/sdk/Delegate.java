@@ -1,6 +1,5 @@
 package so.asch.sdk;
 
-import com.alibaba.fastjson.JSONObject;
 import so.asch.sdk.dto.query.DelegateQueryParameters;
 
 /**
@@ -17,7 +16,7 @@ public interface Delegate extends AschInterface {
     //返回参数说明：
     //success	boole	是否成功获得response数据
     //count	integer	受托人总个数
-    JSONObject getDelegatesCount();
+    AschResult getDelegatesCount();
 
     //接口地址：/api/delegates/voters
     //请求方式：get
@@ -27,7 +26,7 @@ public interface Delegate extends AschInterface {
     //返回参数说明：
     //success	boole	是否成功获得response数据
     //accounts	Array	账户json串组成的数组
-    JSONObject getVoters(String publicKey);
+    AschResult getVoters(String publicKey);
 
     //接口地址： /api/delegates/get/
     //请求方式：get
@@ -39,7 +38,7 @@ public interface Delegate extends AschInterface {
     //返回参数说明：
     //success	boolean	是否成功获得response数据
     //delegate	json	委托人详情
-    JSONObject getDelegateByPublicKey(String publicKey);
+    AschResult getDelegateByPublicKey(String publicKey);
 
     // 接口地址： /api/delegates/get/
     // 请求方式：get
@@ -50,7 +49,7 @@ public interface Delegate extends AschInterface {
     // 返回参数说明：
     // success boolean 是否成功获取response数据
     // delegate json 委托人详情
-    JSONObject getDelegateByName(String userName);
+    AschResult getDelegateByName(String userName);
 
     //接口地址：/api/delegatesupublicKey
     //请求方式：get
@@ -64,7 +63,7 @@ public interface Delegate extends AschInterface {
     //返回参数说明：
     //success	boole	是否成功获得response数据
     //delegates	Array	受托人详情列表
-    JSONObject queryDelegates(DelegateQueryParameters parameters);
+    AschResult queryDelegates(DelegateQueryParameters parameters);
 
     //接口地址：/api/delegates/fee
     //请求方式：get
@@ -74,7 +73,7 @@ public interface Delegate extends AschInterface {
     //返回参数说明：
     //success	boole	是否成功获得response数据
     //fee	integer	转账费
-    JSONObject getDelegateFee(String publicKey);
+    AschResult getDelegateFee(String publicKey);
 
     //接口地址：/api/delegates/forging/getForgedByAccount
     //请求方式：get
@@ -86,7 +85,7 @@ public interface Delegate extends AschInterface {
     //fees	integer	收取的手续费
     //rewards	integer	已获得奖励
     //forged	integer	锻造获得的总奖励
-    JSONObject getForging(String publicKey);
+    AschResult getForging(String publicKey);
 
     //接口地址：/api/delegates
     //请求方式：put
@@ -98,7 +97,7 @@ public interface Delegate extends AschInterface {
     //返回参数说明：
     //success	boole	是否成功获得response数据
     //transaction	json	注册受托人交易详情
-    JSONObject registerDelegate(String userName, String secret, String secondSecret);
+    AschResult registerDelegate(String userName, String secret, String secondSecret);
 
     //接口地址：/api/delegates/forging/enable
     //请求方式：post
@@ -109,7 +108,7 @@ public interface Delegate extends AschInterface {
     //返回参数说明：
     //success	boole	是否成功获得response数据
     //address	string	受托人地址
-    JSONObject enableForge(String publicKey, String secret );
+    AschResult enableForge(String publicKey, String secret );
 
     //接口地址：/api/delegates/forging/disable
     //请求方式：post
@@ -120,7 +119,7 @@ public interface Delegate extends AschInterface {
     //返回参数说明：
     //success	boole	是否成功获得response数据
     //address	string	受托人地址
-    JSONObject disableForge(String publicKey, String secret);
+    AschResult disableForge(String publicKey, String secret);
 
     //接口地址：/api/delegates/forging/status
     //请求方式：get
@@ -130,6 +129,6 @@ public interface Delegate extends AschInterface {
     //返回参数说明：
     //success	boole	是否成功获得response数据
     //enabled	string	锻造是否开启
-    JSONObject getForgingStatus(String publicKey);
+    AschResult getForgingStatus(String publicKey);
 
 }

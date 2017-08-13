@@ -1,7 +1,5 @@
 package so.asch.sdk;
 
-import com.alibaba.fastjson.JSONObject;
-
 /**
  * Asch签名接口
  * @author eagle
@@ -22,7 +20,7 @@ public interface Signature extends AschInterface{
     //返回参数说明：
     //success	boole	是否成功获得response数据
     //transaction	json	设置二级密码产生的交易详情
-    JSONObject setSignature(String secret, String secondSecret, String publicKey, String multiSignAccountPublicKey);
+    AschResult setSignature(String secret, String secondSecret, String publicKey, String multiSignAccountPublicKey);
 
     //获取二级密码设置费
     //接口地址：/api/signatures/fee
@@ -32,7 +30,7 @@ public interface Signature extends AschInterface{
     //返回参数说明：
     //success	boole	是否成功获得response数据
     //fee	integer	费用
-    JSONObject getSignatureFee();
+    AschResult getSignatureFee();
 
 
     //设置普通账户为多重签名账户
@@ -52,7 +50,7 @@ public interface Signature extends AschInterface{
     //返回参数说明：
     //success	boole	是否成功获得response数据
     //transactionId	string	多重签名交易的id
-    JSONObject setMultiSignature(int minAccount, int lifetime, String[] addKeys, String[] removeKeys,
+    AschResult setMultiSignature(int minAccount, int lifetime, String[] addKeys, String[] removeKeys,
                                   String secret, String secondSecret, String publicKey);
 
     //非交易发起人对交易进行多重签名
@@ -67,7 +65,7 @@ public interface Signature extends AschInterface{
     //返回参数说明：
     //success	boole	是否成功获得response数据
     //transactionId	string	多重签名交易id
-    JSONObject multiSignature(String transactionId, String secret, String secondSecret, String publicKey );
+    AschResult multiSignature(String transactionId, String secret, String secondSecret, String publicKey );
 
     //获取挂起的多重签名交易详情
     //接口地址：/api/multisignatures/pending
@@ -78,7 +76,7 @@ public interface Signature extends AschInterface{
     //返回参数说明：
     //success	boole	是否成功获得response数据
     //transactions	Array	交易json组成的数组
-    JSONObject getPendingTransactions(String publicKey);
+    AschResult getPendingTransactions(String publicKey);
 
     //获取多重签名账户信息
     //接口地址：/api/multisignatures/accounts
@@ -89,6 +87,6 @@ public interface Signature extends AschInterface{
     //返回参数说明：
     //success	boole	是否成功获得response数据
     //accounts	Array	多重签名账户详情
-    JSONObject getMultiSignatureAccounts(String publicKey);
+    AschResult getMultiSignatureAccounts(String publicKey);
 
 }

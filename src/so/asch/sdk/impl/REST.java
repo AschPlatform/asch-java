@@ -1,9 +1,7 @@
 package so.asch.sdk.impl;
 
-import com.alibaba.fastjson.JSONObject;
 import org.apache.http.HttpEntityEnclosingRequest;
 import org.apache.http.HttpResponse;
-import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
@@ -15,8 +13,8 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
-import java.util.List;
+import java.net.URI;
+import java.net.URL;
 import java.util.Map;
 
 
@@ -36,12 +34,6 @@ public final class REST {
             }
         }
 
-        protected static StringEntity createEntity(JSONObject parameters, String charset) throws UnsupportedEncodingException
-        {
-            String parameterString = parameters == null ? "" : parameters.toString();
-            return createEntity(parameterString, charset);
-        }
-
         protected static StringEntity createEntity(String parameterString, String charset) throws UnsupportedEncodingException
         {
             StringEntity  entity = new StringEntity(parameterString, charset);
@@ -51,37 +43,63 @@ public final class REST {
             return entity;
         }
 
-        protected static HttpResponse rawPost(String url, JSONObject parameters, Map<String,String> customeHeads, String charset ) throws IOException{
-            String parameterString = parameters == null ? "" : parameters.toString();
+        protected static HttpResponse rawPost(String url, ParameterMap parameters, Map<String,String> customeHeads, String charset ) throws IOException{
+            String parameterString = parameters == null ? "" : parameters.toJSONString();
             return rawPost(url, parameterString, customeHeads, charset);
         }
 
-        protected static HttpResponse rawPost(String url, String parameterString, Map<String,String> customeHeads, String charset ) throws IOException{
+        protected static HttpResponse rawPost(String url, String requestBody, Map<String,String> customeHeads, String charset ) throws IOException{
             CloseableHttpClient httpClient = HttpClients.createDefault();
-            HttpPost post = new HttpPost(url);
+            HttpPost post = new HttpPost(encodeUrl(url));
 
             addCustomeHeads(customeHeads, post);
-            StringEntity entity = createEntity(parameterString, charset);
+            StringEntity entity = createEntity(requestBody, charset);
             post.setEntity(entity);
 
+            logger.debug(String.format("POST url:%s, body:%s", url, requestBody));
             return httpClient.execute(post);
         }
 
-        protected static JSONObject getJSONObject(HttpResponse response) throws IOException{
+        protected static String getResponseContent(HttpResponse response) throws IOException{
 
             if (null == response)
                 throw new IOException("Get response failed");
-            if (HttpStatus.SC_OK != response.getStatusLine().getStatusCode())
-                throw new IOException(String.format("Http server response failed, %s", response.getStatusLine().toString()));
 
-            String json = EntityUtils.toString(response.getEntity());
-            return JSONObject.parseObject(json);
+            String content = EntityUtils.toString(response.getEntity());
+
+            if (logger.isDebugEnabled()) {
+                logger.debug(String.format("RESPONSE code:%d, reason:%s, content:%s", response.getStatusLine().getStatusCode(),
+                        response.getStatusLine().getReasonPhrase(),
+                        content));
+            }
+
+            if (!content.contains("\"success\":")){
+                throw new IOException(String.format("Http server response failed, code:%d, reason:%s.\n content:%s",
+                        response.getStatusLine().getStatusCode(),
+                        response.getStatusLine().getReasonPhrase(),
+                        content));
+            }
+
+            return content;
         }
 
-        public static JSONObject post(String url, String parameters,  Map<String, String> customeHeaders, String charset) throws IOException{
+        protected static String encodeUrl(String url)throws IOException{
+            try{
+                URL uri = new URL(url);
+
+                return new URI(uri.getProtocol(), uri.getUserInfo(), uri.getHost(), uri.getPort(),
+                        uri.getPath(), uri.getQuery(), null)
+                        .toString();
+            }
+            catch(Exception ex){
+                throw new IOException("invalid url: "+ url, ex);
+            }
+        }
+
+        public static String post(String url, String parameters,  Map<String, String> customeHeaders, String charset) throws IOException{
             try {
                 HttpResponse response = rawPost(url, parameters, customeHeaders, charset);
-                return getJSONObject(response);
+                return getResponseContent(response);
             }
             catch (IOException ex){
                 String errorInfo = String.format("Exception when post,url:%s,data:%s", url, parameters);
@@ -90,24 +108,24 @@ public final class REST {
             }
         }
 
-        public static JSONObject post(String url, JSONObject parameters, Map<String,String> customeHeads, String charset) throws IOException {
+        public static String post(String url, ParameterMap parameters, Map<String,String> customeHeads, String charset) throws IOException {
             String parametersString = parameters == null ? "" : parameters.toJSONString();
             return post(url, parametersString, customeHeads, charset);
         }
 
-        public static JSONObject post(String url, String parameters, Map<String,String> customeHeads ) throws IOException {
+        public static String post(String url, String parameters, Map<String,String> customeHeads ) throws IOException {
             return post(url, parameters, customeHeads, null);
         }
 
-        public static JSONObject post(String url, JSONObject parameters, Map<String,String> customeHeads ) throws IOException {
+        public static String post(String url, ParameterMap parameters, Map<String,String> customeHeads ) throws IOException {
             return post(url, parameters, customeHeads, null);
         }
 
-        public static JSONObject post(String url, String parameters ) throws IOException {
+        public static String post(String url, String parameters ) throws IOException {
             return post(url, parameters, null, null);
         }
 
-        public static JSONObject post(String url, JSONObject parameters ) throws IOException {
+        public static String post(String url, ParameterMap parameters ) throws IOException {
             String parametersString = parameters == null ? "" : parameters.toJSONString();
             return post(url, parametersString, null, null);
         }
@@ -116,26 +134,19 @@ public final class REST {
             CloseableHttpClient httpClient = HttpClients.createDefault();
 
             String fullUrl = queryString == null ? url : url + "?" + queryString;
-            HttpGet get = new HttpGet(fullUrl);
+
+            logger.debug("GET url:" + fullUrl);
+            HttpGet get = new HttpGet(encodeUrl(fullUrl));
 
             return httpClient.execute(get);
         }
 
-        public static HttpResponse rawGet(String url, JSONObject parameters) throws IOException{
-            return rawGet(url, getQueryString(parameters));
+        public static HttpResponse rawGet(String url, ParameterMap parameters) throws IOException{
+            return rawGet(url, parameters == null ? null : parameters.toQueryString());
         }
 
-        protected static String getQueryString(JSONObject parameters) {
-            if (null == parameters)
-                return "";
-
-            List<String> parameterList = new ArrayList<>();
-            parameters.forEach((key, value) -> parameterList.add(key + "=" + (value == null ? "" : value.toString())));
-            return  String.join("&", parameterList);
-        }
-
-        public static JSONObject get(String url, JSONObject parameters) throws IOException {
-            return getJSONObject(rawGet(url, parameters));
+        public static String get(String url, ParameterMap parameters) throws IOException {
+            return getResponseContent(rawGet(url, parameters));
         }
 
 }

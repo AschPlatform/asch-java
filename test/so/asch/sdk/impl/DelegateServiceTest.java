@@ -1,49 +1,50 @@
 package so.asch.sdk.impl;
 
-import com.alibaba.fastjson.JSONObject;
 import org.testng.Assert;
-import so.asch.sdk.TestHelper;
+import so.asch.sdk.AschResult;
+import so.asch.sdk.AschSDK;
+import so.asch.sdk.TestData;
 import so.asch.sdk.dto.query.DelegateQueryParameters;
 
 public  class DelegateServiceTest {
 
     @org.testng.annotations.Test
     public void testGetCount() throws Exception {
-        Assert.assertNotNull(TestHelper.delegateService());
-        JSONObject json = TestHelper.delegateService().getDelegatesCount();
-        Assert.assertTrue(TestHelper.isSuccess(json));
+        Assert.assertNotNull(AschSDK.Delegate);
+        AschResult result= AschSDK.Delegate.getDelegatesCount();
+        Assert.assertTrue(result.isSuccessful());
     }
 
     @org.testng.annotations.Test
     public void testGetVoters() throws Exception {
-        JSONObject json = TestHelper.delegateService().getVoters(TestHelper.publicKey());
-        Assert.assertTrue(TestHelper.isSuccess(json));
+        AschResult result= AschSDK.Delegate.getVoters(TestData.publicKey());
+        Assert.assertTrue(result.isSuccessful());
     }
 
     @org.testng.annotations.Test
     public void testGetDelegateByPublicKey() throws Exception {
-        JSONObject json = TestHelper.delegateService().getDelegateByPublicKey(TestHelper.publicKey());
-        Assert.assertTrue(TestHelper.isSuccess(json));
+        AschResult result= AschSDK.Delegate.getDelegateByPublicKey(TestData.publicKey());
+        Assert.assertTrue(result.isSuccessful());
     }
 
     @org.testng.annotations.Test
     public void testGetDelegateByName() throws Exception {
-        JSONObject json = TestHelper.delegateService().getDelegateByName(TestHelper.userName);
-        Assert.assertTrue(TestHelper.isSuccess(json));
+        AschResult result= AschSDK.Delegate.getDelegateByName(TestData.userName);
+        Assert.assertTrue(result.isSuccessful());
     }
 
     @org.testng.annotations.Test
     public void testGetDelegates() throws Exception {
         DelegateQueryParameters query = new DelegateQueryParameters()
                 .setLimit(10);
-        JSONObject json = TestHelper.delegateService().queryDelegates(query);
-        Assert.assertTrue(TestHelper.isSuccess(json));
+        AschResult result= AschSDK.Delegate.queryDelegates(query);
+        Assert.assertTrue(result.isSuccessful());
     }
 
     @org.testng.annotations.Test
     public void testGetDelegateFee() throws Exception {
-        JSONObject json = TestHelper.delegateService().getDelegateFee(TestHelper.publicKey());
-        Assert.assertTrue(TestHelper.isSuccess(json));
+        AschResult result= AschSDK.Delegate.getDelegateFee(TestData.publicKey());
+        Assert.assertTrue(result.isSuccessful());
     }
 
     @org.testng.annotations.Test
@@ -52,9 +53,9 @@ public  class DelegateServiceTest {
 
     @org.testng.annotations.Test
     public void testRegisterDelegate() throws Exception {
-        JSONObject json = TestHelper.delegateService().registerDelegate(TestHelper.userName, TestHelper.secret, TestHelper.secondSecret);
-        Assert.assertTrue( TestHelper.isSuccess(json) ||
-                "Account is already a delegate".equals(json.getString("error")));
+        AschResult result= AschSDK.Delegate.registerDelegate(TestData.userName, TestData.secret, TestData.secondSecret);
+        Assert.assertTrue( result.isSuccessful()||
+                "Account is already a delegate".equals(result.getError()));
     }
 
     @org.testng.annotations.Test
@@ -66,6 +67,6 @@ public  class DelegateServiceTest {
     }
 
     @org.testng.annotations.Test
-    public void testGetForgingStatu() throws Exception {
+    public void testGetForgingStatus() throws Exception {
     }
 }

@@ -1,14 +1,9 @@
 package so.asch.sdk;
 
-import com.alibaba.fastjson.JSONObject;
-import so.asch.sdk.impl.AschFactory;
-import so.asch.sdk.impl.AschSDKConfig;
-import so.asch.sdk.security.SecurityStrategy;
-
 /**
  * Created by eagle on 17-7-16.
  */
-public class TestHelper {
+public class TestData {
 
     public static final String root = "http://127.0.0.1:4096";
     public static final String secret = "early sugar cannon mansion expose tunnel piece manual destroy exhaust helmet rather";
@@ -35,29 +30,8 @@ public class TestHelper {
 
     public static final String blockHash = "979fa5571901256bb10e42d5ae88e5f5108b6f684938beaf4281bf9cfa2041850409eee45cc5f2a37aa93717f6079da9a549496c53ee9ff510c97c2e0c0b6c0a";
 
-    static {
-
-        AschSDKConfig.getInstance().setRoot(root);
-    }
-
-    public static Account accountService(){return AschFactory.getInstance().getService(Account.class);}
-    public static Block blockService(){return AschFactory.getInstance().getService(Block.class);}
-    public static Dapp dappService(){return AschFactory.getInstance().getService(Dapp.class);}
-    public static Delegate delegateService(){return AschFactory.getInstance().getService(Delegate.class);}
-    public static Peer peerService(){return AschFactory.getInstance().getService(Peer.class);}
-    public static Transaction transactionService(){return AschFactory.getInstance().getService(Transaction.class);}
-    public static Signature signatureService(){return AschFactory.getInstance().getService(Signature.class);}
-    public static SecurityStrategy security(){return AschFactory.getInstance().getSecurity();}
     public static String publicKey(){
-        try {
-            return security().encodePublicKey(security().generateKeyPair(secret).getPublic());
-        }
-        catch (Exception ex){
-            return "";
-        }
+        return AschSDK.Helper.getPublicKey(secret);
     }
 
-    public static boolean isSuccess(JSONObject json){
-        return json != null && json.getBoolean("success");
-    }
 }

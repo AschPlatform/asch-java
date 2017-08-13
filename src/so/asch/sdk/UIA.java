@@ -1,7 +1,5 @@
 package so.asch.sdk;
 
-import com.alibaba.fastjson.JSONObject;
-
 /**
  * Asch UIA接口
  * @author eagle
@@ -18,7 +16,7 @@ public interface UIA extends AschInterface {
     //success	boole	是否成功
     //issuers	list	元素为字典，每个字典代表一个发行商，包含发行商名字、描述、id（Asch地址）
     //count	integer	发行商总个数
-    JSONObject getIssuers(int limit, int offset);
+    AschResult getIssuers(int limit, int offset);
 
     //查询指定发行商的信息
     //接口地址：/api/uia/issuers/name 请求方式：get
@@ -28,7 +26,7 @@ public interface UIA extends AschInterface {
     //返回参数说明：
     //success	boole	是否成功
     //issuers	dict	包含发行商名字、描述、id（Asch地址）
-    JSONObject getIssuer(String nameOrAddress);
+    AschResult getIssuer(String nameOrAddress);
 
     //查看指定发行商的资产
     //接口地址：/api/uia/issuers/name/assets
@@ -43,7 +41,7 @@ public interface UIA extends AschInterface {
     //assets	list	每个元素是一个字典，每个字典是一个资产详情，包含资产名字、描述、上限（最大发行量=真实发行量*10**精度）、精度、
     //                  策略、当前发行量、发行高度、发行商id，acl模式（0：黑名单，1：白名单）、是否注销
     //count	interger	该发行商注册的资产总个数（包含已注销的）
-    JSONObject queryIssuerAssets(String nameOrAddress, int limit, int offset);
+    AschResult queryIssuerAssets(String nameOrAddress, int limit, int offset);
 
     //获取全网所有资产
     //接口地址：/api/uia/assets
@@ -56,7 +54,7 @@ public interface UIA extends AschInterface {
     //success	boole	是否成功
     //assets	list	每个元素是一个字典，每个字典是一个资产详情，包含资产名字、描述、上限、精度、策略、当前发行量、发行高度、发行商id，acl、是否注销
     //count	integer	所有资产的个数
-    JSONObject getAssets(int limit, int offset);
+    AschResult getAssets(int limit, int offset);
 
     //获取指定资产信息
     //接口地址：/api/uia/assets/name
@@ -67,7 +65,7 @@ public interface UIA extends AschInterface {
     //返回参数说明：
     //success	boole	是否成功
     //assets	dict	包含资产名字、描述、上限、精度、策略、当前发行量、发行高度、发行商id，acl、是否注销
-    JSONObject getAsset(String assertName);
+    AschResult getAsset(String assertName);
 
     //获取某个资产的访问控制列表（acl）
     //接口地址：/api/uia/assets/name/acl/flag 请求方式：get
@@ -81,7 +79,7 @@ public interface UIA extends AschInterface {
     //success	boole	是否成功
     //list	list	符合规则的账户列表
     //count	integer	符合规则账户总数
-    JSONObject getAssetACL(String assertName, boolean whiteOrBlack, int limit, int offset);
+    AschResult getAssetACL(String assertName, boolean whiteOrBlack, int limit, int offset);
 
     //获取某个地址拥有的所有资产信息
     //接口地址：/api/uia/balances/address 请求方式：get
@@ -94,7 +92,7 @@ public interface UIA extends AschInterface {
     //success	boole	是否成功
     //balances	list	拥有的资产详情列表，每个元素是一个资产，包含资产名、余额、上限、精度、当前发行量、是否注销（0：未注销，1：已注销）
     //count	integer	当前该地址拥有的资产个数
-    JSONObject getAddressBalances(String address, int limit, int offset);
+    AschResult getAddressBalances(String address, int limit, int offset);
 
     //获取资产交易记录
     //接口地址：/api/uia/transactions
@@ -110,7 +108,7 @@ public interface UIA extends AschInterface {
     //                        接收者id（系统为空，如资产注册）、交易数量（资产交易都为0）、手续费0.1XAS、签名、多重签名、确认数、
     //                        资产信息（包含发行商id、发行商名字、描述）、交易id。
     //count	integer	资产交易总个数
-    JSONObject getTransactions(String ownerPublicKey, int limit, int offset);
+    AschResult getTransactions(String ownerPublicKey, int limit, int offset);
 
     //注册资产发行商
     //请求参数说明：
@@ -120,7 +118,7 @@ public interface UIA extends AschInterface {
     //secondSecret  string  Y   二级密码
     //返回参数说明：
     //success	boole	是否成功
-    JSONObject createIssuer(String name, String desc, String secret, String secondSecret);
+    AschResult createIssuer(String name, String desc, String secret, String secondSecret);
 
     //注册资产
     //请求参数说明：
@@ -133,7 +131,7 @@ public interface UIA extends AschInterface {
     //secondSecret  string  Y   二级密码
     //返回参数说明：
     //success	boole	是否成功
-    JSONObject createAsset(String currency, String desc, long maximum, byte precision, String strategy, String secret, String secondSecret);
+    AschResult createAsset(String currency, String desc, long maximum, byte precision, String strategy, String secret, String secondSecret);
 
 
     //资产设置acl模式
@@ -145,7 +143,7 @@ public interface UIA extends AschInterface {
     //secondSecret  string  Y   二级密码
     //返回参数说明：
     //success	boole	是否成功
-    JSONObject setAssetACL(String currency, int assertStatus, boolean whiteListMode, String secret, String secondSecret);
+    AschResult setAssetACL(String currency, int assertStatus, boolean whiteListMode, String secret, String secondSecret);
 
     //资产发行
     //请求参数说明：
@@ -155,7 +153,7 @@ public interface UIA extends AschInterface {
     //secondSecret  string  Y   二级密码
     //返回参数说明：
     //success	boole	是否成功
-    JSONObject issue(String currency, long amount, String secret, String secondSecret);
+    AschResult issue(String currency, long amount, String secret, String secondSecret);
 
     //资产转账
     //请求参数说明：
@@ -166,7 +164,7 @@ public interface UIA extends AschInterface {
     //secondSecret  string  Y   二级密码
     //返回参数说明：
     //success	boole	是否成功
-    JSONObject transfer(String currency, String recipientId, long amount, String message, String secret, String secondSecret);
+    AschResult transfer(String currency, String recipientId, long amount, String message, String secret, String secondSecret);
 
     //资产注销
     //资产设置acl模式
@@ -178,6 +176,6 @@ public interface UIA extends AschInterface {
     //secondSecret  string  Y   二级密码
     //返回参数说明：
     //success	boole	是否成功
-    JSONObject setAssetStatus(String currency, int assertStatus, boolean whiteListMode, String secret, String secondSecret);
+    AschResult setAssetStatus(String currency, int assertStatus, boolean whiteListMode, String secret, String secondSecret);
 
 }

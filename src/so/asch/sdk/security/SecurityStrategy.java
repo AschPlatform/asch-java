@@ -18,9 +18,13 @@ public interface SecurityStrategy {
 
     String generateTransactionId(TransactionInfo transaction) throws SecurityException;
 
+    String generateSecret();
+
+    boolean isValidSecret(String secret);
+
     String Signature(TransactionInfo transaction, PrivateKey privateKey) throws SecurityException;
 
     String SignSignature(TransactionInfo transaction, PrivateKey privateKey) throws SecurityException;
 
-    int getTimestamp();
+    int getTransactionTimestamp();
 }
