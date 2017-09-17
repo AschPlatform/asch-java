@@ -6,6 +6,7 @@ package so.asch.sdk;
 public class TestData {
 
     public static final String root = "http://127.0.0.1:4096";
+    //public static final String root = "http://106.14.156.245:4096";
     public static final String secret = "early sugar cannon mansion expose tunnel piece manual destroy exhaust helmet rather";
     public static final String address = "7286541193277597873";
     public static final String secondSecret = "asch111111";
@@ -29,6 +30,10 @@ public class TestData {
     public static final long blockHeight = 6900;
 
     public static final String blockHash = "979fa5571901256bb10e42d5ae88e5f5108b6f684938beaf4281bf9cfa2041850409eee45cc5f2a37aa93717f6079da9a549496c53ee9ff510c97c2e0c0b6c0a";
+
+    public static final String transactionId = "12936058387774240556";
+
+    public static final String senderPublicKey = "fd6df6dc35852ac7edcc081eb5195718e0c77a6ad4f8157eeb78c865fa83efc4";
 
     public static String publicKey(){
         return AschSDK.Helper.getPublicKey(secret);
