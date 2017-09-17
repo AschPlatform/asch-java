@@ -20,31 +20,11 @@ public class Decoding {
         }
     }
 
-    public static byte[] utf8(String utf8String)throws DecodingException{
-        try{
-            return utf8String.getBytes("UTF-8");
-        }
-        catch (Exception ex){
-            throw new DecodingException("decode utf8 failed",ex);
-        }
-    }
-
     public static  byte[] unsafeDecodeHex(String hexString){
         if (null == hexString)
             return EMPTY_BUFFER;
         try{
             return Decoding.hex(hexString);
-        }
-        catch (Exception ex){
-            return EMPTY_BUFFER;
-        }
-    }
-
-    public static  byte[] unsafeDecodeUTF8(String utf8String){
-        if (null == utf8String)
-            return EMPTY_BUFFER;
-        try{
-            return Decoding.utf8(utf8String);
         }
         catch (Exception ex){
             return EMPTY_BUFFER;

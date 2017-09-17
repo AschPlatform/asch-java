@@ -3,9 +3,9 @@ package so.asch.sdk.transaction;
 import com.alibaba.fastjson.annotation.JSONField;
 import so.asch.sdk.TransactionType;
 import so.asch.sdk.codec.Decoding;
+import so.asch.sdk.codec.Encoding;
 import so.asch.sdk.transaction.asset.AssetInfo;
 
-import java.beans.Transient;
 import java.math.BigInteger;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -86,7 +86,7 @@ public class TransactionInfo {
         return this;
     }
 
-    @Transient
+    @JSONField(serialize = false)
     public TransactionType getTransactionType() {
         return transactionType;
     }
@@ -144,7 +144,7 @@ public class TransactionInfo {
     private AssetInfo assetInfo = null;
 
     public byte[] getBytes(boolean skipSignature , boolean skipSignSignature){
-        //1 + 4 + 32 + 32 + 8 + 8 + 64 + 64
+        //1 + 4 + 32 + 32 + 8 + 8 + ? + ? + 64 + 64
         //type(1)|timestamp(4)|senderPublicKey(32)|requesterPublicKey(32)|recipientId(8)|amount(8)|
         //message(?)|asset(?)|setSignature(64)|signSignature(64)
 
@@ -186,10 +186,10 @@ public class TransactionInfo {
         }
 
         //A+Base58地址
-        return Decoding.unsafeDecodeUTF8(recipientId);
+        return Encoding.getUTF8Bytes(recipientId);
     }
 
     private byte[] getMessageBuffer(){
-        return message == null ? new byte[0] : message.getBytes();
+       return Encoding.getUTF8Bytes(message);
     }
 }

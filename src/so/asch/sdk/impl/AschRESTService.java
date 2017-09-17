@@ -21,6 +21,7 @@ import java.util.Map;
 public abstract class AschRESTService implements AschInterface{
 
     protected static final  Logger logger = LoggerFactory.getLogger(AschRESTService.class);
+    private static final String CHAR_SET = "UTF-8";
 
     protected static final AschSDKConfig config = AschSDKConfig.getInstance();
     private static final Map<String, String> customeHeaders =  new HashMap<>();
@@ -71,7 +72,7 @@ public abstract class AschRESTService implements AschInterface{
 
     protected AschResult post(String relativeUrl, ParameterMap parameters){
         try{
-            String jsonString =  REST.post(getFullUrl(relativeUrl), parameters);
+            String jsonString =  REST.post(getFullUrl(relativeUrl), parameters, null, CHAR_SET);
             return AschResult.FromJsonString(jsonString);
         }
         catch (Exception ex){
@@ -81,7 +82,7 @@ public abstract class AschRESTService implements AschInterface{
 
     protected AschResult post(String relativeUrl, String parameters){
         try{
-            String jsonString =  REST.post(getFullUrl(relativeUrl), parameters);
+            String jsonString =  REST.post(getFullUrl(relativeUrl), parameters, null, CHAR_SET);
             return AschResult.FromJsonString(jsonString);
         }
         catch (Exception ex){
@@ -91,7 +92,7 @@ public abstract class AschRESTService implements AschInterface{
 
     protected AschResult postMagic(String relativeUrl, ParameterMap parameters){
         try{
-            String jsonString =  REST.post(getFullUrl(relativeUrl), parameters, getCustomeHeaders(), null);
+            String jsonString =  REST.post(getFullUrl(relativeUrl), parameters, getCustomeHeaders(), CHAR_SET);
             return AschResult.FromJsonString(jsonString);
         }
         catch (Exception ex){
@@ -101,7 +102,7 @@ public abstract class AschRESTService implements AschInterface{
 
     protected AschResult postMagic(String relativeUrl, String parameters){
         try{
-            String jsonString =  REST.post(getFullUrl(relativeUrl), parameters, getCustomeHeaders(), null);
+            String jsonString =  REST.post(getFullUrl(relativeUrl), parameters, getCustomeHeaders(), CHAR_SET);
             return AschResult.FromJsonString(jsonString);
         }
         catch (Exception ex){

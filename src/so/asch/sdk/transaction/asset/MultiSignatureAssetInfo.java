@@ -1,7 +1,7 @@
 package so.asch.sdk.transaction.asset;
 
 import com.alibaba.fastjson.annotation.JSONField;
-import so.asch.sdk.codec.Decoding;
+import so.asch.sdk.codec.Encoding;
 
 import java.beans.Transient;
 import java.nio.ByteBuffer;
@@ -96,6 +96,6 @@ public class MultiSignatureAssetInfo extends AssetInfo{
         buffer.put(multiSignature.getMinAccount().byteValue());
         buffer.put(multiSignature.getLifetime().byteValue());
         String keys = String.join("",multiSignature.getKeys());
-        buffer.put(Decoding.unsafeDecodeUTF8(keys));
+        buffer.put(Encoding.getUTF8Bytes(keys));
     }
 }

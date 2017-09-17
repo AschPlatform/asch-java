@@ -1,7 +1,7 @@
 package so.asch.sdk.transaction.asset;
 
 import com.alibaba.fastjson.annotation.JSONField;
-import so.asch.sdk.codec.Decoding;
+import so.asch.sdk.codec.Encoding;
 
 import java.nio.ByteBuffer;
 
@@ -46,6 +46,6 @@ public class DelegateAssetInfo extends AssetInfo {
 
     @Override
     public  void addBytes(ByteBuffer buffer){
-        buffer.put(Decoding.unsafeDecodeUTF8(delegate.getUserName()));
+        buffer.put(Encoding.getUTF8Bytes(delegate.getUserName()));
     }
 }

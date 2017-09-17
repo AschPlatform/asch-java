@@ -1,12 +1,14 @@
 package so.asch.sdk.transaction.asset;
 
+import so.asch.sdk.codec.Encoding;
+
 import java.nio.ByteBuffer;
 
 public class UIATransferAssetInfo extends AssetInfo {
 
     public static class UIATransferInfo {
-        public long getAmount() {
-            return amount;
+        public String getAmount() {
+            return Long.toString(amount);
         }
 
         public String getCurrency() {
@@ -22,7 +24,7 @@ public class UIATransferAssetInfo extends AssetInfo {
         private String currency;
     }
 
-    public UIATransferInfo getUiaTransferInfo() {
+    public UIATransferInfo getUiaTransfer() {
         return uiaTransfer;
     }
 
@@ -34,8 +36,7 @@ public class UIATransferAssetInfo extends AssetInfo {
 
     @Override
     public void addBytes(ByteBuffer buffer){
-        buffer.put(uiaTransfer.getCurrency().getBytes());
-        Long amount = uiaTransfer.getAmount();
-        buffer.put(amount.toString().getBytes());
+        buffer.put(Encoding.getUTF8Bytes(uiaTransfer.getCurrency()));
+        buffer.put(Encoding.getUTF8Bytes(uiaTransfer.getAmount()));
     }
 }

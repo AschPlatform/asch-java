@@ -1,6 +1,8 @@
 package so.asch.sdk.security;
 
 import net.i2p.crypto.eddsa.EdDSAPublicKey;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import so.asch.sdk.AschSDKConfig;
 import so.asch.sdk.codec.Decoding;
 import so.asch.sdk.codec.Encoding;
@@ -30,6 +32,8 @@ public class DefaultSecurityStrategy implements SecurityStrategy{
     private static final MessageDigest sha256Digest;
     private static final RipeMD160 ripemd160Digest;
 
+    protected static final Logger logger = LoggerFactory.getLogger(DefaultSecurityStrategy.class);
+
     static{
 
         MessageDigest messageDigest = null;
@@ -52,7 +56,7 @@ public class DefaultSecurityStrategy implements SecurityStrategy{
     public KeyPair generateKeyPair(String secure) throws SecurityException {
         try {
             Argument.notNullOrEmpty(secure, "secure");
-            byte[] hash = sha256Hash(Decoding.utf8(secure));
+            byte[] hash = sha256Hash(Encoding.getUTF8Bytes(secure));
             return Ed25519.generateKeyPairBySeed(hash);
         }
         catch (Exception ex){
@@ -92,6 +96,11 @@ public class DefaultSecurityStrategy implements SecurityStrategy{
             byte[] transactionBytes = transaction.getBytes(false, false);
             byte[] hash = sha256Hash(transactionBytes);
 
+            if (logger.isInfoEnabled()) {
+                logger.info("transaction bytes:" + Encoding.hex(transactionBytes));
+                logger.info("transaction hash:" + Encoding.hex(hash));
+            }
+
             if (config.isLongTransactionIdEnabled())
                 return Encoding.hex(hash);
 
@@ -109,8 +118,9 @@ public class DefaultSecurityStrategy implements SecurityStrategy{
 
     @Override
     public String generateSecret(){
-        String uuid = UUID.randomUUID().toString();
-        return Bip39.generateMnemonicCode(sha256Hash(uuid.getBytes()));
+        String uuid = UUID.randomUUID().toString()
+                .replace("-","");
+        return Bip39.generateMnemonicCode(Decoding.unsafeDecodeHex(uuid));
     }
 
     @Override

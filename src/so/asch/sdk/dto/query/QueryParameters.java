@@ -6,8 +6,8 @@ package so.asch.sdk.dto.query;
 public class QueryParameters{
 
     public enum SortOrder {
-        ASC("ASC"),
-        DESC("DESC");
+        ASC("asc"),
+        DESC("desc");
 
         private String sortOrder;
 
@@ -47,6 +47,14 @@ public class QueryParameters{
         this.orderByField = orderField;
         this.order = order;
         return (T)this;
+    }
+
+    public <T extends QueryParameters> T orderByAscending(String fieldName){
+        return this.setOrderBy(fieldName, SortOrder.ASC);
+    }
+
+    public  <T extends QueryParameters> T  orderByDescending(String fieldName){
+        return this.setOrderBy(fieldName, SortOrder.DESC);
     }
 
     private Integer limit = null;

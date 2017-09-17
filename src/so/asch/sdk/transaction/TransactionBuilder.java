@@ -109,8 +109,8 @@ public class TransactionBuilder {
 
         TransactionInfo transaction =  newTransaction(
                 TransactionType.UIATransfer,
-                amount,
-                AschConst.Fees.TRANSFER,
+                0,
+                AschConst.Fees.UIA_TRANSFER,
                 keyPair.getPublic())
                 .setMessage(message)
                 .setRecipientId(targetAddress)

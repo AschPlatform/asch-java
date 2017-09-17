@@ -37,7 +37,6 @@ public final class REST {
         protected static StringEntity createEntity(String parameterString, String charset) throws UnsupportedEncodingException
         {
             StringEntity  entity = new StringEntity(parameterString, charset);
-            entity.setContentEncoding(charset);
             entity.setContentType("application/json");
 
             return entity;

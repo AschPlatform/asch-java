@@ -28,6 +28,7 @@ public final class AschConst {
 
     public static class Fees{
         public static final long TRANSFER = 10000000;
+        public static final long UIA_TRANSFER = 10000000;
         public static final long VOTE = 10000000;
         public static final long SECOND_SIGNATURE =500000000;
         public static final long MULTI_SIGNATURE =500000000;

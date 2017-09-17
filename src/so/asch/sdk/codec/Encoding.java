@@ -18,6 +18,16 @@ public class Encoding {
         return Base58.encode(buffer);
     }
 
+    public static byte[] getUTF8Bytes(String str){
+        if (null == str) return new byte[0];
+        try{
+            return str.getBytes("UTF-8");
+        }
+        catch (Exception ex){
+            return null;
+        }
+    }
+
     public static String base64(byte[] buffer){
         return new String(Base64.encodeBase64(buffer));
     }
