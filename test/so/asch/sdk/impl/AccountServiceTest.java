@@ -16,16 +16,16 @@ import so.asch.sdk.dto.query.QueryParameters;
  * @version 1.0
  */
 public class AccountServiceTest {
-//    @BeforeSuite
-//    public void SetUp(){
-//        AschSDK.Config.setAschServer(TestData.root);
-//    }
-//
-//    @Test
-//    public void testLogin() throws Exception {
-//        AschResult result= AschSDK.Account.login(TestData.secret);
-//        Assert.assertTrue(result.isSuccessful());
-//    }
+    @BeforeSuite
+    public void SetUp(){
+        AschSDK.Config.setAschServer(TestData.root);
+    }
+
+    @Test
+    public void testLogin() throws Exception {
+        AschResult result= AschSDK.Account.login(TestData.secret);
+        Assert.assertTrue(result.isSuccessful());
+    }
 //
 //    @Test
 //    public void testSecureLogin() throws Exception {

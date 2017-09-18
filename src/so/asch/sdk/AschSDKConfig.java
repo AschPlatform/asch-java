@@ -49,11 +49,22 @@ public final class AschSDKConfig {
     public void setLongTransactionIdEnabled(boolean longTransactionIdEnabled) {
         this.longTransactionIdEnabled = longTransactionIdEnabled;
     }
+    
+    
 
-    private String aschServer ="http://127.0.0.1:4096";
+    public int getPlatform() {
+		return platform;
+	}
+	public void setPlatform(int platform) {
+		this.platform = platform;
+	}
+
+
+	private String aschServer ="http://127.0.0.1:4096";
     private String magic = "aabbccdd"; //localnet
     private boolean longTransactionIdEnabled = true;
     private boolean debugMode = true;
+    private int platform=1; //0 PC, 1 android
 
     public boolean tryLoadFromJson(String jsonString){
         try{
@@ -75,6 +86,7 @@ public final class AschSDKConfig {
         another.debugMode = this.debugMode;
         another.aschServer = this.aschServer;
         another.longTransactionIdEnabled = this.longTransactionIdEnabled;
+        another.platform=this.platform;
     }
 
 }

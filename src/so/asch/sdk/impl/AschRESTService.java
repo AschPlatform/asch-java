@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 //import org.slf4j.LoggerFactory;
 import so.asch.sdk.AschInterface;
 import so.asch.sdk.AschResult;
+import so.asch.sdk.AschSDK;
 import so.asch.sdk.AschSDKConfig;
 import so.asch.sdk.dbc.Argument;
 import so.asch.sdk.security.SecurityStrategy;
@@ -29,6 +30,10 @@ public abstract class AschRESTService implements AschInterface{
         customeHeaders.put("magic", config.getMagic());
         customeHeaders.put("version", "");
     }
+    
+    private static boolean isAndroid() {
+    	return (AschSDK.Config.getPlatform()==1);
+    }
 
     protected TransactionBuilder getTransactionBuilder(){
         return new TransactionBuilder();
@@ -51,7 +56,7 @@ public abstract class AschRESTService implements AschInterface{
 
     protected AschResult get(String relativeUrl){
         try{
-            String jsonString = REST.get(getFullUrl(relativeUrl), null);
+            String jsonString = isAndroid()?RESTOkHttp.get(getFullUrl(relativeUrl), null):REST.get(getFullUrl(relativeUrl), null);
             return AschResult.FromJsonString(jsonString);
         }
         catch (Exception ex){
@@ -61,7 +66,7 @@ public abstract class AschRESTService implements AschInterface{
 
     protected AschResult get(String relativeUrl, ParameterMap parameters){
         try{
-            String jsonString =  REST.get(getFullUrl(relativeUrl), parameters);
+            String jsonString =  isAndroid()?RESTOkHttp.get(getFullUrl(relativeUrl), parameters):REST.get(getFullUrl(relativeUrl), parameters);
             return AschResult.FromJsonString(jsonString);
         }
         catch (Exception ex){
@@ -71,17 +76,18 @@ public abstract class AschRESTService implements AschInterface{
 
     protected AschResult post(String relativeUrl, ParameterMap parameters){
         try{
-            String jsonString =  REST.post(getFullUrl(relativeUrl), parameters);
+            String jsonString =  isAndroid()?RESTOkHttp.post(getFullUrl(relativeUrl), parameters):REST.post(getFullUrl(relativeUrl), parameters);
             return AschResult.FromJsonString(jsonString);
         }
         catch (Exception ex){
+        	   ex.printStackTrace();
             return fail(ex);
         }
     }
 
     protected AschResult post(String relativeUrl, String parameters){
         try{
-            String jsonString =  REST.post(getFullUrl(relativeUrl), parameters);
+            String jsonString =  isAndroid()?RESTOkHttp.post(getFullUrl(relativeUrl), parameters):REST.post(getFullUrl(relativeUrl), parameters);
             return AschResult.FromJsonString(jsonString);
         }
         catch (Exception ex){
@@ -91,7 +97,7 @@ public abstract class AschRESTService implements AschInterface{
 
     protected AschResult postMagic(String relativeUrl, ParameterMap parameters){
         try{
-            String jsonString =  REST.post(getFullUrl(relativeUrl), parameters, getCustomeHeaders(), null);
+            String jsonString =  isAndroid()?RESTOkHttp.post(getFullUrl(relativeUrl), parameters, getCustomeHeaders(), null):REST.post(getFullUrl(relativeUrl), parameters, getCustomeHeaders(), null);
             return AschResult.FromJsonString(jsonString);
         }
         catch (Exception ex){
@@ -101,7 +107,7 @@ public abstract class AschRESTService implements AschInterface{
 
     protected AschResult postMagic(String relativeUrl, String parameters){
         try{
-            String jsonString =  REST.post(getFullUrl(relativeUrl), parameters, getCustomeHeaders(), null);
+            String jsonString =  isAndroid()?RESTOkHttp.post(getFullUrl(relativeUrl), parameters, getCustomeHeaders(), null):REST.post(getFullUrl(relativeUrl), parameters, getCustomeHeaders(), null);
             return AschResult.FromJsonString(jsonString);
         }
         catch (Exception ex){
