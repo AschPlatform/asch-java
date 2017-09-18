@@ -157,7 +157,6 @@ public class Validation {
     }
 
 
-
     public static <T> boolean all(T[] items, Predicate<T> predicate){
         if (items == null || items.length ==0)
             throw new IllegalArgumentException("items must not null or empty");

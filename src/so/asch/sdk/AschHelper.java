@@ -4,6 +4,7 @@ import so.asch.sdk.impl.AschConst;
 import so.asch.sdk.impl.AschFactory;
 import so.asch.sdk.security.SecurityStrategy;
 
+import java.math.BigDecimal;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -14,8 +15,12 @@ public class AschHelper {
         return factory.getSecurity().generateSecret();
     }
 
+    public long amountForXAS(BigDecimal xas){
+        return xas.multiply(BigDecimal.valueOf(AschConst.COIN)).longValue();
+    }
+
     public long amountForCoins(int coins){
-        return coins * AschConst.COIN;
+        return BigDecimal.valueOf(coins).multiply(BigDecimal.valueOf(AschConst.COIN)).longValue();
     }
 
     public String getPublicKey(String secret){

@@ -59,7 +59,7 @@ public class BlockQueryParameters extends QueryParameters {
         return this;
     }
 
-    public long getHeight() {
+    public Long getHeight() {
         return height;
     }
 

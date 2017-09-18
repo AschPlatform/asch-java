@@ -1,6 +1,5 @@
 package so.asch.sdk.impl;
 
-import com.alibaba.fastjson.JSONObject;
 import org.testng.Assert;
 import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.Test;
@@ -8,6 +7,7 @@ import org.testng.annotations.Test;
 import so.asch.sdk.AschResult;
 import so.asch.sdk.AschSDK;
 import so.asch.sdk.TestData;
+import so.asch.sdk.TransactionType;
 import so.asch.sdk.dto.query.QueryParameters;
 import so.asch.sdk.dto.query.TransactionQueryParameters;
 
@@ -47,7 +47,7 @@ public class TransactionServiceTest {
     @Test
     public void testQueryTransactionsByType()throws Exception{
         TransactionQueryParameters parameters = new TransactionQueryParameters();
-        parameters.setType(0);
+        parameters.setTransactionType(TransactionType.Transfer);
         AschResult result = AschSDK.Transaction.queryTransactions(parameters);
         Assert.assertTrue(result.isSuccessful());
     }
@@ -106,7 +106,7 @@ public class TransactionServiceTest {
     @Test
     public void testQueryTransactionsByAmount()throws Exception{
         TransactionQueryParameters parameters = new TransactionQueryParameters();
-        parameters.setAmount(100);
+        parameters.setAmount(100L);
         AschResult result = AschSDK.Transaction.queryTransactions(parameters);
         Assert.assertTrue(result.isSuccessful());
     }
@@ -126,7 +126,7 @@ public class TransactionServiceTest {
 
     @Test
     public void testGetUnconfirmedTransactions()throws Exception{
-        AschResult result =AschSDK.Transaction.getUnconfirmedTransactions();
+        AschResult result =AschSDK.Transaction.getUnconfirmedTransactions(null, null);
         Assert.assertTrue(result.isSuccessful());
     }
 
@@ -141,7 +141,7 @@ public class TransactionServiceTest {
     public void testAddTransaction()throws Exception{
         AschResult result =  AschSDK.Transaction.addTransaction(TestData.secret,
                 1,"APS3jUBQZCaeB5qQ5TzEiCdXzerWtkZGr7",TestData.senderPublicKey,
-                TestData.secondSecret,"");
+                TestData.secondSecret,null);
         Assert.assertTrue(result.isSuccessful());
     }
 }

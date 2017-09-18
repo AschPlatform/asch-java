@@ -48,7 +48,7 @@ public class TransactionQueryParameters extends QueryParameters {
         return senderPublicKey;
     }
 
-    public TransactionQueryParameters setSednderPublicKey(String senderPublicKey) {
+    public TransactionQueryParameters setSenderPublicKey(String senderPublicKey) {
         this.senderPublicKey = senderPublicKey;
         return this;
     }
