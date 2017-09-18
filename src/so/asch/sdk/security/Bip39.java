@@ -1,6 +1,5 @@
 package so.asch.sdk.security;
 
-import org.bitcoinj.crypto.MnemonicCode;
 
 import java.lang.SecurityException;
 import java.util.Arrays;
@@ -10,7 +9,7 @@ public class Bip39 {
 
     public static String generateMnemonicCode(byte[] entropy) throws SecurityException{
         try {
-            String[] words = MnemonicCode.INSTANCE.toMnemonic(entropy).toArray(new String[0]);
+            String[] words = new String[0];//MnemonicCode.INSTANCE.toMnemonic(entropy).toArray(new String[0]);
 
             return String.join(" ", words);
         }
@@ -26,8 +25,8 @@ public class Bip39 {
 
         List<String> words = Arrays.asList(mnemonicCode.split(" "));
         try{
-            MnemonicCode.INSTANCE.check(words);
-            return true;
+            //MnemonicCode.INSTANCE.check(words);
+            return false;
         }
         catch (Exception ex){
             return false;

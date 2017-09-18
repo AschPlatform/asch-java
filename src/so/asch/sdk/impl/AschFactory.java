@@ -35,6 +35,7 @@ public final class AschFactory {
             serviceContainer.put(interfaceType, serviceType.newInstance());
         }
         catch (Exception ex){
+        	ex.printStackTrace();
             //do nothing;
         }
 

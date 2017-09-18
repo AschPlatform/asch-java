@@ -109,8 +109,9 @@ public class DefaultSecurityStrategy implements SecurityStrategy{
 
     @Override
     public String generateSecret(){
-        String uuid = UUID.randomUUID().toString();
-        return Bip39.generateMnemonicCode(sha256Hash(uuid.getBytes()));
+        String uuid = UUID.randomUUID().toString()
+                .replace("-","");
+        return Bip39.generateMnemonicCode(Decoding.unsafeDecodeHex(uuid));
     }
 
     @Override

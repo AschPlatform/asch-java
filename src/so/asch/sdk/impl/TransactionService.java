@@ -47,15 +47,6 @@ public class TransactionService extends AschRESTService implements Transaction {
     }
 
     @Override
-    public AschResult getUnconfirmedTransactions() {
-        try {
-            return get(AschServiceUrls.Transaction.GET_UNCONFIRMED_TRANSACTIONS, null);
-        } catch (Exception ex) {
-            return fail(ex);
-        }
-    }
-
-    @Override
     public AschResult getUnconfirmedTransactions(String senderPublicKey, String address) {
         try {
             Argument.require(Validation.isValidPublicKey(senderPublicKey), "invalid senderPublicKey");
@@ -78,7 +69,7 @@ public class TransactionService extends AschRESTService implements Transaction {
             Argument.require(Validation.isValidSecondSecret(secondSecret), "invalid secondSecret");
             Argument.require(Validation.isValidAmount(amount), "invalid amount");
             Argument.require(Validation.isValidPublicKey(senderPublicKey), "invalid senderPublicKey");
-            //Argument.require(Validation.isValidPublicKey(multiSignAccountPublicKey), "invalid multiSignAccountPublicKey");
+            Argument.require(Validation.isValidPublicKey(multiSignAccountPublicKey), "invalid multiSignAccountPublicKey");
 
             ParameterMap parameters = new ParameterMap()
                     .put("secret", secret)

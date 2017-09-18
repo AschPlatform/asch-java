@@ -8,8 +8,8 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+//import org.slf4j.Logger;
+//import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -24,7 +24,7 @@ import java.util.Map;
  */
 public final class REST {
 
-        private static Logger logger = LoggerFactory.getLogger(REST.class);
+       // private static Logger logger = LoggerFactory.getLogger(REST.class);
 
         protected static void addCustomeHeads(Map<String, String> heads, HttpEntityEnclosingRequest request) {
             if (null == heads ) return;
@@ -56,7 +56,7 @@ public final class REST {
             StringEntity entity = createEntity(requestBody, charset);
             post.setEntity(entity);
 
-            logger.debug(String.format("POST url:%s, body:%s", url, requestBody));
+            //logger.debug(String.format("POST url:%s, body:%s", url, requestBody));
             return httpClient.execute(post);
         }
 
@@ -67,11 +67,11 @@ public final class REST {
 
             String content = EntityUtils.toString(response.getEntity());
 
-            if (logger.isDebugEnabled()) {
-                logger.debug(String.format("RESPONSE code:%d, reason:%s, content:%s", response.getStatusLine().getStatusCode(),
-                        response.getStatusLine().getReasonPhrase(),
-                        content));
-            }
+//            if (logger.isDebugEnabled()) {
+//                logger.debug(String.format("RESPONSE code:%d, reason:%s, content:%s", response.getStatusLine().getStatusCode(),
+//                        response.getStatusLine().getReasonPhrase(),
+//                        content));
+//            }
 
             if (!content.contains("\"success\":")){
                 throw new IOException(String.format("Http server response failed, code:%d, reason:%s.\n content:%s",
@@ -103,7 +103,7 @@ public final class REST {
             }
             catch (IOException ex){
                 String errorInfo = String.format("Exception when post,url:%s,data:%s", url, parameters);
-                logger.error(errorInfo, ex);
+               // logger.error(errorInfo, ex);
                 throw ex;
             }
         }
@@ -135,7 +135,7 @@ public final class REST {
 
             String fullUrl = queryString == null ? url : url + "?" + queryString;
 
-            logger.debug("GET url:" + fullUrl);
+            //logger.debug("GET url:" + fullUrl);
             HttpGet get = new HttpGet(encodeUrl(fullUrl));
 
             return httpClient.execute(get);

@@ -1,8 +1,8 @@
 package so.asch.sdk.impl;
 
 import com.alibaba.fastjson.JSONObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+//import org.slf4j.Logger;
+//import org.slf4j.LoggerFactory;
 import so.asch.sdk.AschInterface;
 import so.asch.sdk.AschResult;
 import so.asch.sdk.AschSDKConfig;
@@ -20,7 +20,7 @@ import java.util.Map;
  */
 public abstract class AschRESTService implements AschInterface{
 
-    protected static final  Logger logger = LoggerFactory.getLogger(AschRESTService.class);
+   // protected static final  Logger logger = LoggerFactory.getLogger(AschRESTService.class);
 
     protected static final AschSDKConfig config = AschSDKConfig.getInstance();
     private static final Map<String, String> customeHeaders =  new HashMap<>();
@@ -116,7 +116,7 @@ public abstract class AschRESTService implements AschInterface{
     }
 
     protected AschResult fail(Exception ex){
-        logger.error("rest call failed", ex);
+        //logger.error("rest call failed", ex);
         return AschResult.Failed(ex);
     }
 

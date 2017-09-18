@@ -98,8 +98,7 @@ public class UIAService extends AschRESTService implements UIA {
             Argument.require(Validation.isValidOffset(offset), "invalid offset");
             Argument.require(Validation.isValidAddress(address), "invalid address");
 
-            ParameterMap parameters = createLimitAndOffsetParameters(limit, offset)
-                    .put("address", address);
+            ParameterMap parameters = createLimitAndOffsetParameters(limit, offset);
 
             return get(AschServiceUrls.UIA.GET_ADDRESS_BALANCES + address, parameters);
         }

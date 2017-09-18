@@ -1,5 +1,9 @@
 package so.asch.sdk.dto.query;
 
+import so.asch.sdk.TransactionType;
+
+import java.beans.Transient;
+
 /**
  * Created by eagle on 17-7-16.
  */
@@ -27,11 +31,16 @@ public class TransactionQueryParameters extends QueryParameters {
     }
 
     public Integer getType() {
-        return type;
+        return transactionType == null ? null : transactionType.getCode();
     }
 
-    public TransactionQueryParameters setType(Integer type) {
-        this.type = type;
+    @Transient
+    public TransactionType getTransactionType() {
+        return transactionType;
+    }
+
+    public TransactionQueryParameters setTransactionType(TransactionType type) {
+        this.transactionType = type;
         return this;
     }
 
@@ -39,7 +48,7 @@ public class TransactionQueryParameters extends QueryParameters {
         return senderPublicKey;
     }
 
-    public TransactionQueryParameters setSenderPublicKey(String senderPublicKey) {
+    public TransactionQueryParameters setSednderPublicKey(String senderPublicKey) {
         this.senderPublicKey = senderPublicKey;
         return this;
     }
@@ -80,11 +89,11 @@ public class TransactionQueryParameters extends QueryParameters {
         return this;
     }
 
-    public Integer getAmount() {
+    public Long getAmount() {
         return amount;
     }
 
-    public TransactionQueryParameters setAmount(Integer amount) {
+    public TransactionQueryParameters setAmount(Long amount) {
         this.amount = amount;
         return this;
     }
@@ -99,12 +108,12 @@ public class TransactionQueryParameters extends QueryParameters {
     }
 
     private String blockId = null;
-    private Integer type = null;
+    private TransactionType transactionType = null;
     private String senderPublicKey = null;
     private String ownerPublicKey = null;
     private String ownerAddress = null;
     private String senderId = null;
     private String recipientId = null;
-    private Integer amount = null;
+    private Long amount = null;
     private Integer fee = null;
 }

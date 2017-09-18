@@ -71,7 +71,7 @@ public class Validation {
     }
 
     public static boolean isValidOffset(int offset){
-        return  offset > 0;
+        return  offset >= 0;
     }
 
     public static boolean isValidIP(String ip){

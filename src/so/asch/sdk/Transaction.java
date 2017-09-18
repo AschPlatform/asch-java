@@ -55,15 +55,6 @@ public interface Transaction extends AschInterface{
     //接口地址：/api/transactions/unconfirmed
     //请求方式：get
     //支持格式：urlencoded
-    //接口说明：获取全网所有未确认交易
-    //返回参数说明：
-    //success	boole	是否成功获得response数据
-    //transactions	Array	未确认交易列表
-    AschResult getUnconfirmedTransactions();
-
-    //接口地址：/api/transactions/unconfirmed
-    //请求方式：get
-    //支持格式：urlencoded
     //接口说明：如果不加参数，则会获取全网所有未确认交易 请求参数说明：
     //senderPublicKey	string	N	发送者公钥
     //address	string	N	地址
