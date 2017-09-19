@@ -21,7 +21,7 @@ import java.util.Map;
  */
 public abstract class AschRESTService implements AschInterface{
 
-   // protected static final  Logger logger = LoggerFactory.getLogger(AschRESTService.class);
+    //protected static final  Logger logger = LoggerFactory.getLogger(AschRESTService.class);
 
     protected static final AschSDKConfig config = AschSDKConfig.getInstance();
     private static final Map<String, String> customeHeaders =  new HashMap<>();

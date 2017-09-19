@@ -24,10 +24,6 @@ public final class RESTOkHttp {
 	private static OkHttpClient client;
 	
 	protected static OkHttpClient getHttpClient(){
-		//int threadCount = 20;
-	   // long cacheByteCount = 1024L * 1024L * 100L;
-
-	   // Cache cache = new Cache(new File(args[0]), cacheByteCount);
 	if(client==null)
 	{
 	    client = new OkHttpClient.Builder()
@@ -59,8 +55,6 @@ public final class RESTOkHttp {
 
     protected static Response rawPost(String url, String requestBody, Map<String,String> customeHeads, String charset ) throws IOException{
         OkHttpClient httpClient = getHttpClient();
-       // MediaType contentType = MediaType.parse("application/json; charset=utf-8");
-       //RequestBody body=RequestBody.create(contentType, requestBody);
         RequestBody body =createReqestBody(requestBody, charset);
         Request.Builder builder=new Request.Builder();
         addCustomeHeads(customeHeads, builder);
@@ -68,17 +62,7 @@ public final class RESTOkHttp {
 		.post(body)
 		.build();		
         
-        
-//    	    CloseableHttpClient httpClient = HttpClients.createDefault();
-//        HttpPost post = new HttpPost(encodeUrl(url));
-//
-//        addCustomeHeads(customeHeads, post);
-//        StringEntity entity = createEntity(requestBody, charset);
-//        post.setEntity(entity);
-
-        //logger.debug(String.format("POST url:%s, body:%s", url, requestBody));
         Response response = httpClient.newCall(request).execute();
-        //return httpClient.execute(post);
         return response;
     }
 
@@ -127,7 +111,7 @@ public final class RESTOkHttp {
         catch (IOException ex){
             String errorInfo = String.format("Exception when post,url:%s,data:%s", url, parameters);
            // logger.error(errorInfo, ex);
-            ex.printStackTrace();
+            //ex.printStackTrace();
             throw ex;
         }
     }
