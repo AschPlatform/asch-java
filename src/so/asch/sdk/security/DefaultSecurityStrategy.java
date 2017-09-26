@@ -83,7 +83,13 @@ public class DefaultSecurityStrategy implements SecurityStrategy{
 
             byte[] hash1 = sha256Hash(Decoding.hex(publicKey));
             byte[] hash2 = ripemd160Hash(hash1);
-            return AschConst.BASE58_ADDRESS_PREFIX + Encoding.base58(hash2);
+            //fix by kimziv 
+            //reference: https://github.com/AschPlatform/asch-js/blob/master/lib/base58check/index.js#L14
+            byte[] checksum=sha256Hash(sha256Hash(hash2));
+            byte[] hash3=new byte[hash2.length+4];
+            System.arraycopy(hash2,0,hash3,0,hash2.length);
+            System.arraycopy(checksum,0,hash3,hash2.length,4);
+            return AschConst.BASE58_ADDRESS_PREFIX + Encoding.base58(hash3);
         }
         catch (Exception ex){
             throw new SecurityException("generate key pair failed", ex);
