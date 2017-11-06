@@ -4,6 +4,7 @@ import net.i2p.crypto.eddsa.EdDSAPublicKey;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import so.asch.sdk.AschSDKConfig;
+import so.asch.sdk.codec.Base58;
 import so.asch.sdk.codec.Decoding;
 import so.asch.sdk.codec.Encoding;
 import so.asch.sdk.dbc.Argument;
@@ -17,6 +18,7 @@ import java.security.KeyPair;
 import java.security.MessageDigest;
 import java.security.PrivateKey;
 import java.security.PublicKey;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.UUID;
 
@@ -25,7 +27,6 @@ import java.util.UUID;
  * Created by eagle on 17-7-18.
  */
 public class DefaultSecurityStrategy implements SecurityStrategy{
-
     private static final String SHA256_DIGEST_ALGORITHM = "SHA-256";
     private static final AschSDKConfig config = AschSDKConfig.getInstance();
 
@@ -77,16 +78,22 @@ public class DefaultSecurityStrategy implements SecurityStrategy{
     }
 
     @Override
-    public String getAddress(String publicKey) throws SecurityException{
+    public String getBase58Address(String publicKey) throws SecurityException{
         try{
             Argument.require(Validation.isValidPublicKey(publicKey), "invalid public key");
 
             byte[] hash1 = sha256Hash(Decoding.hex(publicKey));
             byte[] hash2 = ripemd160Hash(hash1);
-            return AschConst.BASE58_ADDRESS_PREFIX + Encoding.base58(hash2);
+            byte[] checksum = sha256Hash(sha256Hash(hash2));
+
+            byte[] buffer = new byte[hash2.length + 4];
+            System.arraycopy(hash2, 0, buffer, 0, hash2.length);
+            System.arraycopy(checksum, 0, buffer, hash2.length, 4);
+
+            return AschConst.BASE58_ADDRESS_PREFIX + Encoding.base58(buffer);
         }
         catch (Exception ex){
-            throw new SecurityException("generate key pair failed", ex);
+            throw new SecurityException("generate base58 checked address failed", ex);
         }
     }
 
@@ -127,6 +134,35 @@ public class DefaultSecurityStrategy implements SecurityStrategy{
     public boolean isValidSecret(String secret) {
         return Bip39.isValidMnemonicCode(secret);
     }
+
+    public boolean isValidBase58Address(String address){
+        if (null == address || address.length() < AschConst.MIN_BASE58_ADDRESS_LEN){
+            return false;
+        }
+
+        if (address.charAt(0) != AschConst.BASE58_ADDRESS_PREFIX){
+            return false;
+        }
+
+        String base58 = address.substring(1);
+        if (!Base58.isBase58String(base58)){
+            return false;
+        }
+
+        byte[] buffer = Base58.decode(base58);
+
+        byte[] payload = new byte[buffer.length - 4];
+        System.arraycopy(buffer, 0, payload, 0, payload.length);
+        byte[] checksum = new byte[4];
+        System.arraycopy(buffer, payload.length, checksum, 0, checksum.length);
+
+        byte[] payloadChecksum =  sha256Hash(sha256Hash(payload));
+        byte[] calcChecksum = new byte[checksum.length];
+        System.arraycopy(payloadChecksum, 0, calcChecksum, 0, checksum.length);
+
+        return Arrays.equals(calcChecksum, checksum);
+    }
+
 
     @Override
     public String Signature(TransactionInfo transaction, PrivateKey privateKey) throws SecurityException {

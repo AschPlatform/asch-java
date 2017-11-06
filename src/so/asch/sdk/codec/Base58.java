@@ -22,6 +22,18 @@ public class Base58 {
         }
     }
 
+    public static boolean isBase58String(String str){
+        if (str == null || str.trim().equals("")){
+            return false;
+        }
+        try{
+            byte[] data = decode(str);
+            return data.length > 0;
+        }
+        catch (Exception ex){
+            return false;
+        }
+    }
     /**
      * Encodes the given bytes in base58. No checksum is appended.
      */

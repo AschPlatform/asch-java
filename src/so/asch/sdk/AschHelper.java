@@ -2,6 +2,7 @@ package so.asch.sdk;
 
 import so.asch.sdk.impl.AschConst;
 import so.asch.sdk.impl.AschFactory;
+import so.asch.sdk.impl.Validation;
 import so.asch.sdk.security.SecurityStrategy;
 
 import java.math.BigDecimal;
@@ -41,7 +42,15 @@ public class AschHelper {
         Date beginEpoch =  AschConst.ASCH_BEGIN_EPOCH ;
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(beginEpoch);
-        calendar.add(Calendar.MILLISECOND, timestamp);
+        calendar.add(Calendar.SECOND, timestamp);
         return calendar.getTime();
+    }
+
+    public Boolean isValidAddress(String address){
+        return Validation.isValidAddress(address);
+    }
+
+    public boolean isValidBase58Address(String address){
+        return  (null != address) && factory.getSecurity().isValidBase58Address(address);
     }
 }

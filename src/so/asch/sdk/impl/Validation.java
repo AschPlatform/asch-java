@@ -14,8 +14,8 @@ import java.util.function.Predicate;
 public class Validation {
     private static final int MIN_SECURE_LENGTH = 1;
     private static final int MAX_SECURE_LENGTH = 100;
-    private static final int MIN_ADDRESS_LENGTH = 1;
-    private static final int MAX_ADDRESS_LENGTH = 100;
+    private static final int MIN_ADDRESS_LENGTH = 10;
+    private static final int MAX_ADDRESS_LENGTH = 64;
     private static final int PUBLIC_KEY_LENGTH = 32;
 
     private static final String HEX_PATTERN = "^([0-9]|[A-F]|[a-f])+$";
@@ -49,10 +49,10 @@ public class Validation {
     }
 
     public static boolean isValidAddress(String address){
-        return address != null &&
+        return  address != null &&
                 ( address.length() >= MIN_ADDRESS_LENGTH && address.length() <= MAX_ADDRESS_LENGTH) &&
                 ( address.matches(NUMBER_PATTERN) ||
-                        ( address.matches(BASE58_PATTERN) && address.charAt(0) == AschConst.BASE58_ADDRESS_PREFIX )
+                        ( address.matches(BASE58_PATTERN) && AschFactory.getInstance().getSecurity().isValidBase58Address(address))
                 );
     }
 

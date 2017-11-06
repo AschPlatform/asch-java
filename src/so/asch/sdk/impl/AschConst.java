@@ -11,6 +11,7 @@ public final class AschConst {
     public static final int CLIENT_DRIFT_SECONDS = 5;
     public static final int COIN = 100000000;
     public static final char BASE58_ADDRESS_PREFIX = 'A';
+    public static final int MIN_BASE58_ADDRESS_LEN = 30;
     public static final Date ASCH_BEGIN_EPOCH;
 
     static {

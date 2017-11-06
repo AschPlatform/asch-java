@@ -4,9 +4,8 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.LoggerContext;
 import so.asch.sdk.dto.query.TransactionQueryParameters;
+import so.asch.sdk.impl.Validation;
 
-import java.math.BigDecimal;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -36,98 +35,100 @@ public class Main {
             String[] canceled = "486179424b4bcfaf7960a4a121277d73e4a7c9e0c27b254edf978762d5a6dfe6,49b369ff2635e2ac083d62a6c59baf872fbdef6990297f296c95e1830118aba1".split(",");
             String publicKey = AschSDK.Helper.getPublicKey(secret);
 
-            long lastCheckedBlockHeight = 0;
+//            long lastCheckedBlockHeight = 0;
+//
+//
+//            //设置Asch服务地址
+//            AschSDK.Config.setAschServer(url);
+//            //设置成对应的网络Magic值
+//            AschSDK.Config.setMagic("5f5b3cf5");
+//
+//
+//            //生成10个一级密钥（账户）
+//            for( int i=0; i<10; i++) {
+//                String newSecret = AschSDK.Helper.generateSecret();
+//                System.out.println(newSecret);
+//            }
+//
+//            //登录
+//            AschResult result = AschSDK.Account.secureLogin(secret);
+//            System.out.println(result.getRawJson());
+//            if(result.isSuccessful()){
+//                Map<String,Object> accountMap = (Map<String,Object>)result.parseMap().get("account");
+//                String accountPublicKey = AschSDK.Helper.getPublicKey(secret);
+//                String accountAddress = accountMap.get("address").toString();
+//                BigDecimal balance = BigDecimal.valueOf(Long.parseLong(accountMap.get("balance").toString()), 8);
+//
+//                System.out.println(String.format("登录成功, publicKey:%s, address:%s, XAS余额：%s", accountPublicKey, accountAddress, balance.toString()));
+//            }
+//
+//            //转账(金额为1XAS)
+//            result = AschSDK.Account.transfer("11705168753296944226",
+//                    AschSDK.Helper.amountForXAS(BigDecimal.valueOf(1)),
+//                    //"Transfer by Test"
+//                    "  ", secret, secondSecret);
+//            System.out.println(result.getRawJson());
+//            if(result.isSuccessful()){
+//                String transactionId = result.parseMap().get("transactionId").toString();
+//                System.out.println("交易成功,transaction id：" + transactionId);
+//
+//                int retry = 10 ;
+//                do {
+//                    //查询单条交易，注意：刚完成的交易查不到，正常情况需要1s-10s不等。建议多等一段时间。
+//                    result = AschSDK.Transaction.getTransaction(transactionId);
+//                    if (!result.isSuccessful())
+//                    {
+//                        System.out.println("查询交易失败或未查询到交易信息，3秒后重试...");
+//                        Thread.sleep(3000);
+//                    }
+//                    else
+//                    {
+//                        Map<String,Object> transactionMap = (Map<String,Object>)result.parseMap().get("transaction");
+//                        long blockHeight = Integer.parseInt(transactionMap.get("height").toString());
+//                        String blockId = transactionMap.get("blockId").toString();
+//                        TransactionType type = TransactionType.fromCode(Integer.parseInt(transactionMap.get("type").toString()));
+//                        Date time = AschSDK.Helper.dateFromAschTimestamp(Integer.parseInt(transactionMap.get("type").toString()));
+//                        String senderPublicKey = transactionMap.get("senderPublicKey").toString();
+//                        String senderId = transactionMap.get("senderId").toString();
+//                        String recipientId = transactionMap.get("recipientId").toString();
+//                        BigDecimal xasAmount = BigDecimal.valueOf(Long.parseLong(transactionMap.get("amount").toString()), 8);
+//                        BigDecimal fee = BigDecimal.valueOf(Long.parseLong(transactionMap.get("fee").toString()), 8);
+//                        //确认数，一般认为确认数达到6就可以认为交易已经成功了。。
+//                        int confirmations = Integer.parseInt(transactionMap.get("confirmations").toString());
+//
+//                        String transactionInfo = String.format("block height:%d,\n block id:%s,\n transaction type:%s,\n " +
+//                                "time:%s,\n sender public key:%s,\n sender id:%s,\n recipient id:%s,\n XAS amount:%s,\n fee:%s,\n confirmations:%d ",
+//                                blockHeight, blockId, type.getCode(), time.toString(), senderPublicKey, senderId, recipientId,
+//                                xasAmount.toString(), fee.toString(), confirmations);
+//                        System.out.println("查询交易成功，交易信息：\n" +transactionInfo);
+//                    }
+//
+//                }while(!result.isSuccessful() && retry-- > 0);
+//
+//            }
+//
+//            //查询交易transaction
+//            TransactionQueryParameters parameters = new TransactionQueryParameters()
+//                    .setRecipientId("21705168753296944226")
+//                    .setLimit(10)
+//                    .orderByAscending("t_timestamp");
+//            result = AschSDK.Transaction.queryTransactions(parameters);
+//            System.out.println(result.getRawJson());
+//
+//            //这个值建议保存到数据库中，每次接着上次检查的块后开始。
+//            //下面的代码建议放到线程中循环执行，两次调用可间隔一段时间。
+//            long currentHeight = 0;
+//            result = AschSDK.Block.getHeight(); /*监控系统产生的当前最新区块信息*/
+//            if (result.isSuccessful()){
+//                currentHeight = Long.parseLong(result.parseMap().get("height").toString());
+//                if (currentHeight > lastCheckedBlockHeight++){
+//                    //枚举区块中的所有交易，判断是否有接收人为自己的交易
+//                    handleBlockTransactions(lastCheckedBlockHeight);
+//                }
+//            }
 
-
-            //设置Asch服务地址
-            AschSDK.Config.setAschServer(url);
-            //设置成对应的网络Magic值
-            AschSDK.Config.setMagic("5f5b3cf5");
-
-
-            //生成10个一级密钥（账户）
-            for( int i=0; i<10; i++) {
-                String newSecret = AschSDK.Helper.generateSecret();
-                System.out.println(newSecret);
-            }
-
-            //登录
-            AschResult result = AschSDK.Account.secureLogin(secret);
-            System.out.println(result.getRawJson());
-            if(result.isSuccessful()){
-                Map<String,Object> accountMap = (Map<String,Object>)result.parseMap().get("account");
-                String accountPublicKey = AschSDK.Helper.getPublicKey(secret);
-                String accountAddress = accountMap.get("address").toString();
-                BigDecimal balance = BigDecimal.valueOf(Long.parseLong(accountMap.get("balance").toString()), 8);
-
-                System.out.println(String.format("登录成功, publicKey:%s, address:%s, XAS余额：%s", accountPublicKey, accountAddress, balance.toString()));
-            }
-
-            //转账(金额为1XAS)
-            result = AschSDK.Account.transfer("11705168753296944226",
-                    AschSDK.Helper.amountForXAS(BigDecimal.valueOf(1)),
-                    //"Transfer by Test"
-                    "  ", secret, secondSecret);
-            System.out.println(result.getRawJson());
-            if(result.isSuccessful()){
-                String transactionId = result.parseMap().get("transactionId").toString();
-                System.out.println("交易成功,transaction id：" + transactionId);
-
-                int retry = 10 ;
-                do {
-                    //查询单条交易，注意：刚完成的交易查不到，正常情况需要1s-10s不等。建议多等一段时间。
-                    result = AschSDK.Transaction.getTransaction(transactionId);
-                    if (!result.isSuccessful())
-                    {
-                        System.out.println("查询交易失败或未查询到交易信息，3秒后重试...");
-                        Thread.sleep(3000);
-                    }
-                    else
-                    {
-                        Map<String,Object> transactionMap = (Map<String,Object>)result.parseMap().get("transaction");
-                        long blockHeight = Integer.parseInt(transactionMap.get("height").toString());
-                        String blockId = transactionMap.get("blockId").toString();
-                        TransactionType type = TransactionType.fromCode(Integer.parseInt(transactionMap.get("type").toString()));
-                        Date time = AschSDK.Helper.dateFromAschTimestamp(Integer.parseInt(transactionMap.get("type").toString()));
-                        String senderPublicKey = transactionMap.get("senderPublicKey").toString();
-                        String senderId = transactionMap.get("senderId").toString();
-                        String recipientId = transactionMap.get("recipientId").toString();
-                        BigDecimal xasAmount = BigDecimal.valueOf(Long.parseLong(transactionMap.get("amount").toString()), 8);
-                        BigDecimal fee = BigDecimal.valueOf(Long.parseLong(transactionMap.get("fee").toString()), 8);
-                        //确认数，一般认为确认数达到6就可以认为交易已经成功了。。
-                        int confirmations = Integer.parseInt(transactionMap.get("confirmations").toString());
-
-                        String transactionInfo = String.format("block height:%d,\n block id:%s,\n transaction type:%s,\n " +
-                                "time:%s,\n sender public key:%s,\n sender id:%s,\n recipient id:%s,\n XAS amount:%s,\n fee:%s,\n confirmations:%d ",
-                                blockHeight, blockId, type.getCode(), time.toString(), senderPublicKey, senderId, recipientId,
-                                xasAmount.toString(), fee.toString(), confirmations);
-                        System.out.println("查询交易成功，交易信息：\n" +transactionInfo);
-                    }
-
-                }while(!result.isSuccessful() && retry-- > 0);
-
-            }
-
-            //查询交易transaction
-            TransactionQueryParameters parameters = new TransactionQueryParameters()
-                    .setRecipientId("21705168753296944226")
-                    .setLimit(10)
-                    .orderByAscending("t_timestamp");
-            result = AschSDK.Transaction.queryTransactions(parameters);
-            System.out.println(result.getRawJson());
-
-            //这个值建议保存到数据库中，每次接着上次检查的块后开始。
-            //下面的代码建议放到线程中循环执行，两次调用可间隔一段时间。
-            long currentHeight = 0;
-            result = AschSDK.Block.getHeight(); /*监控系统产生的当前最新区块信息*/
-            if (result.isSuccessful()){
-                currentHeight = Long.parseLong(result.parseMap().get("height").toString());
-                if (currentHeight > lastCheckedBlockHeight++){
-                    //枚举区块中的所有交易，判断是否有接收人为自己的交易
-                    handleBlockTransactions(lastCheckedBlockHeight);
-                }
-            }
-
+            String base58Address = "APSr4a1W5hnyqvAeu95xcYnTM6g1GEGGXr";
+            System.out.println(Validation.isValidAddress(base58Address));
        }
         catch (Exception ex){
             System.out.println(ex.getMessage());
