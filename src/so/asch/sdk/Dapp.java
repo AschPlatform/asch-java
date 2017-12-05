@@ -47,4 +47,6 @@ public interface Dapp extends AschInterface{
     //支持格式：json
     //备注：充值时在主链发生type=6的交易（intransfer），dapp内部会自动调用编号为1的智能合约进行dapp内部充值 请求参数说明：
     AschResult dappDeposit(String dappId,String currency,long amount,String secret,String secondSecret);
+
+
 }
