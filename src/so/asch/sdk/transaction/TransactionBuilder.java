@@ -145,4 +145,19 @@ public class TransactionBuilder {
         return AschFactory.getInstance().getSecurity();
     }
 
+
+    public TransactionInfo buildInTransfer(String dappId, String currency, long amount, String secret, String secondSecret)throws SecurityException {
+
+        KeyPair keyPair = getSecurity().generateKeyPair(secret);
+
+        TransactionInfo transaction =  newTransaction(
+                TransactionType.InTransfer,
+                currency.equals("XAS") ? amount : 0l,
+                AschConst.Fees.TRANSFER,
+                keyPair.getPublic())
+                .setAsset(new InTransferAssetInfo(dappId, currency,currency.equals("XAS") ? 0l : amount));
+
+        return signatureAndGenerateTransactionId(transaction, keyPair.getPrivate(), secondSecret);
+
+    }
 }

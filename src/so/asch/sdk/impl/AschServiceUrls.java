@@ -72,13 +72,19 @@ public final class AschServiceUrls {
 
     final static class UIA{
         static final String GET_ISSUERS = "/api/uia/issuers";
-        static final String GET_ISSUER = "/api/uia/issuers/${IssuerName}";
-        static final String QUERY_ISSUER_ASSETS = "/api/uia/issuers/${IssuerName}/assets";
+        static final String GET_ISSUER = "/api/uia/issuers/{0}";
+        static final String QUERY_ISSUER_ASSETS = "/api/uia/issuers/{0}/assets";
         static final String GET_ASSETS = "/api/uia/assets";
-        static final String GET_ASSET= "/api/uia/assets/${AssetName}";
-        static final String GET＿ASSET＿ACL = "/api/uia/assets/${AssetName}/acl/flag";
+        static final String GET_ASSET= "/api/uia/assets/{0}";
+        static final String GET＿ASSET＿ACL = "/api/uia/assets/{0}/acl/flag";
         static final String GET_ADDRESS_BALANCES = "/api/uia/balances/";
         static final String GET_TRANSACTIONS = "/api/uia/transactions";
+    }
+
+    final static class Dapp{
+         static final String GET_BLOCKS_HEIGHT = "/api/dapps/{0}/blocks/height";
+         static final String GET_BLOCKS = "/api/dapps/{0}/blocks";
+         static final String GET_ACCOUNT = "/api/dapps/{0}/accounts/{1}";
     }
 
 }

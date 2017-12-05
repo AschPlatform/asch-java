@@ -1,5 +1,9 @@
 package so.asch.sdk.impl;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+import org.apache.commons.io.FileUtils;
 import org.testng.Assert;
 import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.Test;
@@ -7,6 +11,9 @@ import so.asch.sdk.AschResult;
 import so.asch.sdk.AschSDK;
 import so.asch.sdk.TestData;
 import so.asch.sdk.dto.query.QueryParameters;
+
+import java.io.File;
+import java.io.IOException;
 
 /**
  * AccountService Tester.
@@ -103,5 +110,22 @@ public class AccountServiceTest {
 
         AschResult result= AschSDK.Account.getTopAccounts(parameters);
         Assert.assertTrue(result.isSuccessful());
+    }
+
+    @Test
+    public void main() throws IOException {
+        File a = FileUtils.getFile("D:/a.txt");
+        String str = FileUtils.readFileToString(a,"utf-8");
+        JSONObject json = JSON.parseObject(str);
+        JSONArray arry = JSONArray.parseArray(json.get("delegates").toString());
+        for(int i = 0;i<arry.size();i++){
+            JSONObject obj= (JSONObject) arry.get(i);
+            String username =  obj.getString("username");
+            String productivity =  obj.getString("productivity");
+            String producedblocks = obj.getString("producedblocks");
+            String balance = obj.getString("balance");
+            String approval = obj.getString("approval");
+            System.out.println(username +"||" + productivity +"||" + producedblocks + "||" + balance + "||" + approval);
+        }
     }
 }

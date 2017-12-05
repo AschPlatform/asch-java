@@ -6,7 +6,9 @@ import so.asch.sdk.UIA;
 import so.asch.sdk.dbc.Argument;
 import so.asch.sdk.transaction.TransactionInfo;
 
-public class UIAService extends AschRESTService implements UIA {
+import java.text.MessageFormat;
+
+public class  UIAService extends AschRESTService implements UIA {
     @Override
     public AschResult getIssuers(int limit, int offset) {
         try {
@@ -25,7 +27,7 @@ public class UIAService extends AschRESTService implements UIA {
         try{
             Argument.notNullOrEmpty(nameOrAddress, "invalid nameOrAddress");
 
-            return get(issuerUrl(AschServiceUrls.UIA.GET_ISSUER, nameOrAddress));
+            return get(MessageFormat.format(AschServiceUrls.UIA.GET_ISSUER,nameOrAddress));
         }
         catch (Exception ex){
             return fail(ex);
@@ -41,7 +43,7 @@ public class UIAService extends AschRESTService implements UIA {
 
             ParameterMap parameters = createLimitAndOffsetParameters(limit, offset);
 
-            return get(issuerUrl(AschServiceUrls.UIA.QUERY_ISSUER_ASSETS, nameOrAddress), parameters);
+            return get(MessageFormat.format(AschServiceUrls.UIA.QUERY_ISSUER_ASSETS,nameOrAddress), parameters);
         }
         catch (Exception ex){
             return fail(ex);
@@ -66,7 +68,7 @@ public class UIAService extends AschRESTService implements UIA {
         try {
             Argument.notNullOrEmpty(assetName, "assetName");
 
-            return get(assetUrl(AschServiceUrls.UIA.GET_ASSET, assetName));
+            return get(MessageFormat.format(AschServiceUrls.UIA.GET_ASSET, assetName));
         }
         catch (Exception ex){
             return fail(ex);
@@ -84,7 +86,7 @@ public class UIAService extends AschRESTService implements UIA {
                     .put("name", assetName)
                     .put("flag", whiteOrBlack);
 
-            return get(assetUrl(AschServiceUrls.UIA.GET＿ASSET＿ACL,assetName), parameters);
+            return get(MessageFormat.format(AschServiceUrls.UIA.GET＿ASSET＿ACL,assetName), parameters);
         }
         catch (Exception ex){
             return fail(ex);
@@ -173,11 +175,4 @@ public class UIAService extends AschRESTService implements UIA {
                 .put("offset", offset);
     }
 
-    private String assetUrl(String baseUrl, String assetName){
-        return baseUrl.replace("${AssetName}", assetName);
-    }
-
-    private String issuerUrl(String baseUrl, String issuerName){
-        return baseUrl.replace("${IssuerName}", issuerName);
-    }
 }
