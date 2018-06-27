@@ -13,7 +13,9 @@ public class AschHelper {
     private static final AschFactory factory = AschFactory.getInstance();
 
     public String generateSecret(){
-        return factory.getSecurity().generateSecret();
+        AschResult result =  ((Account)factory.getService(Account.class)).newAccount();
+        return !result.isSuccessful() ? null :
+                result.parseMap().get("secret").toString();
     }
 
     public long amountForXAS(BigDecimal xas){

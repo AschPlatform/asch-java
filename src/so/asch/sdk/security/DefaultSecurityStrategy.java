@@ -1,14 +1,14 @@
 package so.asch.sdk.security;
 
 import net.i2p.crypto.eddsa.EdDSAPublicKey;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import so.asch.sdk.AschSDKConfig;
 import so.asch.sdk.codec.Base58;
 import so.asch.sdk.codec.Decoding;
 import so.asch.sdk.codec.Encoding;
 import so.asch.sdk.dbc.Argument;
 import so.asch.sdk.impl.AschConst;
+import so.asch.sdk.impl.Log.Logger;
+import so.asch.sdk.impl.Log.LoggerFactory;
 import so.asch.sdk.impl.Validation;
 import so.asch.sdk.security.ripemd.RipeMD160;
 import so.asch.sdk.transaction.TransactionInfo;

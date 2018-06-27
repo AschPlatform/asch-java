@@ -1,8 +1,5 @@
 package so.asch.sdk;
 
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.core.LoggerContext;
 import so.asch.sdk.dto.query.TransactionQueryParameters;
 import so.asch.sdk.impl.Validation;
 
@@ -39,17 +36,18 @@ public class Main {
 //
 //
 //            //设置Asch服务地址
-//            AschSDK.Config.setAschServer(url);
+            AschSDK.Config.setAschServer("http://mainnet.asch.so");
 //            //设置成对应的网络Magic值
 //            AschSDK.Config.setMagic("5f5b3cf5");
 //
 //
-//            //生成10个一级密钥（账户）
-//            for( int i=0; i<10; i++) {
-//                String newSecret = AschSDK.Helper.generateSecret();
-//                System.out.println(newSecret);
-//            }
-//
+            //生成10个一级密钥（账户）
+            for( int i=0; i<10; i++) {
+                String newSecret = AschSDK.Helper.generateSecret();
+                System.out.println(newSecret);
+                System.out.println(Validation.isValidSecret(newSecret));
+            }
+
 //            //登录
 //            AschResult result = AschSDK.Account.secureLogin(secret);
 //            System.out.println(result.getRawJson());
@@ -190,10 +188,7 @@ public class Main {
     protected static void initLog(){
 
         if (AschSDK.Config.isDebugMode()) {
-            final LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
-            ctx.getConfiguration()
-                    .getRootLogger()
-                    .setLevel(Level.ALL);
+
         }
     }
 

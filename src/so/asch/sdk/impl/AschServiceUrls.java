@@ -11,6 +11,7 @@ public final class AschServiceUrls {
         static final String GET_VOTED_DELEGATES ="/api/accounts/delegates";
         static final String GET_DELEGATE_FEE ="/api/accounts/delegates/fee";
         static final String GET_TOP_ACCOUNTS ="/api/accounts/top";
+        static final String GENERATE_SECRET="/api/accounts/new";
     }
 
     final static class Delegate{

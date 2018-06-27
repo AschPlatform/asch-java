@@ -94,6 +94,9 @@ public interface Account extends AschInterface {
     //fee	integer	手续费设置
     AschResult getDelegatesFee();
 
+
+    AschResult newAccount();
+
     //投票[transaction]
     //请求参数说明：
     //secret	string	Y	asch账户密码

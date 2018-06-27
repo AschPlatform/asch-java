@@ -37,6 +37,11 @@ public class AccountService extends so.asch.sdk.impl.AschRESTService implements 
     }
 
     @Override
+    public AschResult newAccount() {
+        return get(AschServiceUrls.Account.GENERATE_SECRET);
+    }
+
+    @Override
     public AschResult getAccount(String address){
             return getByAddress(AschServiceUrls.Account.GET_ACCOUNT, address);
     }
