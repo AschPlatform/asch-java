@@ -20,27 +20,9 @@ public final class AschConst {
         Date date = null;
         try {
             date = df.parse("2016-06-27T20:00:00Z");
-        }
-        catch (Exception ex){
+        } catch (Exception ex) {
             //never
         }
         ASCH_BEGIN_EPOCH = date;
-    }
-
-    public static class Fees{
-        public static final long TRANSFER = 10000000;
-        public static final long UIA_TRANSFER = 10000000;
-        public static final long VOTE = 10000000;
-        public static final long SECOND_SIGNATURE =500000000;
-        public static final long MULTI_SIGNATURE =500000000;
-        public static final long DELEGATE = 10000000000L;
-        public static final long DAPP = 10000000000L;
-    }
-
-
-
-    public class AccountFields{
-        public static final String NAME = "name";
-
     }
 }

@@ -3,7 +3,7 @@ package so.asch.sdk.dto.query;
 /**
  * Created by eagle on 17-7-16.
  */
-public class QueryParameters{
+public class QueryParameters {
 
     public enum SortOrder {
         ASC("asc"),

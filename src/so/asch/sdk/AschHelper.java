@@ -13,7 +13,7 @@ public class AschHelper {
     private static final AschFactory factory = AschFactory.getInstance();
 
     public String generateSecret(){
-        AschResult result =  ((Account)factory.getService(Account.class)).newAccount();
+        AschResult result =  ((Account)factory.getService(Account.class)).newAccount(1);
         return !result.isSuccessful() ? null :
                 result.parseMap().get("secret").toString();
     }

@@ -1,12 +1,12 @@
 package so.asch.sdk.transaction;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.annotation.JSONField;
 import so.asch.sdk.TransactionType;
 import so.asch.sdk.codec.Decoding;
 import so.asch.sdk.codec.Encoding;
-import so.asch.sdk.transaction.asset.AssetInfo;
+import so.asch.sdk.impl.FeeCalculater;
 
-import java.math.BigInteger;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
@@ -25,32 +25,24 @@ public class TransactionInfo {
         return this;
     }
 
-    public String getSenderPublicKey() {
-        return senderPublicKey;
+    public String getSenderId() {
+        return senderId;
     }
 
-    public TransactionInfo setSenderPublicKey(String senderPublicKey) {
-        this.senderPublicKey = senderPublicKey;
+    public TransactionInfo setSenderId(String senderId) {
+        this.senderId = senderId;
         return this;
     }
 
-    public String getRequesterPublicKey() {
-        return requesterPublicKey;
+    public String getRequestorId() {
+        return requestorId;
     }
 
-    public TransactionInfo setRequesterPublicKey(String requesterPublicKey) {
-        this.requesterPublicKey = requesterPublicKey;
+    public TransactionInfo setRequestorId(String requestorId) {
+        this.requestorId = requestorId;
         return this;
     }
 
-    public String getRecipientId() {
-        return recipientId;
-    }
-
-    public TransactionInfo setRecipientId(String recipientId) {
-        this.recipientId = recipientId;
-        return this;
-    }
 
     public String getMessage() { return message; }
 
@@ -59,14 +51,6 @@ public class TransactionInfo {
         return this;
     }
 
-    public Long getAmount() {
-        return amount;
-    }
-
-    public TransactionInfo setAmount(Long amount) {
-        this.amount = amount;
-        return this;
-    }
 
     public Long getFee() {
         return fee;
@@ -100,6 +84,11 @@ public class TransactionInfo {
         return this;
     }
 
+    public TransactionInfo calcFee() {
+        this.setFee(FeeCalculater.calcFee(this));
+        return this;
+    }
+
     public String getSignSignature() {
         return signSignature;
     }
@@ -119,44 +108,41 @@ public class TransactionInfo {
     }
 
     @JSONField
-    public AssetInfo getAsset() {
-        return assetInfo;
+    public Object[] getArgs() {
+        return args;
     }
 
-    public TransactionInfo setAsset(AssetInfo assertInfo) {
-        this.assetInfo = assertInfo;
+    public TransactionInfo setArgs(Object[] args) {
+        this.args = args;
         return this;
     }
 
     private String transactionId = null;
     private TransactionType transactionType = null;
-    private String recipientId = null;
 
-    private String requesterPublicKey = null;
-    private String senderPublicKey = null;
+    private String requestorId = null;
+    private String senderId = null;
     private String message = null;
     private Integer timestamp = null;
-    private Long amount = null;
     private Long fee = null;
 
     private String signature = null;
     private String signSignature = null;
-    private AssetInfo assetInfo = null;
+    private Object[] args = null;
 
     public byte[] getBytes(boolean skipSignature , boolean skipSignSignature){
-        //1 + 4 + 32 + 32 + 8 + 8 + ? + ? + 64 + 64
-        //type(1)|timestamp(4)|senderPublicKey(32)|requesterPublicKey(32)|recipientId(8)|amount(8)|
-        //message(?)|asset(?)|setSignature(64)|signSignature(64)
+        // 4 + 4 + 8 + 32 + 32 + ? + ? + 32 + 32
+        // type(4)|timestamp(4)|fee(8)|senderId(32)|[requestorId(32)]|[message(?)]|
+        // args(?)|signature(32)|[signSignature(32)]
 
         ByteBuffer buffer = ByteBuffer.allocate(MAX_BUFFER_SIZE).order(ByteOrder.LITTLE_ENDIAN)
-                .put(getType().byteValue())
+                .putInt(getType())
                 .putInt(getTimestamp())
-                .put(Decoding.unsafeDecodeHex(getSenderPublicKey()))
-                .put(Decoding.unsafeDecodeHex(getRequesterPublicKey()))
-                .put(getRecipientIdBuffer())
-                .putLong(getAmount())
+                .putLong(getFee())
+                .put(getSenderIdBuffer())
+                .put(getRequestorIdBuffer())
                 .put(getMessageBuffer())
-                .put(getAsset().assetBytes());
+                .put(getArgsBuffer());
 
         if (!skipSignature){
             buffer.put(Decoding.unsafeDecodeHex(getSignature()));
@@ -173,23 +159,20 @@ public class TransactionInfo {
         return result;
     }
 
-    private byte[] getRecipientIdBuffer(){
-        if (null == recipientId)  return new byte[8];
-        //数字地址
-        if (recipientId.matches("^\\d+")){
-            byte[] idBuffer = new BigInteger(recipientId).toByteArray();
-            int length = Math.min(8 ,idBuffer.length);
-            int fromIndex = idBuffer.length > 8 ? idBuffer.length - 8 : 0;
-            byte[] result = new byte[8];
-            System.arraycopy(idBuffer, fromIndex, result, 0, length);
-            return result;
-        }
-
-        //A+Base58地址
-        return Encoding.getUTF8Bytes(recipientId);
-    }
 
     private byte[] getMessageBuffer(){
        return Encoding.getUTF8Bytes(message);
+    }
+
+    private byte[] getSenderIdBuffer(){
+        return Encoding.getUTF8Bytes(senderId);
+    }
+
+    private byte[] getRequestorIdBuffer(){
+        return Encoding.getUTF8Bytes(requestorId);
+    }
+
+    private byte[] getArgsBuffer(){
+        return Encoding.getUTF8Bytes(JSON.toJSONString(getArgs()));
     }
 }

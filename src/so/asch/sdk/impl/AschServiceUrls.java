@@ -36,7 +36,6 @@ public final class AschServiceUrls {
         static final String GET_REWARD = "/api/blocks/getReward";
         static final String GET_SUPPLY = "/api/blocks/getSupply";
         static final String GET_STATUS = "/api/blocks/getStatus";
-
     }
 
     final static class Transaction{
@@ -56,9 +55,7 @@ public final class AschServiceUrls {
 
     final static class Signature{
         static final String GET_SIGNATURE_FEE = "/api/signatures/fee";
-        //static final String SET_SIGNATURE = "/api/signatures";
 
-        //static final String SET_MULTI_SIGNATURE = "/api/multisignatures/addMultisignature";
         static final String MULTI_SIGNATURE = "/api/multisignatures/sign";
         static final String GET_PENDING_TRANSACTIONS = "/api/multisignatures/pending";
         static final String GET_MULTI_SIGNATURE_ACCOUNTS = "/api/multisignatures/getAccounts";

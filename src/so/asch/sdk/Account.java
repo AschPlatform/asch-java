@@ -94,8 +94,12 @@ public interface Account extends AschInterface {
     //fee	integer	手续费设置
     AschResult getDelegatesFee();
 
-
-    AschResult newAccount();
+    //接口地址：/api/accounts/new
+    //请求方式：get
+    //支持格式：无
+    //请求参数说明：
+    //返回参数说明：
+    AschResult newAccount(int count);
 
     //投票[transaction]
     //请求参数说明：

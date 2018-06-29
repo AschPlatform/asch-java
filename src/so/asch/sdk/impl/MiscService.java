@@ -5,7 +5,6 @@ import so.asch.sdk.ContentEncoding;
 import so.asch.sdk.Misc;
 import so.asch.sdk.codec.Decoding;
 import so.asch.sdk.dbc.Argument;
-import so.asch.sdk.transaction.TransactionInfo;
 
 public class MiscService extends AschRESTService implements Misc {
     @Override
@@ -28,10 +27,11 @@ public class MiscService extends AschRESTService implements Misc {
             Argument.require(Validation.isValidSecret(secret), "invalid secret");
             Argument.optional(secondSecret, Validation::isValidSecondSecret, "invalid second secret");
 
-            TransactionInfo transaction = getTransactionBuilder()
-                    .buildStore(getContentBuffer(content, encoding), wait, secret, secondSecret);
-
-            return broadcastTransaction(transaction);
+//            TransactionInfo transaction = getTransactionBuilder()
+//                    .buildStore(getContentBuffer(content, encoding), wait, secret, secondSecret);
+//
+//            return broadcastTransaction(transaction);
+            throw new UnsupportedOperationException();
         }
         catch (Exception ex){
             return fail(ex);

@@ -94,13 +94,11 @@ public class Validation {
         return wait >= 0 && wait<= 6;
     }
 
-    public static boolean isValidVoteKeys(String[] upvotes, String[] downvotes){
-        return  (upvotes != null || downvotes != null) &&
-                (!isIntersected(upvotes, downvotes)) &&
-                (!(isDuplicate(upvotes) || isDuplicate(downvotes)))&&
-                ((upvotes == null ? 0 : upvotes.length) + (downvotes == null ? 0 : downvotes.length) <= 33)&&
-                (all(upvotes, Validation::isValidPublicKey)) &&
-                (all(downvotes, Validation::isValidPublicKey));
+    public static boolean isValidVoteKeys(String[] votes){
+        return  (votes != null ) &&
+                (!(isDuplicate(votes))) &&
+                ( votes.length <= 33) &&
+                (all(votes, Validation::isValidPublicKey)) ;
     }
 
     public static boolean isValidMultiSignatureKeys(String[] addKeys, String[]removeKeys){

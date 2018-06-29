@@ -4,6 +4,7 @@ import so.asch.sdk.Account;
 import so.asch.sdk.AschResult;
 import so.asch.sdk.dbc.Argument;
 import so.asch.sdk.dto.query.QueryParameters;
+import so.asch.sdk.transaction.TransactionBuilder;
 import so.asch.sdk.transaction.TransactionInfo;
 
 import java.security.KeyPair;
@@ -37,7 +38,7 @@ public class AccountService extends so.asch.sdk.impl.AschRESTService implements 
     }
 
     @Override
-    public AschResult newAccount() {
+    public AschResult newAccount(int count ) {
         return get(AschServiceUrls.Account.GENERATE_SECRET);
     }
 
@@ -85,10 +86,15 @@ public class AccountService extends so.asch.sdk.impl.AschRESTService implements 
         try {
             Argument.require(Validation.isValidSecret(secret), "invalid secret");
             Argument.optional(secondSecret, Validation::isValidSecondSecret, "invalid secondSecret");
-            Argument.require(Validation.isValidVoteKeys(upvotePublicKeys, downvotePublicKeys), "invalid upvoteKeys or downvoteKeys");
+            Argument.require( ( upvotePublicKeys != null && upvotePublicKeys.length > 0 ) != ( downvotePublicKeys != null && downvotePublicKeys.length > 0 ),
+                    "upvoteKeys and downvoteKeys can not be set both" );
+            Argument.require(Validation.isValidVoteKeys(upvotePublicKeys) || Validation.isValidVoteKeys(downvotePublicKeys), "invalid upvoteKeys or downvoteKeys");
 
-            TransactionInfo transaction = getTransactionBuilder()
-                    .buildVote( upvotePublicKeys, downvotePublicKeys,secret, secondSecret);
+            TransactionBuilder builder = getTransactionBuilder();
+            TransactionInfo transaction = ( upvotePublicKeys != null && upvotePublicKeys.length > 0 ) ?
+                    builder.buildVote(upvotePublicKeys,secret, secondSecret) :
+                    builder.buildUnvote(downvotePublicKeys, secret, secondSecret) ;
+
             return broadcastTransaction(transaction);
         }
         catch (Exception ex){

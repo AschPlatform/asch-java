@@ -3,7 +3,6 @@ package so.asch.sdk.impl;
 import so.asch.sdk.AschResult;
 import so.asch.sdk.Signature;
 import so.asch.sdk.dbc.Argument;
-import so.asch.sdk.transaction.TransactionInfo;
 
 public class SignatureService extends AschRESTService implements Signature {
     @Override
@@ -20,10 +19,11 @@ public class SignatureService extends AschRESTService implements Signature {
 //                    .fluentPut("secondSecret", secondSecret)
 //                    .fluentPut("multisigAccountPublicKey", multiSignAccountPublicKey); //注意名称要与asch源码一致!!!
 
-            TransactionInfo transaction = getTransactionBuilder()
-                    .buildSignature(secret, secondSecret);
-
-            return broadcastTransaction(transaction);
+//            TransactionInfo transaction = getTransactionBuilder()
+//                    .buildSignature(secret, secondSecret);
+//
+//            return broadcastTransaction(transaction);
+            throw new UnsupportedOperationException();
         }
         catch (Exception ex){
             return fail(ex);
@@ -61,10 +61,11 @@ public class SignatureService extends AschRESTService implements Signature {
 //                    .fluentPut("lifetime", lifetime)
 //                    .fluentPut("keysgroup", keysGroup);
 //            return post(AschServiceUrls.Signature.SET_MULTI_SIGNATURE, parameters);
-            TransactionInfo transaction = getTransactionBuilder()
-                    .buildMultiSignature(minAccount, lifetime, addKeys, removeKeys, secret, secondSecret);
-
-            return broadcastTransaction(transaction);
+//            TransactionInfo transaction = getTransactionBuilder()
+//                    .buildMultiSignature(minAccount, lifetime, addKeys, removeKeys, secret, secondSecret);
+//
+//            return broadcastTransaction(transaction);
+            throw new UnsupportedOperationException();
         }
         catch (Exception ex){
             return fail(ex);
