@@ -47,7 +47,7 @@ public class TransactionServiceTest {
     @Test
     public void testQueryTransactionsByType()throws Exception{
         TransactionQueryParameters parameters = new TransactionQueryParameters();
-        parameters.setTransactionType(TransactionType.Transfer);
+        parameters.setTransactionType(TransactionType.basic_transfer);
         AschResult result = AschSDK.Transaction.queryTransactions(parameters);
         Assert.assertTrue(result.isSuccessful());
     }

@@ -80,7 +80,7 @@ public class TransactionBuilder {
         return new TransactionInfo()
                 .setTransactionType(type)
                 .setTimestamp(getSecurity().getTransactionTimestamp())
-                .setSenderId(getSecurity().encodePublicKey(publicKey));
+                .setSenderId(getSecurity().getBase58Address(getSecurity().encodePublicKey(publicKey)));
     }
 
     protected TransactionInfo signatureAndGenerateTransactionId(TransactionInfo transaction,

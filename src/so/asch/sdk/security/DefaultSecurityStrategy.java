@@ -101,6 +101,7 @@ public class DefaultSecurityStrategy implements SecurityStrategy{
     public String generateTransactionId(TransactionInfo transaction)throws SecurityException {
         try {
             byte[] transactionBytes = transaction.getBytes(false, false);
+            System.out.println(Encoding.base64(transactionBytes));
             byte[] hash = sha256Hash(transactionBytes);
 
             if (logger.isInfoEnabled()) {

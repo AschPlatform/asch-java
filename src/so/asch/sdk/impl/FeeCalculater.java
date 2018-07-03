@@ -48,12 +48,15 @@ public class FeeCalculater {
                 "  502: () => 1," +
                 "  503: () => 1," +
                 "  504: () => 1";
-        String[] pairs = feeJS.replace(" ", "").split(",");
+        String[] pairs = feeJS.replace(" ", "")
+                .replace("()", "")
+                .replace("=>", "")
+                .split(",");
         AschHelper helper = new AschHelper();
 
         for( int i = 0; i< pairs.length; i++ ) {
             if (pairs[i].trim() == "") continue;
-            String[] item = pairs[i].split(":()=>");
+            String[] item = pairs[i].split(":");
             int typeCode = Integer.parseInt(item[0]);
             double fee = Double.parseDouble(item[1]);
 

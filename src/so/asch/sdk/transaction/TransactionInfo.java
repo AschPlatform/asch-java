@@ -75,12 +75,17 @@ public class TransactionInfo {
         return transactionType;
     }
 
-    public String getSignature() {
-        return signature;
+    public String[] getSignatures() {
+        return signatures;
+    }
+
+    public TransactionInfo setSignatures(String[] signatures) {
+        this.signatures = signatures;
+        return this;
     }
 
     public TransactionInfo setSignature(String signature) {
-        this.signature = signature;
+        this.setSignatures( new String[]{ signature } );
         return this;
     }
 
@@ -126,7 +131,7 @@ public class TransactionInfo {
     private Integer timestamp = null;
     private Long fee = null;
 
-    private String signature = null;
+    private String[] signatures = null;
     private String signSignature = null;
     private Object[] args = null;
 
@@ -145,7 +150,7 @@ public class TransactionInfo {
                 .put(getArgsBuffer());
 
         if (!skipSignature){
-            buffer.put(Decoding.unsafeDecodeHex(getSignature()));
+            buffer.put(getSignaturesBuffer());
         }
 
         if (!skipSignSignature){
@@ -156,6 +161,7 @@ public class TransactionInfo {
         byte[] result = new byte[buffer.remaining()];
         buffer.get(result);
 
+        System.out.println(Encoding.hex(result));
         return result;
     }
 
@@ -175,4 +181,7 @@ public class TransactionInfo {
     private byte[] getArgsBuffer(){
         return Encoding.getUTF8Bytes(JSON.toJSONString(getArgs()));
     }
+
+    //FIXME: multiSignatures
+    private byte[] getSignaturesBuffer() { return Decoding.unsafeDecodeHex(getSignatures()[0]); }
 }

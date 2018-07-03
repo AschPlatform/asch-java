@@ -3,6 +3,7 @@ package so.asch.sdk;
 import so.asch.sdk.dto.query.TransactionQueryParameters;
 import so.asch.sdk.impl.Validation;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
@@ -16,7 +17,7 @@ public class Main {
             initLog();
 
             String url = "http://127.0.0.1:4096";
-            String secret = "early sugar cannon mansion expose tunnel piece manual destroy exhaust helmet rather";
+            String secret = "token exhibit rich scare arch devote trash scout element label room master";
             String address = "7286541193277597873";
             String secondSecret = "asch111111";
             String userName = "asch_g2";
@@ -36,9 +37,10 @@ public class Main {
 //
 //
 //            //设置Asch服务地址
-            AschSDK.Config.setAschServer("http://mainnet.asch.so");
+            AschSDK.Config.setAschServer(url);
 //            //设置成对应的网络Magic值
-//            AschSDK.Config.setMagic("5f5b3cf5");
+            AschSDK.Config.setMagic("594fe0f3");
+            //AschSDK.Config.setMagic("5f5b3cf5");
 //
 //
             //生成10个一级密钥（账户）
@@ -48,24 +50,25 @@ public class Main {
                 System.out.println(Validation.isValidSecret(newSecret));
             }
 
-//            //登录
-//            AschResult result = AschSDK.Account.secureLogin(secret);
-//            System.out.println(result.getRawJson());
-//            if(result.isSuccessful()){
-//                Map<String,Object> accountMap = (Map<String,Object>)result.parseMap().get("account");
-//                String accountPublicKey = AschSDK.Helper.getPublicKey(secret);
-//                String accountAddress = accountMap.get("address").toString();
-//                BigDecimal balance = BigDecimal.valueOf(Long.parseLong(accountMap.get("balance").toString()), 8);
-//
-//                System.out.println(String.format("登录成功, publicKey:%s, address:%s, XAS余额：%s", accountPublicKey, accountAddress, balance.toString()));
-//            }
-//
-//            //转账(金额为1XAS)
-//            result = AschSDK.Account.transfer("11705168753296944226",
-//                    AschSDK.Helper.amountForXAS(BigDecimal.valueOf(1)),
-//                    //"Transfer by Test"
-//                    "  ", secret, secondSecret);
-//            System.out.println(result.getRawJson());
+            //登录
+            AschResult result = AschSDK.Account.secureLogin(secret);
+            System.out.println(result.getRawJson());
+            if(result.isSuccessful()){
+                Map<String,Object> accountMap = (Map<String,Object>)result.parseMap().get("account");
+                String accountPublicKey = AschSDK.Helper.getPublicKey(secret);
+                String accountAddress = accountMap.get("address").toString();
+                BigDecimal balance = BigDecimal.valueOf(Long.parseLong(accountMap.get("balance").toString()), 8);
+
+                System.out.println(String.format("登录成功, publicKey:%s, address:%s, XAS余额：%s", accountPublicKey, accountAddress, balance.toString()));
+            }
+            //99997999.80000000
+
+            //转账(金额为1XAS)
+            result = AschSDK.Account.transfer("APSu9NhiCTtvRGx1EpkeKNubiApiBWMf7T",
+                    AschSDK.Helper.amountForXAS(BigDecimal.valueOf(1)),
+                    //"Transfer by Test"
+                    "  ", secret, null);
+            System.out.println(result.getRawJson());
 //            if(result.isSuccessful()){
 //                String transactionId = result.parseMap().get("transactionId").toString();
 //                System.out.println("交易成功,transaction id：" + transactionId);
