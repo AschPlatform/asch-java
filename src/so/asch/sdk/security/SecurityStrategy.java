@@ -18,8 +18,6 @@ public interface SecurityStrategy {
 
     String generateTransactionId(TransactionInfo transaction) throws SecurityException;
 
-    String generateSecret();
-
     boolean isValidSecret(String secret);
 
     boolean isValidBase58Address(String address);

@@ -2,6 +2,7 @@ package so.asch.sdk;
 
 import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
+import so.asch.sdk.util.DebugHelper;
 
 /**
  * SDK配置类，包括接口版本号、服务地址等信息
@@ -14,7 +15,7 @@ public final class AschSDKConfig {
     private AschSDKConfig(){}
 
 
-    private final static String sdkVersion = "1.3";
+    private final static String sdkVersion = "1.4";
 
     public String getSDKVersion(){ return sdkVersion; }
 
@@ -26,12 +27,13 @@ public final class AschSDKConfig {
         this.aschServer = aschServer;
     }
 
-    public boolean isDebugMode() {
-        return debugMode;
+    public boolean isDebugLogEnabled() {
+        return debugLogEnabled;
     }
 
-    public void setDebugMode(boolean debugMode) {
-        this.debugMode = debugMode;
+    public void setDebugLogEnabled(boolean enabled) {
+        this.debugLogEnabled = enabled;
+        DebugHelper.setEnabled(enabled);
     }
 
     public String getMagic() {
@@ -42,18 +44,10 @@ public final class AschSDKConfig {
         this.magic = magic;
     }
 
-    public boolean isLongTransactionIdEnabled() {
-        return longTransactionIdEnabled;
-    }
-
-    public void setLongTransactionIdEnabled(boolean longTransactionIdEnabled) {
-        this.longTransactionIdEnabled = longTransactionIdEnabled;
-    }
 
     private String aschServer ="http://127.0.0.1:4096";
     private String magic = "aabbccdd"; //localnet
-    private boolean longTransactionIdEnabled = true;
-    private boolean debugMode = true;
+    private boolean debugLogEnabled = false;
 
     public boolean tryLoadFromJson(String jsonString){
         try{
@@ -72,9 +66,8 @@ public final class AschSDKConfig {
 
     protected void copyTo(AschSDKConfig another){
         another.magic = this.magic;
-        another.debugMode = this.debugMode;
+        another.debugLogEnabled = this.debugLogEnabled;
         another.aschServer = this.aschServer;
-        another.longTransactionIdEnabled = this.longTransactionIdEnabled;
     }
 
 }

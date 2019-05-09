@@ -1,26 +1,22 @@
 package so.asch.sdk.security;
 
 import net.i2p.crypto.eddsa.EdDSAPublicKey;
-import so.asch.sdk.AschSDKConfig;
+
 import so.asch.sdk.codec.Base58;
 import so.asch.sdk.codec.Decoding;
 import so.asch.sdk.codec.Encoding;
 import so.asch.sdk.dbc.Argument;
 import so.asch.sdk.impl.AschConst;
-import so.asch.sdk.impl.Log.Logger;
-import so.asch.sdk.impl.Log.LoggerFactory;
-import so.asch.sdk.impl.Validation;
 import so.asch.sdk.security.ripemd.RipeMD160;
 import so.asch.sdk.transaction.TransactionInfo;
+import so.asch.sdk.util.DebugHelper;
 
-import java.math.BigInteger;
 import java.security.KeyPair;
 import java.security.MessageDigest;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.UUID;
 
 
 /**
@@ -28,12 +24,9 @@ import java.util.UUID;
  */
 public class DefaultSecurityStrategy implements SecurityStrategy{
     private static final String SHA256_DIGEST_ALGORITHM = "SHA-256";
-    private static final AschSDKConfig config = AschSDKConfig.getInstance();
 
     private static final MessageDigest sha256Digest;
     private static final RipeMD160 ripemd160Digest;
-
-    protected static final Logger logger = LoggerFactory.getLogger(DefaultSecurityStrategy.class);
 
     static{
 
@@ -54,10 +47,10 @@ public class DefaultSecurityStrategy implements SecurityStrategy{
 
 
     @Override
-    public KeyPair generateKeyPair(String secure) throws SecurityException {
+    public KeyPair generateKeyPair(String secret) throws SecurityException {
         try {
-            Argument.notNullOrEmpty(secure, "secure");
-            byte[] hash = sha256Hash(Encoding.getUTF8Bytes(secure));
+            Argument.notNullOrEmpty(secret, "secret");
+            byte[] hash = sha256Hash(Encoding.getUTF8Bytes(secret));
             return Ed25519.generateKeyPairBySeed(hash);
         }
         catch (Exception ex){
@@ -80,8 +73,6 @@ public class DefaultSecurityStrategy implements SecurityStrategy{
     @Override
     public String getBase58Address(String publicKey) throws SecurityException{
         try{
-            Argument.require(Validation.isValidPublicKey(publicKey), "invalid public key");
-
             byte[] hash1 = sha256Hash(Decoding.hex(publicKey));
             byte[] hash2 = ripemd160Hash(hash1);
             byte[] checksum = sha256Hash(sha256Hash(hash2));
@@ -101,35 +92,18 @@ public class DefaultSecurityStrategy implements SecurityStrategy{
     public String generateTransactionId(TransactionInfo transaction)throws SecurityException {
         try {
             byte[] transactionBytes = transaction.getBytes(false, false);
-            System.out.println(Encoding.base64(transactionBytes));
             byte[] hash = sha256Hash(transactionBytes);
 
-            if (logger.isInfoEnabled()) {
-                logger.info("transaction bytes:" + Encoding.hex(transactionBytes));
-                logger.info("transaction hash:" + Encoding.hex(hash));
-            }
+            DebugHelper.info("transaction bytes:" + Encoding.hex(transactionBytes));
+            DebugHelper.info("transaction hash:" + Encoding.hex(hash));
 
-            if (config.isLongTransactionIdEnabled())
-                return Encoding.hex(hash);
-
-            byte[] transactionIdBytes = new byte[8];
-            for (int i = 0; i < 7; i++) {
-                transactionIdBytes[i] = hash[7 - 1];
-            }
-
-            return new BigInteger(transactionIdBytes).toString();
+            return Encoding.hex(hash);
 
         } catch (Exception ex) {
             throw new SecurityException("generate transaction id failed", ex);
         }
     }
 
-    @Override
-    public String generateSecret(){
-        String uuid = UUID.randomUUID().toString()
-                .replace("-","");
-        return Bip39.generateMnemonicCode(Decoding.unsafeDecodeHex(uuid));
-    }
 
     @Override
     public boolean isValidSecret(String secret) {
@@ -168,9 +142,6 @@ public class DefaultSecurityStrategy implements SecurityStrategy{
     @Override
     public String Signature(TransactionInfo transaction, PrivateKey privateKey) throws SecurityException {
         try {
-            Argument.require(transaction != null, "transaction can not be null");
-            Argument.require(privateKey != null, "private key can not be null");
-
             byte[] transactionBytes = transaction.getBytes(true, true);
             byte[] hash = sha256Hash(transactionBytes);
             return Encoding.hex(Ed25519.signature(hash, privateKey));
@@ -183,10 +154,7 @@ public class DefaultSecurityStrategy implements SecurityStrategy{
     @Override
     public String SignSignature(TransactionInfo transaction, PrivateKey privateKey) throws SecurityException {
         try {
-            Argument.require(transaction != null, "transaction can not be null");
-            Argument.require(privateKey != null, "private key can not be null");
-
-            byte[] transactionBytes = transaction.getBytes( false, true);
+            byte[] transactionBytes = transaction.getBytes(true, true);
             byte[] hash = sha256Hash(transactionBytes);
             return Encoding.hex(Ed25519.signature(hash, privateKey));
         }

@@ -15,19 +15,13 @@ public class BlockServiceTest {
 
     @Test
     public void testGetBlockById() throws Exception {
-        AschResult result= AschSDK.Block.getBlockById(TestData.blockId,false);
+        AschResult result = AschSDK.Block.getBlockById(TestData.blockId, true);
         Assert.assertTrue(result.isSuccessful());
     }
 
     @Test
     public void testGetBlockByHeight()throws Exception{
-        AschResult result= AschSDK.Block.getBlockByHeight(TestData.blockHeight,false);
-        Assert.assertTrue(result.isSuccessful());
-    }
-
-    @Test
-    public void testGetBlockByHash()throws Exception{
-        AschResult result= AschSDK.Block.getBlockByHash(TestData.blockHash,false);
+        AschResult result = AschSDK.Block.getBlockByHeight(TestData.blockHeight, true);
         Assert.assertTrue(result.isSuccessful());
     }
 

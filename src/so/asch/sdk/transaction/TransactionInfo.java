@@ -14,7 +14,7 @@ import java.nio.ByteOrder;
  * Created by eagle on 17-7-16.
  */
 public class TransactionInfo {
-    private static final int MAX_BUFFER_SIZE = 1024 * 5;
+    private static final int BASE_BUFFER_SIZE = 256;
 
     public Integer getType() {
         return transactionType == null ? null : transactionType.getCode();
@@ -70,6 +70,15 @@ public class TransactionInfo {
         return this;
     }
 
+    public String getSenderPublicKey() {
+        return this.senderPublicKey;
+    }
+
+    public TransactionInfo setSenderPublicKey(String senderPublicKey) {
+        this.senderPublicKey = senderPublicKey;
+        return this;
+    }
+
     @JSONField(serialize = false)
     public TransactionType getTransactionType() {
         return transactionType;
@@ -94,12 +103,12 @@ public class TransactionInfo {
         return this;
     }
 
-    public String getSignSignature() {
-        return signSignature;
+    public String getSecondSignature() {
+        return secondSignature;
     }
 
-    public TransactionInfo setSignSignature(String signSignature) {
-        this.signSignature = signSignature;
+    public TransactionInfo setSecondSignature(String secondSignature) {
+        this.secondSignature = secondSignature;
         return this;
     }
 
@@ -109,6 +118,15 @@ public class TransactionInfo {
 
     public TransactionInfo setTimestamp(Integer timestamp) {
         this.timestamp = timestamp;
+        return this;
+    }
+
+    public Integer getMode() {
+        return mode;
+    }
+
+    public TransactionInfo setMode(Integer mode) {
+        this.mode = mode;
         return this;
     }
 
@@ -127,41 +145,45 @@ public class TransactionInfo {
 
     private String requestorId = null;
     private String senderId = null;
+    private String senderPublicKey = null;
     private String message = null;
     private Integer timestamp = null;
     private Long fee = null;
+    private Integer mode = null;
 
     private String[] signatures = null;
-    private String signSignature = null;
+    private String secondSignature = null;
     private Object[] args = null;
 
     public byte[] getBytes(boolean skipSignature , boolean skipSignSignature){
         // 4 + 4 + 8 + 32 + 32 + ? + ? + 32 + 32
         // type(4)|timestamp(4)|fee(8)|senderId(32)|[requestorId(32)]|[message(?)]|
-        // args(?)|signature(32)|[signSignature(32)]
+        // args(?)|signature(32)|[secondSignature(32)]
 
-        ByteBuffer buffer = ByteBuffer.allocate(MAX_BUFFER_SIZE).order(ByteOrder.LITTLE_ENDIAN)
+        final byte[] argsBuffer = getArgsBuffer();
+        final byte[] messageBuffer = getMessageBuffer();
+        final Integer bufferSize = BASE_BUFFER_SIZE + argsBuffer.length + messageBuffer.length;
+        ByteBuffer buffer = ByteBuffer.allocate(bufferSize).order(ByteOrder.LITTLE_ENDIAN)
                 .putInt(getType())
                 .putInt(getTimestamp())
                 .putLong(getFee())
                 .put(getSenderIdBuffer())
                 .put(getRequestorIdBuffer())
-                .put(getMessageBuffer())
-                .put(getArgsBuffer());
+                .put(messageBuffer)
+                .put(argsBuffer);
 
         if (!skipSignature){
             buffer.put(getSignaturesBuffer());
         }
 
         if (!skipSignSignature){
-            buffer.put(Decoding.unsafeDecodeHex(getSignSignature()));
+            buffer.put(Decoding.unsafeDecodeHex(getSecondSignature()));
         }
 
         buffer.flip();
         byte[] result = new byte[buffer.remaining()];
         buffer.get(result);
 
-        System.out.println(Encoding.hex(result));
         return result;
     }
 

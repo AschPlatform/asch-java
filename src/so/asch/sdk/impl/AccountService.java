@@ -38,7 +38,7 @@ public class AccountService extends so.asch.sdk.impl.AschRESTService implements 
     }
 
     @Override
-    public AschResult newAccount(int count ) {
+    public AschResult newAccount() {
         return get(AschServiceUrls.Account.GENERATE_SECRET);
     }
 
@@ -53,59 +53,10 @@ public class AccountService extends so.asch.sdk.impl.AschRESTService implements 
     }
 
     @Override
-    public AschResult getPublicKey(String address){
-        return  getByAddress(AschServiceUrls.Account.GET_PUBLIC_KEY, address);
-    }
-
-    @Override
-    public AschResult generatePublicKey(String secret){
-        try {
-            Argument.require(Validation.isValidSecret(secret), "invalid secret");
-
-            ParameterMap parameters = new ParameterMap().put("secret", secret);
-            return post(AschServiceUrls.Account.GENERATE_PUBLIC_KEY, parameters);
-        }
-        catch (Exception ex){
-            return fail(ex);
-        }
-    }
-
-    @Override
-    public AschResult getVotedDelegates(String address){
-        return getByAddress(AschServiceUrls.Account.GET_VOTED_DELEGATES, address);
-    }
-
-    @Override
-    public AschResult getDelegatesFee(){
-        return get(AschServiceUrls.Account.GET_DELEGATE_FEE);
-    }
-
-    //todo:验证投票和取消投票的数组都符合规则
-    @Override
-    public AschResult vote(String[] upvotePublicKeys, String[] downvotePublicKeys, String secret, String secondSecret){
-        try {
-            Argument.require(Validation.isValidSecret(secret), "invalid secret");
-            Argument.optional(secondSecret, Validation::isValidSecondSecret, "invalid secondSecret");
-            Argument.require( ( upvotePublicKeys != null && upvotePublicKeys.length > 0 ) != ( downvotePublicKeys != null && downvotePublicKeys.length > 0 ),
-                    "upvoteKeys and downvoteKeys can not be set both" );
-            Argument.require(Validation.isValidVoteKeys(upvotePublicKeys) || Validation.isValidVoteKeys(downvotePublicKeys), "invalid upvoteKeys or downvoteKeys");
-
-            TransactionBuilder builder = getTransactionBuilder();
-            TransactionInfo transaction = ( upvotePublicKeys != null && upvotePublicKeys.length > 0 ) ?
-                    builder.buildVote(upvotePublicKeys,secret, secondSecret) :
-                    builder.buildUnvote(downvotePublicKeys, secret, secondSecret) ;
-
-            return broadcastTransaction(transaction);
-        }
-        catch (Exception ex){
-            return fail(ex);
-        }
-    }
-
-    @Override
-    public AschResult transfer(String targetAddress, long amount, String message, String secret, String secondSecret){
+    public AschResult transferXAS(String targetAddress, long amount, String message, String secret, String secondSecret) {
         try {
             Argument.require(Validation.isValidAddress(targetAddress), "invalid target address");
+            Argument.require(amount > 0, "invalid amount for transfer, should be greater than 0");
             Argument.require(Validation.isValidSecret(secret), "invalid secret");
             Argument.optional(secondSecret, Validation::isValidSecondSecret, "invalid second secret");
 
@@ -119,15 +70,21 @@ public class AccountService extends so.asch.sdk.impl.AschRESTService implements 
     }
 
     @Override
-    public AschResult getTopAccounts(QueryParameters parameters){
+    public AschResult transferUIA(String targetAddress, long amount, String currency, String message, String secret, String secondSecret) {
         try {
-            Argument.require(Validation.isValidAccountQueryParameters(parameters), "invalid parameters");
+            Argument.require(Validation.isValidAddress(targetAddress), "invalid target address");
+            Argument.require(amount > 0, "invalid amount for transfer, should be greater than 0");
+            Argument.notNullOrEmpty(currency, "invalid currency, should not be empty");
+            Argument.require(Validation.isValidSecret(secret), "invalid secret");
+            Argument.optional(secondSecret, Validation::isValidSecondSecret, "invalid second secret");
 
-            ParameterMap getParameters = parametersFromObject(parameters);
-            return get(AschServiceUrls.Account.GET_TOP_ACCOUNTS, getParameters);
+            TransactionInfo transaction = getTransactionBuilder()
+                    .buildUIATransfer(targetAddress, amount, currency, message, secret, secondSecret);
+            return broadcastTransaction(transaction);
         }
         catch (Exception ex){
             return fail(ex);
         }
     }
+
 }

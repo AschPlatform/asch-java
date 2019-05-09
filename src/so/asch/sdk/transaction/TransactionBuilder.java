@@ -10,77 +10,48 @@ import java.security.PrivateKey;
 import java.security.PublicKey;
 
 public class TransactionBuilder {
-
-    public TransactionInfo buildVote(String[] votePublicKeys, String secret, String secondSecret ) throws SecurityException {
+    public TransactionInfo buildTransaction(TransactionType type, Object[] args, String message, String secret,
+                                            String secondSecret) throws SecurityException {
         KeyPair keyPair = getSecurity().generateKeyPair(secret);
 
-        TransactionInfo transaction = newTransaction(
-                TransactionType.basic_vote,
-                keyPair.getPublic())
-                .setArgs(new Object[]{ String.join(",", votePublicKeys) })
+        TransactionInfo transaction = newTransaction(type, keyPair.getPublic())
+                .setMessage(message)
+                .setArgs(args)
                 .calcFee();
 
         return signatureAndGenerateTransactionId(transaction, keyPair.getPrivate(), secondSecret);
-    }
-
-    public TransactionInfo buildUnvote(String[] unvotePublicKeys, String secret, String secondSecret ) throws SecurityException {
-        KeyPair keyPair = getSecurity().generateKeyPair(secret);
-
-        TransactionInfo transaction = newTransaction(
-                TransactionType.basic_unvote,
-                keyPair.getPublic())
-                .setArgs(new Object[]{ String.join(",", unvotePublicKeys) })
-                .calcFee();
-
-        return signatureAndGenerateTransactionId(transaction, keyPair.getPrivate(), secondSecret);
-    }
-
-    public TransactionInfo buildDelegate(String userName, String secret, String secondSecret)  throws SecurityException  {
-        KeyPair keyPair = getSecurity().generateKeyPair(secret);
-
-        TransactionInfo transaction = newTransaction(
-                TransactionType.basic_registerDelegate,
-                keyPair.getPublic())
-                .setArgs(new Object[]{userName})
-                .calcFee();
-
-        return signatureAndGenerateTransactionId(transaction, keyPair.getPrivate(),secondSecret);
     }
 
     public TransactionInfo buildTransfer(String targetAddress, long amount, String message,
-                                         String secret, String secondSecret) throws  SecurityException{
-        KeyPair keyPair = getSecurity().generateKeyPair(secret);
-
-        TransactionInfo transaction =  newTransaction(
+                                         String secret, String secondSecret) throws SecurityException {
+        return buildTransaction(
                 TransactionType.basic_transfer,
-                keyPair.getPublic())
-                .setMessage(message)
-                .setArgs(new Object[]{ amount, targetAddress })
-                .calcFee();
-
-        return signatureAndGenerateTransactionId(transaction, keyPair.getPrivate(), secondSecret);
+                new Object[]{((Long) amount).toString(), targetAddress},
+                message,
+                secret,
+                secondSecret
+        );
     }
 
     public TransactionInfo buildUIATransfer(String currency, long amount, String targetAddress, String message,
                                             String secret, String secondSecret) throws SecurityException{
-        KeyPair keyPair = getSecurity().generateKeyPair(secret);
-
-        TransactionInfo transaction =  newTransaction(
+        return buildTransaction(
                 TransactionType.uia_transfer,
-                keyPair.getPublic())
-                .setMessage(message)
-                .setArgs(new Object[]{ currency, amount, targetAddress })
-                .calcFee();
-
-        return signatureAndGenerateTransactionId(transaction, keyPair.getPrivate(), secondSecret);
+                new Object[]{currency, amount, targetAddress},
+                message,
+                secret,
+                secondSecret
+        );
     }
 
 
     protected TransactionInfo newTransaction(TransactionType type, PublicKey publicKey) throws SecurityException{
+        String publicKeyHex = getSecurity().encodePublicKey(publicKey);
         return new TransactionInfo()
                 .setTransactionType(type)
                 .setTimestamp(getSecurity().getTransactionTimestamp())
-                .setSenderId(getSecurity().getBase58Address(getSecurity().encodePublicKey(publicKey)));
+                .setSenderPublicKey(publicKeyHex)
+                .setSenderId(getSecurity().getBase58Address(publicKeyHex));
     }
 
     protected TransactionInfo signatureAndGenerateTransactionId(TransactionInfo transaction,
@@ -89,7 +60,7 @@ public class TransactionBuilder {
 
         if (null != secondSecret) {
             KeyPair secondKeyPair = getSecurity().generateKeyPair(secondSecret);
-            transaction.setSignSignature(getSecurity().SignSignature(transaction, secondKeyPair.getPrivate()));
+            transaction.setSecondSignature(getSecurity().SignSignature(transaction, secondKeyPair.getPrivate()));
         }
 
         transaction.setTransactionId(getSecurity().generateTransactionId(transaction));

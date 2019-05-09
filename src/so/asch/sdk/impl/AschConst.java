@@ -14,6 +14,7 @@ public final class AschConst {
     public static final int MIN_BASE58_ADDRESS_LEN = 30;
     public static final Date ASCH_BEGIN_EPOCH;
 
+
     static {
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
         df.setTimeZone(TimeZone.getTimeZone("UTC"));

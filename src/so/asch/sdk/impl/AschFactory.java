@@ -60,14 +60,8 @@ public final class AschFactory {
     static {
         getInstance()
                 .register(Account.class, AccountService.class)
-                .register(Delegate.class, DelegateService.class)
                 .register(Block.class, BlockService.class)
-                .register(Transaction.class, TransactionService.class)
-                .register(Signature.class, SignatureService.class)
-                .register(Dapp.class, DappService.class)
-                .register(UIA.class, UIAService.class)
-                .register(Peer.class, PeerService.class)
-                .register(Misc.class, MiscService.class);
+                .register(Transaction.class, TransactionService.class);
     }
 
 }

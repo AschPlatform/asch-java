@@ -12,12 +12,6 @@ import java.util.Date;
 public class AschHelper {
     private static final AschFactory factory = AschFactory.getInstance();
 
-    public String generateSecret(){
-        AschResult result =  ((Account)factory.getService(Account.class)).newAccount(1);
-        return !result.isSuccessful() ? null :
-                result.parseMap().get("secret").toString();
-    }
-
     public long amountForXAS(BigDecimal xas){
         return xas.multiply(BigDecimal.valueOf(AschConst.COIN)).longValue();
     }
@@ -26,7 +20,7 @@ public class AschHelper {
         return BigDecimal.valueOf(coins).multiply(BigDecimal.valueOf(AschConst.COIN)).longValue();
     }
 
-    public String getPublicKey(String secret){
+    public String getPublicKey(String secret) {
         SecurityStrategy security = factory.getSecurity();
         if (!security.isValidSecret(secret))
             return null;
@@ -52,7 +46,4 @@ public class AschHelper {
         return Validation.isValidAddress(address);
     }
 
-    public boolean isValidBase58Address(String address){
-        return  (null != address) && factory.getSecurity().isValidBase58Address(address);
-    }
 }

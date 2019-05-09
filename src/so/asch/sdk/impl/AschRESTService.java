@@ -1,8 +1,6 @@
 package so.asch.sdk.impl;
 
 import com.alibaba.fastjson.JSONObject;
-import so.asch.sdk.impl.Log.Logger;
-import so.asch.sdk.impl.Log.LoggerFactory;
 import so.asch.sdk.AschInterface;
 import so.asch.sdk.AschResult;
 import so.asch.sdk.AschSDKConfig;
@@ -10,6 +8,7 @@ import so.asch.sdk.dbc.Argument;
 import so.asch.sdk.security.SecurityStrategy;
 import so.asch.sdk.transaction.TransactionBuilder;
 import so.asch.sdk.transaction.TransactionInfo;
+import so.asch.sdk.util.DebugHelper;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -19,8 +18,6 @@ import java.util.Map;
  * @author eagle
  */
 public abstract class AschRESTService implements AschInterface{
-
-    protected static final  Logger logger = LoggerFactory.getLogger(AschRESTService.class);
     private static final String CHAR_SET = "UTF-8";
 
     protected static final AschSDKConfig config = AschSDKConfig.getInstance();
@@ -117,7 +114,7 @@ public abstract class AschRESTService implements AschInterface{
     }
 
     protected AschResult fail(Exception ex){
-        logger.error("rest call failed", ex);
+        DebugHelper.error(ex, "rest call");
         return AschResult.Failed(ex);
     }
 

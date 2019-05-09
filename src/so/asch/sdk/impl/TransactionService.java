@@ -24,8 +24,7 @@ public class TransactionService extends AschRESTService implements Transaction {
         try {
             Argument.require(Validation.isValidTransactionId(transactionId), "invalid transaction id");
 
-            ParameterMap parameters = new ParameterMap().put("id", transactionId);
-            return get(AschServiceUrls.Transaction.GET_TRANSACTION, parameters);
+            return get(AschServiceUrls.Transaction.GET_TRANSACTION + transactionId);
         }
         catch (Exception ex){
             return fail(ex);
@@ -62,26 +61,4 @@ public class TransactionService extends AschRESTService implements Transaction {
         }
     }
 
-    @Override
-    public AschResult addTransaction(String secret, int amount, String recipientId, String senderPublicKey, String secondSecret, String multiSignAccountPublicKey) {
-        try {
-            Argument.require(Validation.isValidSecret(secret), "invalid secret");
-            Argument.require(Validation.isValidSecondSecret(secondSecret), "invalid secondSecret");
-            Argument.require(Validation.isValidAmount(amount), "invalid amount");
-            Argument.require(Validation.isValidPublicKey(senderPublicKey), "invalid senderPublicKey");
-            Argument.optional(multiSignAccountPublicKey, Validation::isValidPublicKey, "invalid multiSignAccountPublicKey");
-
-            ParameterMap parameters = new ParameterMap()
-                    .put("secret", secret)
-                    .put("amount", amount)
-                    .put("recipientId", recipientId)
-                    .put("secondSecret", secondSecret)
-                    .put("senderPublicKey", senderPublicKey)
-                    .put("multisigAccountPublicKey", multiSignAccountPublicKey);
-
-            return post(AschServiceUrls.Transaction.CREATE_TRANSACTION, parameters);
-        } catch (Exception ex) {
-            return fail(ex);
-        }
-    }
 }

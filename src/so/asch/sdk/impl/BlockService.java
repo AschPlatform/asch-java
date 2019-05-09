@@ -8,14 +8,15 @@ import so.asch.sdk.dto.query.BlockQueryParameters;
 
 public class BlockService extends AschRESTService implements Block {
     @Override
-    public AschResult getBlockById(String id, boolean fullBlockInfo) {
+    public AschResult getBlockById(String id, boolean withTransactions) {
         try {
             Argument.notNull(id, "id is null");
 
-            ParameterMap parameters = new ParameterMap().put("id", id);
-            String url = fullBlockInfo ?
-                    AschServiceUrls.Block.GET_FULL_BLOCK_INFO:
-                    AschServiceUrls.Block.GET_BLOCK_INFO ;
+            String url = AschServiceUrls.Block.GET_BLOCK_INFO + id;
+            ParameterMap parameters = new ParameterMap();
+            if (withTransactions) {
+                parameters.put("transactions", true);
+            }
             return get(url, parameters);
         } catch (Exception ex) {
             return fail(ex);
@@ -23,34 +24,20 @@ public class BlockService extends AschRESTService implements Block {
     }
 
     @Override
-    public AschResult getBlockByHeight(long height, boolean fullBlockInfo) {
-        ParameterMap parameters = new ParameterMap().put("height", height);
-        String url = fullBlockInfo ?
-                AschServiceUrls.Block.GET_FULL_BLOCK_INFO:
-                AschServiceUrls.Block.GET_BLOCK_INFO ;
+    public AschResult getBlockByHeight(long height, boolean withTransactions) {
+        String url = AschServiceUrls.Block.GET_BLOCK_INFO + height;
+        ParameterMap parameters = new ParameterMap();
+        if (withTransactions) {
+            parameters.put("transactions", true);
+        }
         return get(url, parameters);
-    }
-
-    @Override
-    public AschResult getBlockByHash(String hash, boolean fullBlockInfo) {
-        try {
-            Argument.notNull(hash, "hash is null");
-
-            ParameterMap parameters = new ParameterMap().put("hash", hash);
-            String url = fullBlockInfo ?
-                    AschServiceUrls.Block.GET_FULL_BLOCK_INFO :
-                    AschServiceUrls.Block.GET_BLOCK_INFO;
-            return get(url, parameters);
-        } catch (Exception ex) {
-            return fail(ex);
-        }
     }
 
 
     @Override
     public AschResult queryBlocks(BlockQueryParameters parameters) {
         try {
-            //Argument.require(Validation.isValidBlockQueryParameters(parameters), "invalid parameters");
+            Argument.require(Validation.isValidBlockQueryParameters(parameters), "invalid parameters");
 
             ParameterMap query = parametersFromObject(parameters);
             return get(AschServiceUrls.Block.QUERY_BLOCKS,  query);
@@ -84,7 +71,6 @@ public class BlockService extends AschRESTService implements Block {
     public AschResult getSupply() {
         return get(AschServiceUrls.Block.GET_SUPPLY);
     }
-
 
     @Override
     public AschResult getStauts() {

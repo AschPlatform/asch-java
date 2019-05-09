@@ -50,9 +50,9 @@ public class Validation {
 
     public static boolean isValidAddress(String address){
         return  address != null &&
-                ( address.length() >= MIN_ADDRESS_LENGTH && address.length() <= MAX_ADDRESS_LENGTH) &&
-                ( address.matches(NUMBER_PATTERN) ||
-                        ( address.matches(BASE58_PATTERN) && AschFactory.getInstance().getSecurity().isValidBase58Address(address))
+                (address.length() >= MIN_ADDRESS_LENGTH && address.length() <= MAX_ADDRESS_LENGTH) &&
+                (address.matches(NUMBER_PATTERN) ||
+                        (address.matches(BASE58_PATTERN) && AschFactory.getInstance().getSecurity().isValidBase58Address(address))
                 );
     }
 
@@ -125,10 +125,6 @@ public class Validation {
         }
     }
 
-    public static boolean isValidPeerQueryParameters(PeerQueryParameters queryParameters){
-        //TODO: validate queryParameters
-        return queryParameters != null;
-    }
 
     private static boolean isValidQueryParameters(QueryParameters queryParameters){
         return queryParameters != null &&
