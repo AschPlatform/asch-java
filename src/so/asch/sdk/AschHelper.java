@@ -3,6 +3,7 @@ package so.asch.sdk;
 import so.asch.sdk.impl.AschConst;
 import so.asch.sdk.impl.AschFactory;
 import so.asch.sdk.impl.Validation;
+import so.asch.sdk.security.Bip39;
 import so.asch.sdk.security.SecurityStrategy;
 
 import java.math.BigDecimal;
@@ -30,6 +31,19 @@ public class AschHelper {
         }
         catch (Exception ex)
         {
+            return null;
+        }
+    }
+
+    public String generateSecret() {
+        return Bip39.generateMnemonicCode();
+    }
+
+    public String getAddress(String publicKey) {
+        SecurityStrategy security = factory.getSecurity();
+        try {
+            return security.getBase58Address(publicKey);
+        } catch (Exception ex) {
             return null;
         }
     }

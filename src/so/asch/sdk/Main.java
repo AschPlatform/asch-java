@@ -15,7 +15,7 @@ public class Main {
         configSDK();
 
         //生成5个新账户（一级密码）
-        String[] secrets = generateAccounts(5);
+        String[] secrets = generateSecrets(5);
 
         //使用第一个账号登录，并获取其地址
         String address = login(secrets[0]);
@@ -38,22 +38,22 @@ public class Main {
     }
 
     private static void configSDK() {
-        String serverUrl = "http://127.0.0.1:4096"; //本地节点
+        String serverUrl = "http://testnet.asch.io"; //本地节点
         String magic = "594fe0f3"; //localnet 或 testnet，mainnet 为 5f5b3cf5
 
         //设置Asch服务地址
         AschSDK.Config.setAschServer(serverUrl);
         //设置成对应的网络Magic
         AschSDK.Config.setMagic(magic);
-        //不打印控制台日志
-        AschSDK.Config.setDebugLogEnabled(false);
+        //设置为使用XAS作为手续费(不使用能量）
+        AschSDK.Config.setConsumeNET(false);
     }
 
     private static void printFailed(String operation, AschResult result) {
         System.out.println(operation + "失败, error: " + result.getError() + ", ex" + result.getError());
     }
 
-    //生成一级密钥（账户）
+    //通过可信的服务器生成账户（包括助记词、公钥、地址等信息）
     private static String[] generateAccounts(int count) {
         String[] secrets = new String[count];
         for (int i = 0; i < count; i++) {
@@ -65,6 +65,17 @@ public class Main {
                 secrets[i] = secret;
                 System.out.println("账户 " + (i + 1) + " 一级密钥 : " + secret);
             }
+        }
+        return secrets;
+    }
+
+    //本地生成一级密钥（助记词）
+    private static String[] generateSecrets(int count) {
+        String[] secrets = new String[count];
+        for (int i = 0; i < count; i++) {
+            String secret = AschSDK.Helper.generateSecret();
+            secrets[i] = secret;
+            System.out.println("账户 " + (i + 1) + " 一级密钥 : " + secret);
         }
         return secrets;
     }
@@ -158,6 +169,7 @@ public class Main {
         try {
             //这个值保存到数据库中，每次接着上次检查完成的区块后开始
             int currentHeight = getLastHeight();
+            //可以根据确认数的要求来确定从多少块开始检查，如需要经过6个区块后才确认可：currentHeight = getLastHeight() - 6
             if (currentHeight <= lastCheckedBlockHeight) {
                 return;
             }
@@ -194,7 +206,7 @@ public class Main {
         for (Map<String, Object> trans : transactions) {
             String senderId = trans.get("senderId").toString();
             System.out.println("transaction: " + trans.toString());
-            if (senderId == "感兴趣的转账者") { //或是其他感兴趣的交易
+            if (senderId.equals("感兴趣的转账者")) { //或是其他感兴趣的交易
                 //TODO:处理自己的交易，交易信息结构请参考：
                 /*
                 {

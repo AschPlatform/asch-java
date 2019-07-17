@@ -53,7 +53,11 @@ public enum TransactionType {
     group_activate(501, "group.activate"),
     group_addMember(502,"group.addMember"),
     group_removeMember(503,"group.removeMember"),
-    group_replaceMember(504, "group.replaceMember");
+    group_replaceMember(504, "group.replaceMember"),
+
+    contract_register(600, "contract.register"),
+    contract_call(601, "contract.call"),
+    contract_pay(602, "contract.pay");
 
     private int code;
     private String name;

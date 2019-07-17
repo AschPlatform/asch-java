@@ -10,14 +10,24 @@ import java.security.PrivateKey;
 import java.security.PublicKey;
 
 public class TransactionBuilder {
+    private boolean consumeNETOrEnergy;
+
+    public TransactionBuilder(boolean consumeNETOrEnergy) {
+        this.consumeNETOrEnergy = consumeNETOrEnergy;
+    }
+
     public TransactionInfo buildTransaction(TransactionType type, Object[] args, String message, String secret,
                                             String secondSecret) throws SecurityException {
         KeyPair keyPair = getSecurity().generateKeyPair(secret);
 
         TransactionInfo transaction = newTransaction(type, keyPair.getPublic())
                 .setMessage(message)
-                .setArgs(args)
-                .calcFee();
+                .setArgs(args);
+
+        if (this.consumeNETOrEnergy)
+            transaction.setFee(0L);
+        else
+            transaction.calcFee();
 
         return signatureAndGenerateTransactionId(transaction, keyPair.getPrivate(), secondSecret);
     }

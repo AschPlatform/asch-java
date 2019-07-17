@@ -15,7 +15,7 @@ public final class AschSDKConfig {
     private AschSDKConfig(){}
 
 
-    private final static String sdkVersion = "1.4";
+    private final static String sdkVersion = "1.5";
 
     public String getSDKVersion(){ return sdkVersion; }
 
@@ -27,14 +27,6 @@ public final class AschSDKConfig {
         this.aschServer = aschServer;
     }
 
-    public boolean isDebugLogEnabled() {
-        return debugLogEnabled;
-    }
-
-    public void setDebugLogEnabled(boolean enabled) {
-        this.debugLogEnabled = enabled;
-        DebugHelper.setEnabled(enabled);
-    }
 
     public String getMagic() {
         return magic;
@@ -44,10 +36,17 @@ public final class AschSDKConfig {
         this.magic = magic;
     }
 
+    public boolean isConsumeNET() {
+        return consumeNET;
+    }
+
+    public void setConsumeNET(boolean consumeNET) {
+        this.consumeNET = consumeNET;
+    }
 
     private String aschServer ="http://127.0.0.1:4096";
-    private String magic = "aabbccdd"; //localnet
-    private boolean debugLogEnabled = false;
+    private String magic = "594fe0f3";
+    private boolean consumeNET = false;
 
     public boolean tryLoadFromJson(String jsonString){
         try{
@@ -66,7 +65,7 @@ public final class AschSDKConfig {
 
     protected void copyTo(AschSDKConfig another){
         another.magic = this.magic;
-        another.debugLogEnabled = this.debugLogEnabled;
+        another.consumeNET = this.consumeNET;
         another.aschServer = this.aschServer;
     }
 

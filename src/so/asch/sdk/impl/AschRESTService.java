@@ -29,7 +29,7 @@ public abstract class AschRESTService implements AschInterface{
     }
 
     protected TransactionBuilder getTransactionBuilder(){
-        return new TransactionBuilder();
+        return new TransactionBuilder(config.isConsumeNET());
     }
 
     protected SecurityStrategy getSecurity(){

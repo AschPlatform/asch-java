@@ -9,7 +9,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class FeeCalculater {
-    protected static Map<TransactionType, Long> staticFeeMap = new HashMap<TransactionType, Long>();
+    private static Map<TransactionType, Long> staticFeeMap = new HashMap<>();
     static {
         String feeJS = 
                 "  1: () => 0.1," +
@@ -47,16 +47,20 @@ public class FeeCalculater {
                 "  501: () => 0," +
                 "  502: () => 1," +
                 "  503: () => 1," +
-                "  504: () => 1";
+                        "  504: () => 1," +
+                        "  600: () => 0," +
+                        "  601: () => 0," +
+                        "  602: () => 0";
+
         String[] pairs = feeJS.replace(" ", "")
                 .replace("()", "")
                 .replace("=>", "")
                 .split(",");
         AschHelper helper = new AschHelper();
 
-        for( int i = 0; i< pairs.length; i++ ) {
-            if (pairs[i].trim() == "") continue;
-            String[] item = pairs[i].split(":");
+        for (String pair : pairs) {
+            if (pair.trim().equals("")) continue;
+            String[] item = pair.split(":");
             int typeCode = Integer.parseInt(item[0]);
             double fee = Double.parseDouble(item[1]);
 
@@ -64,7 +68,7 @@ public class FeeCalculater {
         }
     }
 
-    protected static TransactionType transactionTypeFromCode( int typeCode ) {
+    private static TransactionType transactionTypeFromCode(int typeCode) {
         TransactionType type = TransactionType.unknow;
         try{
             type = TransactionType.fromCode(typeCode);
@@ -82,7 +86,7 @@ public class FeeCalculater {
         return staticFeeMap.get(transactionTypeFromCode(trans.getType()));
     }
 
-    protected static long calcSetNameFee( String name ) {
+    private static long calcSetNameFee(String name) {
         int[] feeSteps = new int[]{
         //-----------------------------//
                 10000, // 0
